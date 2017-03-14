@@ -41,6 +41,7 @@ int main(int argc, char* args[])
 					}
 				}
 
+				// Render the game
 				game.render();
 			}
 		}

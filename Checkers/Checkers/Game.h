@@ -1,7 +1,6 @@
 #pragma once
 #include "World.h"
-#include <SDL_opengl.h>
-#include <gl\GLU.h>
+#include "GL_helpers.h"
 
 class Game
 {
@@ -22,20 +21,19 @@ public:
 	// handle input for the game
 	bool manageInput(SDL_KeyboardEvent key);
 
+	void update();
 	void render();
-
-	//The window we'll be rendering to
-	SDL_Window* gWindow = NULL;
-
-	//The window renderer
-	SDL_Renderer* gRenderer = NULL;
 
 private:
 	//Screen dimension constants
 	const int SCREEN_WIDTH = 1920;
 	const int SCREEN_HEIGHT = 1080;
-	// The checkers board that will contain all spaces and peices
+	//The window we'll be rendering to
+	SDL_Window* gWindow = NULL;
 
-	World world;
+	// OpenGL Context
+	SDL_GLContext gContext = NULL;
+	
+	GLfloat gCameraX = 0.f, gCameraY = 0.f;
 	
 };
