@@ -3,6 +3,7 @@
 #include <SDL.h>
 #include <SDL_opengl.h>
 #include <string>
+#include <IL/il.h>
 #include "GL_helpers.h"
 
 class Texture
@@ -17,7 +18,7 @@ public:
 
 	// Creates a textures from the give pixels
 	bool loadTextureFromPixels32(GLuint* pixels, GLuint width, GLuint height);
-
+	bool loadTextureFromFile(std::string path);
 	void freeTexture();
 
 	// Tranlsates to given position and renders textured quad

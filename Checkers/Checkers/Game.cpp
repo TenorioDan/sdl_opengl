@@ -30,6 +30,19 @@ bool Game::initGL()
 	glClearColor(0.f, 0.f, 0.f, 1.f);
 	glEnable(GL_TEXTURE_2D);
 	checkGL_Error(glGetError(), success);
+	
+	//Initialize DevIL
+	ilInit();
+	ilClearColour(255, 255, 255, 000);
+
+	//Check for error
+	ILenum ilError = ilGetError();
+	if (ilError != IL_NO_ERROR)
+	{
+		printf("Error initializing DevIL! %s\n", iluErrorString(ilError));
+		return false;
+	}
+
 
 	return success;
 }
@@ -140,6 +153,12 @@ bool Game::loadMedia() {
 		}
 	}
 
+	if (!gLoadedTexture.loadTextureFromFile("grass_dirt_tile.png"))
+	{
+		printf("Unable to load file texture!\n");
+		success = false;
+	}
+
 	return success;
 }
 
@@ -198,12 +217,17 @@ void Game::render()
 {
 	// Clear color buffer
 	glClear(GL_COLOR_BUFFER_BIT);
+	//glScalef(2.f, 2.f, 0.f);
 
 	//Calculate centered offsets
-	GLfloat x = (SCREEN_WIDTH - gCheckerBoardTexture.textureWidth()) / 2.f;
-	GLfloat y = (SCREEN_HEIGHT - gCheckerBoardTexture.textureHeight()) / 2.f;
+	GLfloat x = (SCREEN_WIDTH - gCheckerBoardTexture.textureWidth()) / 4.f;
+	GLfloat y = (SCREEN_HEIGHT - gCheckerBoardTexture.textureHeight()) / 4.f;
 
 	//Render checkerboard texture
 	gCheckerBoardTexture.render(x, y);
+
+	GLfloat a = (SCREEN_WIDTH - gCheckerBoardTexture.textureWidth()) / 1.5f;
+	GLfloat b = (SCREEN_HEIGHT - gCheckerBoardTexture.textureHeight()) / 1.5;
+	gLoadedTexture.render(a, b);
 	SDL_GL_SwapWindow(gWindow);
 }

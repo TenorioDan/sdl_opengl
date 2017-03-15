@@ -1,5 +1,7 @@
 #pragma once
 #include "World.h"
+#include <IL/il.h>
+#include <IL/ilu.h>
 
 class Game
 {
@@ -35,5 +37,5 @@ private:
 	
 	GLfloat gCameraX = 0.f, gCameraY = 0.f;
 	Texture gCheckerBoardTexture;
-	
+	Texture gLoadedTexture;
 };
