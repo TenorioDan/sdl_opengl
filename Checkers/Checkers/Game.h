@@ -1,6 +1,5 @@
 #pragma once
 #include "World.h"
-#include "GL_helpers.h"
 
 class Game
 {
@@ -35,5 +34,6 @@ private:
 	SDL_GLContext gContext = NULL;
 	
 	GLfloat gCameraX = 0.f, gCameraY = 0.f;
+	Texture gCheckerBoardTexture;
 	
 };

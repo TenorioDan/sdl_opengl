@@ -15,7 +15,7 @@ bool Game::initGL()
 	// Initalize projection matrix and check for errors
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0.0, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0, 1.0, -1.0);
+	glOrtho(0.f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.f, 1.f, -1.f);
 	checkGL_Error(glGetError(), success);
 
 	// Initialize Modelview Matrix and check for errors
@@ -28,6 +28,7 @@ bool Game::initGL()
 
 	// Initialize clear color
 	glClearColor(0.f, 0.f, 0.f, 1.f);
+	glEnable(GL_TEXTURE_2D);
 	checkGL_Error(glGetError(), success);
 
 	return success;
@@ -100,6 +101,44 @@ bool Game::loadMedia() {
 	bool success = true;
 
 	// TODO: Add menu textures and load them here
+	
+	// checkerboard pixels
+	const int CHECKERBOARD_WIDTH = 128;
+	const int CHECKERBOARD_HEIGHT = 128;
+	const int CHECKERBOARD_PIXEL_COUNT = CHECKERBOARD_WIDTH * CHECKERBOARD_HEIGHT;
+	GLuint checkerBoard[CHECKERBOARD_PIXEL_COUNT];
+
+	// go through the pixels
+	for (int i = 0; i < CHECKERBOARD_PIXEL_COUNT; ++i)
+	{
+		// Get the individual color components
+		GLubyte* colors = (GLubyte*)&checkerBoard[i];
+
+		// If the 5th bit of the x and y offsets of the pixel do not match
+		if (i / 128 & 16 ^ i % 128 & 16)
+		{
+			// Set pixel to white
+			colors[0] = 0xFF;
+			colors[1] = 0xFF;
+			colors[2] = 0xFF;
+			colors[3] = 0xFF;
+		}
+		else
+		{
+			// Set pixel to red
+			colors[0] = 0xFF;
+			colors[1] = 0x00;
+			colors[2] = 0x00;
+			colors[3] = 0xFF;
+		}
+
+		// load texutre
+		if (!gCheckerBoardTexture.loadTextureFromPixels32(checkerBoard, CHECKERBOARD_WIDTH, CHECKERBOARD_HEIGHT))
+		{
+			printf("unable to load checkerboard texture!\n");
+			success = false;
+		}
+	}
 
 	return success;
 }
@@ -160,74 +199,11 @@ void Game::render()
 	// Clear color buffer
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	// Pop default matrix onto current matrix
-	glMatrixMode(GL_MODELVIEW);
-	glPopMatrix();
+	//Calculate centered offsets
+	GLfloat x = (SCREEN_WIDTH - gCheckerBoardTexture.textureWidth()) / 2.f;
+	GLfloat y = (SCREEN_HEIGHT - gCheckerBoardTexture.textureHeight()) / 2.f;
 
-	// save default matrix again
-	glPushMatrix();
-
-	// Move to center of the screen;
-	glTranslatef(SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 2.f, 0.f);
-
-	glBegin(GL_QUADS);
-	glColor3f(1.f, 0.f, 0.f);
-	glVertex2f(-SCREEN_WIDTH / 4.f, -SCREEN_HEIGHT / 4.f);
-	glVertex2f(SCREEN_WIDTH / 4.f, -SCREEN_HEIGHT / 4.f);
-	glVertex2f(SCREEN_WIDTH / 4.f, SCREEN_HEIGHT / 4.f);
-	glVertex2f(-SCREEN_WIDTH / 4.f, SCREEN_HEIGHT / 4.f);
-	glEnd();
-
-	//Move to the right of the screen
-	glTranslatef(SCREEN_WIDTH, 0.f, 0.f);
-
-	//Green quad
-	glBegin(GL_QUADS);
-	glColor3f(0.f, 1.f, 0.f);
-	glVertex2f(-SCREEN_WIDTH / 4.f, -SCREEN_HEIGHT / 4.f);
-	glVertex2f(SCREEN_WIDTH / 4.f, -SCREEN_HEIGHT / 4.f);
-	glVertex2f(SCREEN_WIDTH / 4.f, SCREEN_HEIGHT / 4.f);
-	glVertex2f(-SCREEN_WIDTH / 4.f, SCREEN_HEIGHT / 4.f);
-	glEnd();
-
-	glTranslatef(-SCREEN_WIDTH, 0.f, 0.f);
-	glTranslatef((SCREEN_WIDTH / 2.f), (SCREEN_HEIGHT / 2.f), 0.f);
-
-	//Green quad
-	glBegin(GL_QUADS);
-	glColor3f(1.f, 1.f, 1.f);
-	glVertex2f(-100, -100);
-	glVertex2f(100, -100);
-	glVertex2f(100, 100);
-	glVertex2f(-100, 100);
-	glEnd();
-
-	glTranslatef(SCREEN_WIDTH, 0.f, 0.f);
-	glTranslatef(-((SCREEN_WIDTH / 2.f)), -((SCREEN_HEIGHT / 2.f)), 0.f);
-
-	//Move to the lower right of the screen
-	glTranslatef(0.f, SCREEN_HEIGHT, 0.f);
-
-	//Blue quad
-	glBegin(GL_QUADS);
-	glColor3f(0.f, 0.f, 1.f);
-	glVertex2f(-SCREEN_WIDTH / 4.f, -SCREEN_HEIGHT / 4.f);
-	glVertex2f(SCREEN_WIDTH / 4.f, -SCREEN_HEIGHT / 4.f);
-	glVertex2f(SCREEN_WIDTH / 4.f, SCREEN_HEIGHT / 4.f);
-	glVertex2f(-SCREEN_WIDTH / 4.f, SCREEN_HEIGHT / 4.f);
-	glEnd();
-
-	//Move below the screen
-	glTranslatef(-SCREEN_WIDTH, 0.f, 0.f);
-
-	//Yellow quad
-	glBegin(GL_QUADS);
-	glColor3f(1.f, 1.f, 0.f);
-	glVertex2f(-SCREEN_WIDTH / 4.f, -SCREEN_HEIGHT / 4.f);
-	glVertex2f(SCREEN_WIDTH / 4.f, -SCREEN_HEIGHT / 4.f);
-	glVertex2f(SCREEN_WIDTH / 4.f, SCREEN_HEIGHT / 4.f);
-	glVertex2f(-SCREEN_WIDTH / 4.f, SCREEN_HEIGHT / 4.f);
-	glEnd();
-
+	//Render checkerboard texture
+	gCheckerBoardTexture.render(x, y);
 	SDL_GL_SwapWindow(gWindow);
 }
