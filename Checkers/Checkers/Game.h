@@ -38,4 +38,10 @@ private:
 	GLfloat gCameraX = 0.f, gCameraY = 0.f;
 	Texture gCheckerBoardTexture;
 	Texture gLoadedTexture;
+
+	// Sprite texture
+	Texture gArrowTexture;
+
+	// Srpite areas
+	LFRect gArrowClips[4];
 };

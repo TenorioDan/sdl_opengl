@@ -5,6 +5,7 @@
 #include <string>
 #include <IL/il.h>
 #include "GL_helpers.h"
+#include "LFRect.h"
 
 class Texture
 {
@@ -22,7 +23,7 @@ public:
 	void freeTexture();
 
 	// Tranlsates to given position and renders textured quad
-	void render(GLfloat x, GLfloat y);
+	void render(GLfloat x, GLfloat y, LFRect* clip = NULL);
 
 	// getters
 	GLuint getTextureID();

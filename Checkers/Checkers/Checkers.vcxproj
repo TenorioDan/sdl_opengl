@@ -127,11 +127,13 @@
   <ItemGroup>
     <ClInclude Include="Game.h" />
     <ClInclude Include="GL_helpers.h" />
+    <ClInclude Include="LFRect.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="arrows.png" />
     <Image Include="grass_dirt_tile.png" />
     <Image Include="sky_texture.png" />
   </ItemGroup>

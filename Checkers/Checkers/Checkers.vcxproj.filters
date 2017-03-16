@@ -59,6 +59,9 @@
     <ClInclude Include="GL_helpers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LFRect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="grass_dirt_tile.png">
@@ -66,6 +69,9 @@
     </Image>
     <Image Include="sky_texture.png">
       <Filter>Resource Files\Textures\Environment</Filter>
+    </Image>
+    <Image Include="arrows.png">
+      <Filter>Resource Files\Textures</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

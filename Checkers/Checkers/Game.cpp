@@ -114,48 +114,30 @@ bool Game::loadMedia() {
 	bool success = true;
 
 	// TODO: Add menu textures and load them here
-	
-	// checkerboard pixels
-	const int CHECKERBOARD_WIDTH = 128;
-	const int CHECKERBOARD_HEIGHT = 128;
-	const int CHECKERBOARD_PIXEL_COUNT = CHECKERBOARD_WIDTH * CHECKERBOARD_HEIGHT;
-	GLuint checkerBoard[CHECKERBOARD_PIXEL_COUNT];
+	// Set clip rectangles
+	gArrowClips[0].x = 0.f;
+	gArrowClips[0].y = 0.f;
+	gArrowClips[0].w = 128.f;
+	gArrowClips[0].h = 128.f;
 
-	// go through the pixels
-	for (int i = 0; i < CHECKERBOARD_PIXEL_COUNT; ++i)
+	gArrowClips[1].x = 128.f;
+	gArrowClips[1].y = 0.f;
+	gArrowClips[1].w = 128.f;
+	gArrowClips[1].h = 128.f;
+
+	gArrowClips[2].x = 0.f;
+	gArrowClips[2].y = 128.f;
+	gArrowClips[2].w = 128.f;
+	gArrowClips[2].h = 128.f;
+
+	gArrowClips[3].x = 128.f;
+	gArrowClips[3].y = 128.f;
+	gArrowClips[3].w = 128.f;
+	gArrowClips[3].h = 128.f;
+
+	if (!gArrowTexture.loadTextureFromFile("arrows.png"))
 	{
-		// Get the individual color components
-		GLubyte* colors = (GLubyte*)&checkerBoard[i];
-
-		// If the 5th bit of the x and y offsets of the pixel do not match
-		if (i / 128 & 16 ^ i % 128 & 16)
-		{
-			// Set pixel to white
-			colors[0] = 0xFF;
-			colors[1] = 0xFF;
-			colors[2] = 0xFF;
-			colors[3] = 0xFF;
-		}
-		else
-		{
-			// Set pixel to red
-			colors[0] = 0xFF;
-			colors[1] = 0x00;
-			colors[2] = 0x00;
-			colors[3] = 0xFF;
-		}
-
-		// load texutre
-		if (!gCheckerBoardTexture.loadTextureFromPixels32(checkerBoard, CHECKERBOARD_WIDTH, CHECKERBOARD_HEIGHT))
-		{
-			printf("unable to load checkerboard texture!\n");
-			success = false;
-		}
-	}
-
-	if (!gLoadedTexture.loadTextureFromFile("grass_dirt_tile.png"))
-	{
-		printf("Unable to load file texture!\n");
+		printf("Unable to load arrow texture!\n");
 		success = false;
 	}
 
@@ -217,17 +199,12 @@ void Game::render()
 {
 	// Clear color buffer
 	glClear(GL_COLOR_BUFFER_BIT);
-	//glScalef(2.f, 2.f, 0.f);
 
-	//Calculate centered offsets
-	GLfloat x = (SCREEN_WIDTH - gCheckerBoardTexture.textureWidth()) / 4.f;
-	GLfloat y = (SCREEN_HEIGHT - gCheckerBoardTexture.textureHeight()) / 4.f;
+	// Render arrows
+	gArrowTexture.render(0.f, 0.f, &gArrowClips[0]);
+	gArrowTexture.render(SCREEN_WIDTH - gArrowClips[1].w, 0.f, &gArrowClips[1]);
+	gArrowTexture.render(0.f, SCREEN_HEIGHT - gArrowClips[2].h, &gArrowClips[2]);
+	gArrowTexture.render(SCREEN_WIDTH - gArrowClips[3].w, SCREEN_HEIGHT - gArrowClips[3].h, &gArrowClips[3]);
 
-	//Render checkerboard texture
-	gCheckerBoardTexture.render(x, y);
-
-	GLfloat a = (SCREEN_WIDTH - gCheckerBoardTexture.textureWidth()) / 1.5f;
-	GLfloat b = (SCREEN_HEIGHT - gCheckerBoardTexture.textureHeight()) / 1.5;
-	gLoadedTexture.render(a, b);
 	SDL_GL_SwapWindow(gWindow);
 }

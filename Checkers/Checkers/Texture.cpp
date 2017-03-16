@@ -32,29 +32,6 @@ void Texture::freeTexture()
 	mTextureHeight = 0;
 }
 
-void Texture::render(GLfloat x, GLfloat y)
-{
-	// if the texture exists
-	if (mTextureID != 0)
-	{
-		// Remove any previous transformations
-		glLoadIdentity();
-
-		// Moves to rendering point
-		glTranslatef(x, y, 0.f);
-
-		// Set texture ID
-		glBindTexture(GL_TEXTURE_2D, mTextureID);
-
-		// Render textured quad
-		glBegin(GL_QUADS);
-		glTexCoord2f(0.f, 0.f); glVertex2f(0.f, 0.f);
-		glTexCoord2f(1.f, 0.f); glVertex2f(mTextureWidth, 0.f);
-		glTexCoord2f(1.f, 1.f); glVertex2f(mTextureWidth, mTextureHeight);
-		glTexCoord2f(0.f, 1.f); glVertex2f(0.f, mTextureHeight);
-		glEnd();
-	}
-}
 
 bool Texture::loadTextureFromFile(std::string path)
 {
@@ -124,6 +101,55 @@ bool Texture::loadTextureFromPixels32(GLuint* pixels, GLuint width, GLuint heigh
 	return success;
 	
 }
+
+void Texture::render(GLfloat x, GLfloat y, LFRect* clip)
+{
+	// if the texture exists
+	if (mTextureID != 0)
+	{
+		// Remove any previous transformations
+		glLoadIdentity();
+
+		// Texture coordinates
+		GLfloat texTop = 0.f;
+		GLfloat texBottom = 1.f;
+		GLfloat texLeft = 0.f;
+		GLfloat texRight = 1.f;
+
+		// Vertex Coordinates
+		GLfloat quadWidth = mTextureWidth;
+		GLfloat quadHeight = mTextureHeight;
+
+		// Handle clipping
+		if (clip != NULL)
+		{
+			// Texture coordinates
+			texLeft = clip->x / mTextureWidth;
+			texRight = (clip->x + clip->w) / mTextureWidth;
+			texTop = clip->y / mTextureHeight;
+			texBottom = (clip->y + clip->h) / mTextureHeight;
+
+			// Vertex coordinates
+			quadWidth = clip->w;
+			quadHeight = clip->h;
+		}
+
+		// move to rendering point
+		glTranslatef(x, y, 0.f);
+
+		// Set texture ID
+		glBindTexture(GL_TEXTURE_2D, mTextureID);
+
+		// Render textured quad
+		glBegin(GL_QUADS);
+		glTexCoord2f(texLeft,  texTop);    glVertex2f(0.f, 0.f);
+		glTexCoord2f(texRight, texTop);    glVertex2f(quadWidth, 0.f);
+		glTexCoord2f(texRight, texBottom); glVertex2f(quadWidth, quadHeight);
+		glTexCoord2f(texLeft,  texBottom); glVertex2f(0.f, quadHeight);
+		glEnd();
+	}
+}
+
 
 GLuint Texture::getTextureID()
 {
