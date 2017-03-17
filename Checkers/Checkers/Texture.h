@@ -22,6 +22,21 @@ public:
 	bool loadTextureFromFile(std::string path);
 	void freeTexture();
 
+	// Gets member pixels from texture data
+	bool lock();
+
+	// Updates texture with member pixels
+	bool unlock();
+
+	// Returns member pixels
+	GLuint* getPixelData32();
+
+	// Returns pixel at given position
+	GLuint getPixel32(GLuint x, GLuint y);
+
+	// Sets pixel at given position
+	void setPixel32(GLuint x, GLuint y, GLuint pixel);
+
 	// Tranlsates to given position and renders textured quad
 	void render(GLfloat x, GLfloat y, LFRect* clip = NULL);
 
@@ -37,6 +52,9 @@ private:
 
 	// Texture name
 	GLuint mTextureID;
+
+	// Current pixels
+	GLuint* mPixels;
 	
 	// Texture Dimensions
 	GLuint mTextureWidth;

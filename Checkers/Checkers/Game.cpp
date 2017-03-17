@@ -136,11 +136,55 @@ bool Game::loadMedia() {
 	//gArrowClips[3].w = 128.f;
 	//gArrowClips[3].h = 128.f;
 
-	if (!gNon2NTexture.loadTextureFromFile("opengl.png"))
+	/*if (!gNon2NTexture.loadTextureFromFile("opengl.png"))
 	{
 		printf("Unable to load arrow texture!\n");
 		success = false;
+	}*/
+
+	if (!gCircleTexture.loadTextureFromFile("circle.png"))
+	{
+		printf("unable to load circle texture\n");
+		success = false;
 	}
+
+	// lock texture for modification
+	gCircleTexture.lock();
+
+	GLuint targetColor;
+	GLubyte* colors = (GLubyte*)&targetColor;
+
+	colors[0] = 0;
+	colors[1] = 255;
+	colors[2] = 255;
+	colors[3] = 255;
+
+	// Replace target color with transparent black
+	GLuint* pixels = gCircleTexture.getPixelData32();
+	GLuint pixelCount = gCircleTexture.textureWidth() * gCircleTexture.textureHeight();
+
+	for (int i = 0; i < pixelCount; ++i)
+	{
+		if (pixels[i] == targetColor)
+		{
+			pixels[i] = 0;
+		}
+	}
+
+	// Diagonal lines
+	for (int y = 0; y < gCircleTexture.imageWidth(); ++y)
+	{
+		for (int x = 0; x < gCircleTexture.imageHeight(); ++x)
+		{
+			if (y % 10 != x % 10)
+			{
+				gCircleTexture.setPixel32(x, y, 0);
+			}
+		}
+	}
+
+	// Update texture
+	gCircleTexture.unlock();
 
 	return success;
 }
@@ -208,8 +252,10 @@ void Game::render()
 	//gArrowTexture.render(SCREEN_WIDTH - gArrowClips[3].w, SCREEN_HEIGHT - gArrowClips[3].h, &gArrowClips[3]);
 
 	//Render OpenGL texture
-	gNon2NTexture.render((SCREEN_WIDTH - gNon2NTexture.imageWidth()) / 2.f, (SCREEN_HEIGHT - gNon2NTexture.imageHeight()) / 2.f);
+	//gNon2NTexture.render((SCREEN_WIDTH - gNon2NTexture.imageWidth()) / 2.f, (SCREEN_HEIGHT - gNon2NTexture.imageHeight()) / 2.f);
 
+	// Render circle
+	gCircleTexture.render((SCREEN_WIDTH - gCircleTexture.imageWidth()) / 2.f, (SCREEN_HEIGHT - gCircleTexture.imageHeight()) / 2.f);
 
 	SDL_GL_SwapWindow(gWindow);
 }

@@ -76,6 +76,9 @@
     <Image Include="opengl.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
+    <Image Include="circle.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="test_level.txt">

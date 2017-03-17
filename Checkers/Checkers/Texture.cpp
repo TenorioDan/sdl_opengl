@@ -9,6 +9,7 @@ Texture::Texture()
 {
 	// Initialize texture ID
 	mTextureID = 0;
+	mPixels = NULL;
 
 	// Initialize image dimensions
 	mImageWidth = 0;
@@ -34,6 +35,15 @@ void Texture::freeTexture()
 		mTextureID = 0;
 	}
 
+	// Delete pixels
+	if (mPixels != NULL)
+	{
+		delete[] mPixels;
+		mPixels = NULL;
+	}
+
+	mImageWidth = 0;
+	mImageHeight = 0;
 	mTextureWidth = 0;
 	mTextureHeight = 0;
 }
@@ -178,6 +188,54 @@ void Texture::render(GLfloat x, GLfloat y, LFRect* clip)
 	}
 }
 
+bool Texture::lock()
+{
+	// If texture is not locked and a texture exists
+	if (mPixels == NULL && mTextureID != 0)
+	{
+		// Allocates memory for texture data
+		GLuint size = mTextureWidth * mTextureHeight;
+		mPixels = new GLuint[size];
+
+		// Set current texture
+		glBindTexture(GL_TEXTURE_2D, mTextureID);
+
+		// Get pixels
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, mPixels);
+
+		// Unbind texture
+		glBindTexture(GL_TEXTURE_2D, NULL);
+
+		return true;
+	}
+
+	return false;
+}
+
+bool Texture::unlock()
+{
+	// If texture is locked and a texture exists
+	if (mPixels != NULL && mTextureID != 0)
+	{
+		// Set current texture
+		glBindTexture(GL_TEXTURE_2D, mTextureID);
+
+		// Update texture
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, mTextureWidth, mTextureHeight, GL_RGBA, GL_UNSIGNED_BYTE, mPixels);
+
+		// Delete pixels
+		delete[] mPixels;
+		mPixels = NULL;
+
+		// Unbind texture
+		glBindTexture(GL_TEXTURE_2D, NULL);
+
+		return true;
+	}
+
+	return false;
+}
+
 GLuint Texture::powerOfTwo(GLuint num)
 {
 	if (num != 0)
@@ -192,6 +250,21 @@ GLuint Texture::powerOfTwo(GLuint num)
 	}
 
 	return num;
+}
+
+GLuint* Texture::getPixelData32()
+{
+	return mPixels;
+}
+
+GLuint Texture::getPixel32(GLuint x, GLuint y)
+{
+	return mPixels[y * mTextureWidth + x];
+}
+
+void Texture::setPixel32(GLuint x, GLuint y, GLuint pixel)
+{
+	mPixels[y * mTextureWidth + x] = pixel;
 }
 
 

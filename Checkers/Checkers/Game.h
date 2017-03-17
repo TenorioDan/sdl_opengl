@@ -39,6 +39,7 @@ private:
 	Texture gCheckerBoardTexture;
 	Texture gLoadedTexture;
 	Texture gNon2NTexture;
+	Texture gCircleTexture;
 
 	// Sprite texture
 	Texture gArrowTexture;
