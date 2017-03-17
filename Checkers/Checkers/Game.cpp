@@ -33,6 +33,7 @@ bool Game::initGL()
 	
 	//Initialize DevIL
 	ilInit();
+	iluInit();
 	ilClearColour(255, 255, 255, 000);
 
 	//Check for error
@@ -115,27 +116,27 @@ bool Game::loadMedia() {
 
 	// TODO: Add menu textures and load them here
 	// Set clip rectangles
-	gArrowClips[0].x = 0.f;
-	gArrowClips[0].y = 0.f;
-	gArrowClips[0].w = 128.f;
-	gArrowClips[0].h = 128.f;
+	//gArrowClips[0].x = 0.f;
+	//gArrowClips[0].y = 0.f;
+	//gArrowClips[0].w = 128.f;
+	//gArrowClips[0].h = 128.f;
 
-	gArrowClips[1].x = 128.f;
-	gArrowClips[1].y = 0.f;
-	gArrowClips[1].w = 128.f;
-	gArrowClips[1].h = 128.f;
+	//gArrowClips[1].x = 128.f;
+	//gArrowClips[1].y = 0.f;
+	//gArrowClips[1].w = 128.f;
+	//gArrowClips[1].h = 128.f;
 
-	gArrowClips[2].x = 0.f;
-	gArrowClips[2].y = 128.f;
-	gArrowClips[2].w = 128.f;
-	gArrowClips[2].h = 128.f;
+	//gArrowClips[2].x = 0.f;
+	//gArrowClips[2].y = 128.f;
+	//gArrowClips[2].w = 128.f;
+	//gArrowClips[2].h = 128.f;
 
-	gArrowClips[3].x = 128.f;
-	gArrowClips[3].y = 128.f;
-	gArrowClips[3].w = 128.f;
-	gArrowClips[3].h = 128.f;
+	//gArrowClips[3].x = 128.f;
+	//gArrowClips[3].y = 128.f;
+	//gArrowClips[3].w = 128.f;
+	//gArrowClips[3].h = 128.f;
 
-	if (!gArrowTexture.loadTextureFromFile("arrows.png"))
+	if (!gNon2NTexture.loadTextureFromFile("opengl.png"))
 	{
 		printf("Unable to load arrow texture!\n");
 		success = false;
@@ -201,10 +202,14 @@ void Game::render()
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	// Render arrows
-	gArrowTexture.render(0.f, 0.f, &gArrowClips[0]);
-	gArrowTexture.render(SCREEN_WIDTH - gArrowClips[1].w, 0.f, &gArrowClips[1]);
-	gArrowTexture.render(0.f, SCREEN_HEIGHT - gArrowClips[2].h, &gArrowClips[2]);
-	gArrowTexture.render(SCREEN_WIDTH - gArrowClips[3].w, SCREEN_HEIGHT - gArrowClips[3].h, &gArrowClips[3]);
+	//gArrowTexture.render(0.f, 0.f, &gArrowClips[0]);
+	//gArrowTexture.render(SCREEN_WIDTH - gArrowClips[1].w, 0.f, &gArrowClips[1]);
+	//gArrowTexture.render(0.f, SCREEN_HEIGHT - gArrowClips[2].h, &gArrowClips[2]);
+	//gArrowTexture.render(SCREEN_WIDTH - gArrowClips[3].w, SCREEN_HEIGHT - gArrowClips[3].h, &gArrowClips[3]);
+
+	//Render OpenGL texture
+	gNon2NTexture.render((SCREEN_WIDTH - gNon2NTexture.imageWidth()) / 2.f, (SCREEN_HEIGHT - gNon2NTexture.imageHeight()) / 2.f);
+
 
 	SDL_GL_SwapWindow(gWindow);
 }

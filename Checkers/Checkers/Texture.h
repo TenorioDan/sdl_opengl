@@ -18,7 +18,7 @@ public:
 #pragma region OpenGL Methods
 
 	// Creates a textures from the give pixels
-	bool loadTextureFromPixels32(GLuint* pixels, GLuint width, GLuint height);
+	bool loadTextureFromPixels32(GLuint* pixels, GLuint imgWidth, GLuint imgHeight, GLuint texWidth, GLuint texHeight);
 	bool loadTextureFromFile(std::string path);
 	void freeTexture();
 
@@ -29,14 +29,22 @@ public:
 	GLuint getTextureID();
 	GLuint textureWidth();
 	GLuint textureHeight();
+	GLuint imageWidth();
+	GLuint imageHeight();
 
 private:
+	GLuint powerOfTwo(GLuint num);
+
 	// Texture name
 	GLuint mTextureID;
 	
 	// Texture Dimensions
 	GLuint mTextureWidth;
 	GLuint mTextureHeight;
+
+	// Unpadded image dimensions
+	GLuint mImageWidth;
+	GLuint mImageHeight;
 
 #pragma endregion
 

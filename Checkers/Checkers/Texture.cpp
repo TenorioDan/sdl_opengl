@@ -1,5 +1,7 @@
 #include "Texture.h"
 #include <SDL_image.h>
+#include <IL/il.h>;
+#include <IL/ilu.h>
 
 #pragma region OpenGL Methods
 
@@ -7,6 +9,10 @@ Texture::Texture()
 {
 	// Initialize texture ID
 	mTextureID = 0;
+
+	// Initialize image dimensions
+	mImageWidth = 0;
+	mImageHeight = 0;
 
 	// Initialize texture dimensions
 	mTextureWidth = 0;
@@ -42,6 +48,8 @@ bool Texture::loadTextureFromFile(std::string path)
 	ilGenImages(1, &imgID);
 	ilBindImage(imgID);
 
+
+	//load iamge
 	ILboolean success = ilLoadImage(path.c_str());
 
 	// Image loaded successfully
@@ -52,8 +60,25 @@ bool Texture::loadTextureFromFile(std::string path)
 
 		if (success == IL_TRUE)
 		{
+			// Initialize dimensions
+			GLuint imgWidth = (GLuint)ilGetInteger(IL_IMAGE_WIDTH);
+			GLuint imgHeight = (GLuint)ilGetInteger(IL_IMAGE_HEIGHT);
+
+			// Calculate required texture dimensions
+			GLuint texWidth = powerOfTwo(imgWidth);
+			GLuint texHeight = powerOfTwo(imgHeight);
+
+			if (imgWidth != texWidth || imgHeight != texHeight)
+			{
+				// Place image at upper left
+				iluImageParameter(ILU_PLACEMENT, ILU_UPPER_LEFT);
+
+				// Resize image
+				iluEnlargeCanvas((int)texWidth, (int)texHeight, 1);
+			}
+
 			// Create texture from file pixels
-			textureLoaded = loadTextureFromPixels32((GLuint*)ilGetData(), (GLuint)ilGetInteger(IL_IMAGE_WIDTH), (GLuint)ilGetInteger(IL_IMAGE_HEIGHT));
+			textureLoaded = loadTextureFromPixels32((GLuint*)ilGetData(), imgWidth, imgHeight, texWidth, texHeight);
 		}
 
 		// Delete file from memory
@@ -69,14 +94,17 @@ bool Texture::loadTextureFromFile(std::string path)
 	return textureLoaded;
 }
 
-bool Texture::loadTextureFromPixels32(GLuint* pixels, GLuint width, GLuint height)
+// New code for padding non-power-of-two textures
+bool Texture::loadTextureFromPixels32(GLuint* pixels, GLuint imgWidth, GLuint imgHeight, GLuint texWidth, GLuint texHeight)
 {
 	// Free texture if it exists
 	freeTexture();
 	
-	// Get texture dimensions
-	mTextureWidth = width;
-	mTextureHeight = height;
+	// Get image dimensions
+	mImageWidth = imgWidth;
+	mImageHeight = imgHeight;
+	mTextureWidth = texWidth;
+	mTextureHeight = texHeight;
 
 	// Generate texture ID
 	glGenTextures(1, &mTextureID);
@@ -85,7 +113,7 @@ bool Texture::loadTextureFromPixels32(GLuint* pixels, GLuint width, GLuint heigh
 	glBindTexture(GL_TEXTURE_2D, mTextureID);
 
 	// Generate Texture
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mTextureWidth, mTextureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
 	// Set texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -112,13 +140,13 @@ void Texture::render(GLfloat x, GLfloat y, LFRect* clip)
 
 		// Texture coordinates
 		GLfloat texTop = 0.f;
-		GLfloat texBottom = 1.f;
+		GLfloat texBottom = (GLfloat)mImageHeight / (GLfloat)mTextureHeight;
 		GLfloat texLeft = 0.f;
-		GLfloat texRight = 1.f;
+		GLfloat texRight = (GLfloat)mImageWidth / (GLfloat)mTextureWidth;
 
 		// Vertex Coordinates
-		GLfloat quadWidth = mTextureWidth;
-		GLfloat quadHeight = mTextureHeight;
+		GLfloat quadWidth = mImageWidth;
+		GLfloat quadHeight = mImageHeight;
 
 		// Handle clipping
 		if (clip != NULL)
@@ -142,12 +170,28 @@ void Texture::render(GLfloat x, GLfloat y, LFRect* clip)
 
 		// Render textured quad
 		glBegin(GL_QUADS);
-		glTexCoord2f(texLeft,  texTop);    glVertex2f(0.f, 0.f);
-		glTexCoord2f(texRight, texTop);    glVertex2f(quadWidth, 0.f);
-		glTexCoord2f(texRight, texBottom); glVertex2f(quadWidth, quadHeight);
-		glTexCoord2f(texLeft,  texBottom); glVertex2f(0.f, quadHeight);
+			glTexCoord2f(texLeft,  texTop);    glVertex2f(0.f,       0.f);
+			glTexCoord2f(texRight, texTop);    glVertex2f(quadWidth, 0.f);
+			glTexCoord2f(texRight, texBottom); glVertex2f(quadWidth, quadHeight);
+			glTexCoord2f(texLeft,  texBottom); glVertex2f(0.f,       quadHeight);
 		glEnd();
 	}
+}
+
+GLuint Texture::powerOfTwo(GLuint num)
+{
+	if (num != 0)
+	{
+		num--;
+		num |= (num >> 1); // Or first two bits
+		num |= (num >> 2); // Or next 2 bits
+		num |= (num >> 4); // Or next 4 bits
+		num |= (num >> 8); // Or next 4 bits
+		num |= (num >> 16); // or next 16 bits
+		num++;
+	}
+
+	return num;
 }
 
 
@@ -164,6 +208,16 @@ GLuint Texture::textureWidth()
 GLuint Texture::textureHeight()
 {
 	return mTextureHeight;
+}
+
+GLuint Texture::imageWidth()
+{
+	return mImageWidth;
+}
+
+GLuint Texture::imageHeight()
+{
+	return mImageHeight;
 }
 
 #pragma endregion

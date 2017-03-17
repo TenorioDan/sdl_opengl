@@ -135,6 +135,7 @@
   <ItemGroup>
     <Image Include="arrows.png" />
     <Image Include="grass_dirt_tile.png" />
+    <Image Include="opengl.png" />
     <Image Include="sky_texture.png" />
   </ItemGroup>
   <ItemGroup>

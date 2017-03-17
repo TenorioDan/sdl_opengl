@@ -38,6 +38,7 @@ private:
 	GLfloat gCameraX = 0.f, gCameraY = 0.f;
 	Texture gCheckerBoardTexture;
 	Texture gLoadedTexture;
+	Texture gNon2NTexture;
 
 	// Sprite texture
 	Texture gArrowTexture;
