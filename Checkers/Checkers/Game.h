@@ -42,8 +42,9 @@ private:
 	Texture gNon2NTexture;
 	Texture gCircleTexture;
 	Texture gRotatingTexture;
+	Texture gRepeatingTexture;
 
-	// Sprite texture
+	// Sprite Sheet texture
 	Texture gArrowTexture;
 
 	// Srpite areas
@@ -54,4 +55,11 @@ private:
 
 	// Transformation state
 	int gTransformationCombo = 0;
+
+	// Texture offeset
+	GLfloat gTexX = 0.f, gTexY = 0.f;
+
+	// Texture wrap type
+	int gTextureWrapType = 0;
+
 };

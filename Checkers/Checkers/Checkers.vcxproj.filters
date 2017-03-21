@@ -82,6 +82,9 @@
     <Image Include="arrow.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
+    <Image Include="texture.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="test_level.txt">

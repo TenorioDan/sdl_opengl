@@ -148,9 +148,9 @@ bool Game::loadMedia() {
 		success = false;
 	}*/
 
-	if (!gRotatingTexture.loadTextureFromFile("opengl.png"))
+	if (!gRepeatingTexture.loadTextureFromFile("texture.png"))
 	{
-		printf("Unable to laod arrow texture!\n");
+		printf("Unable to load texture!\n");
 		success = false;
 	}
 
@@ -188,13 +188,28 @@ bool Game::manageInput(SDL_KeyboardEvent key)
 		gCameraX += 16.f;
 		break;
 	case SDLK_q:
-		// Reset rotation
-		gAngle = 0.f;
-
-		// Cycle through combinations
-		if (++gTransformationCombo > 4)
+		// Cycle through texture repetitions
+		gTextureWrapType++;
+		if (gTextureWrapType >= 2)
 		{
-			gTransformationCombo = 0;
+			gTextureWrapType = 0;
+		}
+
+		// Set texture repetition
+		glBindTexture(GL_TEXTURE_2D, gRepeatingTexture.getTextureID());
+
+		switch (gTextureWrapType)
+		{
+		case 0:
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+			printf("%d: GL_REPEAT\n", gTextureWrapType);
+			break;
+		case 1:
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+			printf("%d: GL_REPEAT\n", gTextureWrapType);
+			break;
 		}
 		break;
 	default:
@@ -215,14 +230,17 @@ bool Game::manageInput(SDL_KeyboardEvent key)
 
 void Game::update()
 {
-	// Roate 
-	gAngle += 360.f / SCREEN_FPS;
+	// Scroll texture
+	gTexX++;
+	gTexY++;
 
-	// Cap angle
-	if (gAngle >= 360.f)
-	{
-		gAngle -= 360.f;
-	}
+	// Cap Scrolling
+	if (gTexX >= gRepeatingTexture.textureWidth())
+		gTexX = 0.f;
+
+	if (gTexY >= gRepeatingTexture.textureHeight())
+		gTexY = 0.f;
+
 }
 
 void Game::render()
@@ -230,43 +248,29 @@ void Game::render()
 	// Clear color buffer
 	glClear(GL_COLOR_BUFFER_BIT);
 
+	// Calculate texture maxima
+	GLfloat textureRight = (GLfloat)SCREEN_WIDTH / (GLfloat)gRepeatingTexture.textureWidth();
+	GLfloat textureBottom = (GLfloat)SCREEN_HEIGHT / (GLfloat)gRepeatingTexture.textureHeight();
+
+	// Use repeating texture
+	glBindTexture(GL_TEXTURE_2D, gRepeatingTexture.getTextureID());
+
+	// Switch to texture matrix
+	glMatrixMode(GL_TEXTURE);
+
 	// Reset transformation
 	glLoadIdentity();
-	
-	// Render current scene transformation
-	switch (gTransformationCombo)
-	{
-	case 0:
-		glTranslatef(SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 2.f, 0.f);
-		glRotatef(gAngle, 0.f, 0.f, 1.f);
-		glScalef(2.f, 2.f, 0.f);
-		glTranslatef(gRotatingTexture.imageWidth() / -2.f, gRotatingTexture.imageHeight() / -2.f, 0.f);
-		break;
-	case 1:
-		glTranslatef(SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 2.f, 0.f);
-		glRotatef(gAngle, 0.f, 0.f, 1.f);
-		glTranslatef(gRotatingTexture.imageWidth() / -2.f, gRotatingTexture.imageHeight() / -2.f, 0.f);
-		glScalef(2.f, 2.f, 0.f);
-		break;
-	case 2:
-		glScalef(2.f, 2.f, 0.f);
-		glTranslatef(SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 2.f, 0.f);
-		glRotatef(gAngle, 0.f, 0.f, 1.f);
-		glTranslatef(gRotatingTexture.imageWidth() / -2.f, gRotatingTexture.imageHeight() / -2.f, 0.f);
-		break;
-	case 3:
-		glTranslatef(SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 2.f, 0.f);
-		glRotatef(gAngle, 0.f, 0.f, 1.f);
-		glScalef(2.f, 2.f, 0.f);
-		break;
-	case 4:
-		glRotatef(gAngle, 0.f, 0.f, 1.f);
-		glTranslatef(SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 2.f, 0.f);
-		glScalef(2.f, 2.f, 0.f);
-		glTranslatef(gRotatingTexture.imageWidth() / -2.f, gRotatingTexture.imageHeight() / -2.f, 0.f);
-	}
 
-	gRotatingTexture.render(0.f, 0.f);
+	// Scroll texture
+	glTranslatef(gTexX / gRepeatingTexture.textureWidth(), gTexY / gRepeatingTexture.textureHeight(), 0.f);
+
+	// Render
+	glBegin(GL_QUADS);
+		glTexCoord2f(0.f, 0.f); glVertex2f(0.f, 0.f);
+		glTexCoord2f(textureRight, 0.f); glVertex2f(SCREEN_WIDTH, 0.f);
+		glTexCoord2f(textureRight, textureBottom); glVertex2f(SCREEN_WIDTH, SCREEN_HEIGHT);
+		glTexCoord2f(0.f, textureBottom); glVertex2f(0.f, SCREEN_HEIGHT);
+	glEnd();
 
 	// Render arrows
 	//gArrowTexture.render(0.f, 0.f, &gArrowClips[0]);

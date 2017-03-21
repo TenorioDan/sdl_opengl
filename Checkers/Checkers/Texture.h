@@ -78,6 +78,8 @@ private:
 	GLuint mImageWidth;
 	GLuint mImageHeight;
 
+	GLenum DEFAULT_TEXTURE_WRAP = GL_REPEAT;
+
 #pragma endregion
 
 };
