@@ -297,55 +297,7 @@ bool Texture::loadTextureFromPixels32()
 	return success;
 }
 
-void Texture::render(GLfloat x, GLfloat y, LFRect* clip)
-{
-	// if the texture exists
-	if (mTextureID != 0)
-	{
-		// Remove any previous transformations
-		glLoadIdentity();
-
-		// Texture coordinates
-		GLfloat texTop = 0.f;
-		GLfloat texBottom = (GLfloat)mImageHeight / (GLfloat)mTextureHeight;
-		GLfloat texLeft = 0.f;
-		GLfloat texRight = (GLfloat)mImageWidth / (GLfloat)mTextureWidth;
-
-		// Vertex Coordinates
-		GLfloat quadWidth = mImageWidth;
-		GLfloat quadHeight = mImageHeight;
-
-		// Handle clipping
-		if (clip != NULL)
-		{
-			// Texture coordinates
-			texLeft = clip->x / mTextureWidth;
-			texRight = (clip->x + clip->w) / mTextureWidth;
-			texTop = clip->y / mTextureHeight;
-			texBottom = (clip->y + clip->h) / mTextureHeight;
-
-			// Vertex coordinates
-			quadWidth = clip->w;
-			quadHeight = clip->h;
-		}
-
-		// move to rendering point
-		glTranslatef(x, y, 0.f);
-
-		// Set texture ID
-		glBindTexture(GL_TEXTURE_2D, mTextureID);
-
-		// Render textured quad
-		glBegin(GL_QUADS);
-			glTexCoord2f(texLeft,  texTop);    glVertex2f(0.f,       0.f);
-			glTexCoord2f(texRight, texTop);    glVertex2f(quadWidth, 0.f);
-			glTexCoord2f(texRight, texBottom); glVertex2f(quadWidth, quadHeight);
-			glTexCoord2f(texLeft,  texBottom); glVertex2f(0.f,       quadHeight);
-		glEnd();
-	}
-}
-
-void Texture::render(GLfloat x, GLfloat y, LFRect* clip, LFRect* stretch)
+void Texture::render(GLfloat x, GLfloat y, LFRect* clip, LFRect* stretch, GLfloat degrees)
 {
 	// if the texture exists
 	if (mTextureID != 0)
@@ -385,17 +337,20 @@ void Texture::render(GLfloat x, GLfloat y, LFRect* clip, LFRect* stretch)
 		}
 
 		// move to rendering point
-		glTranslatef(x, y, 0.f);
+		glTranslatef(x + quadWidth /2.f, y + quadHeight / 2.f, 0.f);
+
+		// Rotate around rendering point
+		glRotatef(degrees, 0.f, 0.f, 1.f);
 
 		// Set texture ID
 		glBindTexture(GL_TEXTURE_2D, mTextureID);
 
 		// Render textured quad
 		glBegin(GL_QUADS);
-			glTexCoord2f(texLeft, texTop);     glVertex2f(0.f, 0.f);
-			glTexCoord2f(texRight, texTop);    glVertex2f(quadWidth, 0.f);
-			glTexCoord2f(texRight, texBottom); glVertex2f(quadWidth, quadHeight);
-			glTexCoord2f(texLeft, texBottom);  glVertex2f(0.f, quadHeight);
+			glTexCoord2f(  texLeft,    texTop ); glVertex2f( -quadWidth / 2.f, -quadHeight / 2.f );
+            glTexCoord2f( texRight,    texTop ); glVertex2f(  quadWidth / 2.f, -quadHeight / 2.f );
+            glTexCoord2f( texRight, texBottom ); glVertex2f(  quadWidth / 2.f,  quadHeight / 2.f );
+            glTexCoord2f(  texLeft, texBottom ); glVertex2f( -quadWidth / 2.f,  quadHeight / 2.f );
 		glEnd();
 	}
 }

@@ -133,6 +133,7 @@
     <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="arrow.png" />
     <Image Include="arrows.png" />
     <Image Include="circle.png" />
     <Image Include="grass_dirt_tile.png" />

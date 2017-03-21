@@ -148,9 +148,9 @@ bool Game::loadMedia() {
 		success = false;
 	}*/
 
-	if (!gCircleTexture.loadTextureFromFileWithColorKey("circle.png", 000, 255, 255))
+	if (!gRotatingTexture.loadTextureFromFile("arrow.png"))
 	{
-		printf("unable to load circle texture\n");
+		printf("Unable to laod arrow texture!\n");
 		success = false;
 	}
 
@@ -205,7 +205,14 @@ bool Game::manageInput(SDL_KeyboardEvent key)
 
 void Game::update()
 {
+	// Roate 
+	gAngle += 360.f / SCREEN_FPS;
 
+	// Cap angle
+	if (gAngle >= 360.f)
+	{
+		gAngle -= 360.f;
+	}
 }
 
 void Game::render()
@@ -223,8 +230,7 @@ void Game::render()
 	//gNon2NTexture.render((SCREEN_WIDTH - gNon2NTexture.imageWidth()) / 2.f, (SCREEN_HEIGHT - gNon2NTexture.imageHeight()) / 2.f);
 
 	// Render circle
-	glColor4f(1.f, 1.f, 1.f, 0.5f);
-	gCircleTexture.render((SCREEN_WIDTH - gCircleTexture.imageWidth()) / 2.f, (SCREEN_HEIGHT - gCircleTexture.imageHeight()) / 2.f);
+	gRotatingTexture.render((SCREEN_HEIGHT - gRotatingTexture.imageWidth()) / 2.f, (SCREEN_HEIGHT - gRotatingTexture.imageWidth()) / 2.f, NULL, NULL, gAngle);
 
 	SDL_GL_SwapWindow(gWindow);
 }

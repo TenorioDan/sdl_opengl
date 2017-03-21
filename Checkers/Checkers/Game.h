@@ -29,6 +29,7 @@ private:
 	//Screen dimension constants
 	const int SCREEN_WIDTH = 1920;
 	const int SCREEN_HEIGHT = 1080;
+	const int SCREEN_FPS = 60;
 	//The window we'll be rendering to
 	SDL_Window* gWindow = NULL;
 
@@ -40,10 +41,14 @@ private:
 	Texture gLoadedTexture;
 	Texture gNon2NTexture;
 	Texture gCircleTexture;
+	Texture gRotatingTexture;
 
 	// Sprite texture
 	Texture gArrowTexture;
 
 	// Srpite areas
 	LFRect gArrowClips[4];
+
+	// Rotation angle
+	GLfloat gAngle = 0.f;
 };

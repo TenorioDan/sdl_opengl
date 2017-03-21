@@ -49,13 +49,10 @@ public:
 	// Sets pixel at given position
 	void setPixel32(GLuint x, GLuint y, GLuint pixel);
 
-	// Tranlsates to given position and renders textured quad
-	void render(GLfloat x, GLfloat y, LFRect* clip = NULL);
-
 	// Translate to given position and renders the texturea rea mapped to a quad
 	// If given texture clip is NULL, the full image is rendered
 	// If a stretch area is given, texture area is scaled to the streth area size
-	void render(GLfloat x, GLfloat y, LFRect* clip = NULL, LFRect* stretch = NULL);
+	void render(GLfloat x, GLfloat y, LFRect* clip = NULL, LFRect* stretch = NULL, GLfloat degress = 0.f);
 
 	// getters
 	GLuint getTextureID();
