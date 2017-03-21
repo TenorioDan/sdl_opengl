@@ -22,6 +22,18 @@ public:
 	bool loadTextureFromFile(std::string path);
 	void freeTexture();
 
+	// Loads member pixels frok the given file
+	bool loadPixelsFromFile(std::string path);
+
+	// Creates a texture from the given file, pads image to have power-of-two dimensions, sets given RGBA value to RFFGFFBFFA00
+	// in pixel data. If A = 0, only RGB components are compared
+	bool loadTextureFromFileWithColorKey(std::string path, GLubyte r, GLubyte g, GLubyte b, GLubyte a = 000);
+
+	// Creates a texure from the member pixels.
+	// Deletes member pixels on success
+	// Reports error to console if texture could not be created
+	bool loadTextureFromPixels32();
+
 	// Gets member pixels from texture data
 	bool lock();
 
@@ -65,34 +77,5 @@ private:
 	GLuint mImageHeight;
 
 #pragma endregion
-
-#pragma region SDL Methods
-
-public:
-	// Loads image at specified path
-	bool loadFromFile(std::string path, SDL_Renderer* renderer);
-
-	// Dealocates texture
-	void free();
-
-	// Renders texture at given point
-	void render(SDL_Renderer* renderer, int renderPosX, int renderPosY);
-	int getWidth();
-	int getHeight();
-	int getX();
-	int getY();
-
-private:
-	// The actual hardware texture
-	SDL_Texture* mTexture;
-
-	// Image dimension
-	int mWidth;
-	int mHeight;
-	int positionX;
-	int positionY;
-
-#pragma endregion
-
 
 };

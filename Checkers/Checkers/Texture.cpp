@@ -2,8 +2,9 @@
 #include <SDL_image.h>
 #include <IL/il.h>;
 #include <IL/ilu.h>
+#include <Box2D\Box2D.h>
 
-#pragma region OpenGL Methods
+#pragma region Texture Loading
 
 Texture::Texture()
 {
@@ -46,6 +47,73 @@ void Texture::freeTexture()
 	mImageHeight = 0;
 	mTextureWidth = 0;
 	mTextureHeight = 0;
+}
+
+bool Texture::loadPixelsFromFile(std::string path)
+{
+	// Deallocate texture data
+	freeTexture();
+
+	// Texture loading success
+	bool pixelsLoaded = false;
+
+	// Generate and set current image ID
+	ILuint imgID = 0;
+	ilGenImages(1, &imgID);
+	ilBindImage(imgID);
+	
+	// Load image
+	ILboolean success = ilLoadImage(path.c_str());
+
+	// Image loaded successfully
+	if (success == IL_TRUE)
+	{
+		// Convert image to RGBA
+		success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+		if (success = IL_TRUE)
+		{
+			// Initialize dimensions
+			GLuint imgWidth = (GLuint)ilGetInteger(IL_IMAGE_WIDTH);
+			GLuint imgHeight = (GLuint)ilGetInteger(IL_IMAGE_HEIGHT);
+
+			// Calculate required texture dimensions
+			GLuint texWidth = powerOfTwo(imgWidth);
+			GLuint texHeight = powerOfTwo(imgHeight);
+
+			// If Texture is the wrong size
+			if (imgWidth != texWidth || imgHeight != texHeight)
+			{
+				// Place image at upper left
+				iluImageParameter(ILU_PLACEMENT, ILU_UPPER_LEFT);
+
+				// Resize image
+				iluEnlargeCanvas((int)texWidth, (int)texHeight, 1);
+			}
+
+			// Allocates memory for texture data
+			GLuint size = texWidth * texHeight;
+			mPixels = new GLuint[size];
+
+			// Get image dimensions
+			mImageWidth = imgWidth;
+			mImageHeight = imgHeight;
+			mTextureWidth = texWidth;
+			mTextureHeight = texHeight;
+
+			// Copy pixels
+			memcpy(mPixels, ilGetData(), size * 4);
+			pixelsLoaded = true;
+		}
+
+		ilDeleteImages(1, &imgID);
+	}
+
+	if (!pixelsLoaded)
+	{
+		printf("Unable to load %s\n", path.c_str());
+	}
+
+	return pixelsLoaded;
 }
 
 
@@ -104,6 +172,35 @@ bool Texture::loadTextureFromFile(std::string path)
 	return textureLoaded;
 }
 
+bool Texture::loadTextureFromFileWithColorKey(std::string path, GLubyte r, GLubyte g, GLubyte b, GLubyte a)
+{
+	// Load pixels
+	if (!loadPixelsFromFile(path))
+	{
+		return false;
+	}
+
+	// Go through pixels
+	GLuint size = mTextureWidth * mTextureHeight;
+	for (int i = 0; i < size; ++i)
+	{
+		// Get pixel colors
+		GLubyte* colors = (GLubyte*)&mPixels[i];
+
+		// Color matches
+		if (colors[0] == r && colors[1] == g && colors[2] == b && (0 == a || colors[3] == a))
+		{
+			// Make transparent
+			colors[0] = 255;
+			colors[1] = 255;
+			colors[2] = 255;
+			colors[3] = 000;
+		}
+	}
+
+	return loadTextureFromPixels32();
+}
+
 // New code for padding non-power-of-two textures
 bool Texture::loadTextureFromPixels32(GLuint* pixels, GLuint imgWidth, GLuint imgHeight, GLuint texWidth, GLuint texHeight)
 {
@@ -138,6 +235,66 @@ bool Texture::loadTextureFromPixels32(GLuint* pixels, GLuint imgWidth, GLuint im
 
 	return success;
 	
+}
+
+bool Texture::loadTextureFromPixels32()
+{
+	// loading flag
+	bool success = true;
+
+	// There is loaded pixels
+	if (mTextureID == 0 && mPixels != NULL)
+	{
+		// Generate texture ID
+		glGenTextures(1, &mTextureID);
+
+		// Bind texture ID
+		glBindTexture(GL_TEXTURE_2D, mTextureID);
+
+		// Generate texture
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mTextureWidth, mTextureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, mPixels);
+
+		// Set texture parameters
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+		// Unbind texture
+		glBindTexture(GL_TEXTURE_2D, NULL);
+
+		// Check for error
+		GLenum error = glGetError();
+		
+		if (error != GL_NO_ERROR)
+		{
+			printf("Error loading texture %p pixels! %s\n", mPixels, gluErrorString(error));
+			success = false;
+		}
+		else
+		{
+			// Release pixels
+			delete[] mPixels;
+			mPixels = NULL;
+		}
+	}
+	else
+	{
+		printf("Cannot load texture from current pixels! ");
+		
+		// Texture already exists
+		if (mTextureID != 0)
+		{
+			printf("A texture is already loaded!\n");
+		}
+		// No pixel loaded
+		else if (mPixels == NULL)
+		{
+			printf("No pixels to create texture from!\n");
+		}
+
+		success = false;
+	}
+
+	return success;
 }
 
 void Texture::render(GLfloat x, GLfloat y, LFRect* clip)
@@ -251,6 +408,9 @@ GLuint Texture::powerOfTwo(GLuint num)
 
 	return num;
 }
+#pragma endregion
+
+#pragma region Getter/Setters
 
 GLuint* Texture::getPixelData32()
 {
@@ -291,96 +451,6 @@ GLuint Texture::imageWidth()
 GLuint Texture::imageHeight()
 {
 	return mImageHeight;
-}
-
-#pragma endregion
-
-#pragma region STL Methods
-
-
-bool Texture::loadFromFile(std::string path, SDL_Renderer*renderer)
-{
-	free();
-
-	// The final texture
-	SDL_Texture* newTexture = NULL;
-
-	// Load image at specified path
-	SDL_Surface* loadedSurface = IMG_Load(path.c_str());
-	if (loadedSurface == NULL)
-	{
-		printf("Unable to load image %s! SDL_image error: %s\n", path.c_str(), IMG_GetError());
-	}
-	else
-	{
-		// Color key image
-		SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0xFF, 0, 0xFF));
-
-		// Create texture from surface pixels
-		newTexture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
-		if (newTexture == NULL)
-		{
-			printf("Unable to create texture form %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
-		}
-		else
-		{
-			// Get image deimensions
-			mWidth = loadedSurface->w;
-			mHeight = loadedSurface->h;
-		}
-
-		// Get rid of old loaded surface
-		SDL_FreeSurface(loadedSurface);
-	}
-
-	// Return success
-	mTexture = newTexture;
-	return mTexture != NULL;
-}
-
-void Texture::free()
-{
-	// Free texture if it exists
-	if (mTexture != NULL)
-	{
-		SDL_DestroyTexture(mTexture);
-		mTexture = NULL;
-		mWidth = 0;
-		mHeight = 0;
-	}
-}
-
-void Texture::render(SDL_Renderer* renderer, int renderPosX, int renderPosY)
-{
-	// Set rendering space and render to screen
-	SDL_Rect renderQuad = { renderPosX, renderPosY, mWidth, mHeight };
-	int success = SDL_RenderCopy(renderer, mTexture, NULL, &renderQuad);
-	//printf("%d\n", success);
-	
-	if (success == -1)
-	{
-		printf("%s", SDL_GetError());
-	}
-}
-
-int Texture::getWidth()
-{
-	return mWidth;
-}
-
-int Texture::getHeight()
-{
-	return mHeight;
-}
-
-int Texture::getX()
-{
-	return positionX;
-}
-
-int Texture::getY()
-{
-	return positionY;
 }
 
 #pragma endregion

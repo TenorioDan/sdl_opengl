@@ -69,7 +69,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\DT\Documents\sdl_opengl\DevIL Windows SDK\include;C:\Users\DT\Documents\sdl_opengl\SDL2_image-devel-2.0.1-VC\SDL2_image-2.0.1\include;C:\Users\DT\Documents\sdl_opengl\SDL2-devel-2.0.5-VC\SDL2-2.0.5\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\DT\Documents\sdl_opengl\Box2D;C:\Users\DT\Documents\sdl_opengl\DevIL Windows SDK\include;C:\Users\DT\Documents\sdl_opengl\SDL2_image-devel-2.0.1-VC\SDL2_image-2.0.1\include;C:\Users\DT\Documents\sdl_opengl\SDL2-devel-2.0.5-VC\SDL2-2.0.5\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\DT\Documents\sdl_opengl\DevIL Windows SDK\lib\x86\Release;C:\Users\DT\Documents\sdl_opengl\SDL2_image-devel-2.0.1-VC\SDL2_image-2.0.1\lib\x86;C:\Users\DT\Documents\sdl_opengl\SDL2-devel-2.0.5-VC\SDL2-2.0.5\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

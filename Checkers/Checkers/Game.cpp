@@ -30,6 +30,12 @@ bool Game::initGL()
 	glClearColor(0.f, 0.f, 0.f, 1.f);
 	glEnable(GL_TEXTURE_2D);
 	checkGL_Error(glGetError(), success);
+
+	// Set blending
+	glEnable(GL_BLEND);
+	glDisable(GL_DEPTH_TEST);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	checkGL_Error(glGetError(), success);
 	
 	//Initialize DevIL
 	ilInit();
@@ -142,49 +148,11 @@ bool Game::loadMedia() {
 		success = false;
 	}*/
 
-	if (!gCircleTexture.loadTextureFromFile("circle.png"))
+	if (!gCircleTexture.loadTextureFromFileWithColorKey("circle.png", 000, 255, 255))
 	{
 		printf("unable to load circle texture\n");
 		success = false;
 	}
-
-	// lock texture for modification
-	gCircleTexture.lock();
-
-	GLuint targetColor;
-	GLubyte* colors = (GLubyte*)&targetColor;
-
-	colors[0] = 0;
-	colors[1] = 255;
-	colors[2] = 255;
-	colors[3] = 255;
-
-	// Replace target color with transparent black
-	GLuint* pixels = gCircleTexture.getPixelData32();
-	GLuint pixelCount = gCircleTexture.textureWidth() * gCircleTexture.textureHeight();
-
-	for (int i = 0; i < pixelCount; ++i)
-	{
-		if (pixels[i] == targetColor)
-		{
-			pixels[i] = 0;
-		}
-	}
-
-	// Diagonal lines
-	for (int y = 0; y < gCircleTexture.imageWidth(); ++y)
-	{
-		for (int x = 0; x < gCircleTexture.imageHeight(); ++x)
-		{
-			if (y % 10 != x % 10)
-			{
-				gCircleTexture.setPixel32(x, y, 0);
-			}
-		}
-	}
-
-	// Update texture
-	gCircleTexture.unlock();
 
 	return success;
 }
@@ -255,6 +223,7 @@ void Game::render()
 	//gNon2NTexture.render((SCREEN_WIDTH - gNon2NTexture.imageWidth()) / 2.f, (SCREEN_HEIGHT - gNon2NTexture.imageHeight()) / 2.f);
 
 	// Render circle
+	glColor4f(1.f, 1.f, 1.f, 0.5f);
 	gCircleTexture.render((SCREEN_WIDTH - gCircleTexture.imageWidth()) / 2.f, (SCREEN_HEIGHT - gCircleTexture.imageHeight()) / 2.f);
 
 	SDL_GL_SwapWindow(gWindow);
