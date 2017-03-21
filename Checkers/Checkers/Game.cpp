@@ -7,7 +7,20 @@ Game::Game()
 bool Game::initGL()
 {
 	bool success = true;
-	GLenum error = GL_NO_ERROR;
+	// Initialize GLEW
+	GLenum glewError = glewInit();
+	if (glewError != GLEW_OK)
+	{
+		printf("Error intiailizing GLEW! %s\n", glewGetErrorString(glewError));
+		success = false;
+	}
+
+	// Make sure OpenGL 2.1 is supported
+	if (!GLEW_VERSION_2_1)
+	{
+		printf("OpenGL 2.1 not supported!\n");
+		success = false;
+	}
 
 	// Set the viewport
 	glViewport(0.f, 0.f, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -190,7 +203,7 @@ bool Game::manageInput(SDL_KeyboardEvent key)
 	case SDLK_q:
 		// Cycle through texture repetitions
 		gTextureWrapType++;
-		if (gTextureWrapType >= 2)
+		if (gTextureWrapType >= 5)
 		{
 			gTextureWrapType = 0;
 		}
@@ -209,6 +222,23 @@ bool Game::manageInput(SDL_KeyboardEvent key)
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 			printf("%d: GL_REPEAT\n", gTextureWrapType);
+			break;
+		case 2:
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+			printf("%d: GL_CLAMP_TO_BORDER\n", gTextureWrapType);
+			break;
+
+		case 3:
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			printf("%d: GL_CLAMP_TO_EDGE\n", gTextureWrapType);
+			break;
+
+		case 4:
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+			printf("%d: GL_MIRRORED_REPEAT\n", gTextureWrapType);
 			break;
 		}
 		break;

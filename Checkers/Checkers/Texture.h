@@ -1,10 +1,10 @@
 #pragma once
 
+#include "GL_helpers.h"
 #include <SDL.h>
 #include <SDL_opengl.h>
 #include <string>
 #include <IL/il.h>
-#include "GL_helpers.h"
 #include "LFRect.h"
 
 class Texture
