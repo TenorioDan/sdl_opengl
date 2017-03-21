@@ -29,7 +29,7 @@ private:
 	//Screen dimension constants
 	const int SCREEN_WIDTH = 1920;
 	const int SCREEN_HEIGHT = 1080;
-	const int SCREEN_FPS = 60;
+	const int SCREEN_FPS = 240;
 	//The window we'll be rendering to
 	SDL_Window* gWindow = NULL;
 
@@ -51,4 +51,7 @@ private:
 
 	// Rotation angle
 	GLfloat gAngle = 0.f;
+
+	// Transformation state
+	int gTransformationCombo = 0;
 };

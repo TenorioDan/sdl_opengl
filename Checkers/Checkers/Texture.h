@@ -52,7 +52,7 @@ public:
 	// Translate to given position and renders the texturea rea mapped to a quad
 	// If given texture clip is NULL, the full image is rendered
 	// If a stretch area is given, texture area is scaled to the streth area size
-	void render(GLfloat x, GLfloat y, LFRect* clip = NULL, LFRect* stretch = NULL, GLfloat degress = 0.f);
+	void render(GLfloat x, GLfloat y, LFRect* clip = NULL);
 
 	// getters
 	GLuint getTextureID();

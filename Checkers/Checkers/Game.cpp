@@ -148,7 +148,7 @@ bool Game::loadMedia() {
 		success = false;
 	}*/
 
-	if (!gRotatingTexture.loadTextureFromFile("arrow.png"))
+	if (!gRotatingTexture.loadTextureFromFile("opengl.png"))
 	{
 		printf("Unable to laod arrow texture!\n");
 		success = false;
@@ -187,6 +187,16 @@ bool Game::manageInput(SDL_KeyboardEvent key)
 	case SDLK_d:
 		gCameraX += 16.f;
 		break;
+	case SDLK_q:
+		// Reset rotation
+		gAngle = 0.f;
+
+		// Cycle through combinations
+		if (++gTransformationCombo > 4)
+		{
+			gTransformationCombo = 0;
+		}
+		break;
 	default:
 		break;
 	}
@@ -220,6 +230,44 @@ void Game::render()
 	// Clear color buffer
 	glClear(GL_COLOR_BUFFER_BIT);
 
+	// Reset transformation
+	glLoadIdentity();
+	
+	// Render current scene transformation
+	switch (gTransformationCombo)
+	{
+	case 0:
+		glTranslatef(SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 2.f, 0.f);
+		glRotatef(gAngle, 0.f, 0.f, 1.f);
+		glScalef(2.f, 2.f, 0.f);
+		glTranslatef(gRotatingTexture.imageWidth() / -2.f, gRotatingTexture.imageHeight() / -2.f, 0.f);
+		break;
+	case 1:
+		glTranslatef(SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 2.f, 0.f);
+		glRotatef(gAngle, 0.f, 0.f, 1.f);
+		glTranslatef(gRotatingTexture.imageWidth() / -2.f, gRotatingTexture.imageHeight() / -2.f, 0.f);
+		glScalef(2.f, 2.f, 0.f);
+		break;
+	case 2:
+		glScalef(2.f, 2.f, 0.f);
+		glTranslatef(SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 2.f, 0.f);
+		glRotatef(gAngle, 0.f, 0.f, 1.f);
+		glTranslatef(gRotatingTexture.imageWidth() / -2.f, gRotatingTexture.imageHeight() / -2.f, 0.f);
+		break;
+	case 3:
+		glTranslatef(SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 2.f, 0.f);
+		glRotatef(gAngle, 0.f, 0.f, 1.f);
+		glScalef(2.f, 2.f, 0.f);
+		break;
+	case 4:
+		glRotatef(gAngle, 0.f, 0.f, 1.f);
+		glTranslatef(SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 2.f, 0.f);
+		glScalef(2.f, 2.f, 0.f);
+		glTranslatef(gRotatingTexture.imageWidth() / -2.f, gRotatingTexture.imageHeight() / -2.f, 0.f);
+	}
+
+	gRotatingTexture.render(0.f, 0.f);
+
 	// Render arrows
 	//gArrowTexture.render(0.f, 0.f, &gArrowClips[0]);
 	//gArrowTexture.render(SCREEN_WIDTH - gArrowClips[1].w, 0.f, &gArrowClips[1]);
@@ -228,9 +276,6 @@ void Game::render()
 
 	//Render OpenGL texture
 	//gNon2NTexture.render((SCREEN_WIDTH - gNon2NTexture.imageWidth()) / 2.f, (SCREEN_HEIGHT - gNon2NTexture.imageHeight()) / 2.f);
-
-	// Render circle
-	gRotatingTexture.render((SCREEN_HEIGHT - gRotatingTexture.imageWidth()) / 2.f, (SCREEN_HEIGHT - gRotatingTexture.imageWidth()) / 2.f, NULL, NULL, gAngle);
 
 	SDL_GL_SwapWindow(gWindow);
 }
