@@ -62,6 +62,9 @@
     <ClInclude Include="LFRect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LVertexPos2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="grass_dirt_tile.png">

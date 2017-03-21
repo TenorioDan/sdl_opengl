@@ -4,6 +4,7 @@
 #include "World.h"
 #include <IL/il.h>
 #include <IL/ilu.h>
+#include "LVertexPos2D.h"
 
 class Game
 {
@@ -51,6 +52,9 @@ private:
 
 	// Srpite areas
 	LFRect gArrowClips[4];
+
+	// Quad Vertices
+	LVertexPos2D gQuadVertices[4];
 
 	// Rotation angle
 	GLfloat gAngle = 0.f;
