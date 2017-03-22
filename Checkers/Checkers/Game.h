@@ -56,6 +56,15 @@ private:
 	// Quad Vertices
 	LVertexPos2D gQuadVertices[4];
 
+	// Vertex Indices
+	GLuint gIndices[4];
+
+	// Vertex buffer
+	GLuint gVertexBuffer = 0;
+
+	// Index buffer
+	GLuint gIndexBuffer = 0;
+
 	// Rotation angle
 	GLfloat gAngle = 0.f;
 

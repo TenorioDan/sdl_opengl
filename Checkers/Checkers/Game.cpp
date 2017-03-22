@@ -161,17 +161,11 @@ bool Game::loadMedia() {
 		success = false;
 	}*/
 
-	gQuadVertices[0].x = SCREEN_WIDTH * 1.f / 4.f;
-	gQuadVertices[0].y = SCREEN_HEIGHT * 1.f / 4.f;
-
-	gQuadVertices[1].x = SCREEN_WIDTH * 3.f / 4.f;
-	gQuadVertices[1].y = SCREEN_HEIGHT * 1.f / 4.f;
-
-	gQuadVertices[2].x = SCREEN_WIDTH * 3.f / 4.f;
-	gQuadVertices[2].y = SCREEN_HEIGHT * 3.f / 4.f;
-
-	gQuadVertices[3].x = SCREEN_WIDTH * 1.f / 4.f;
-	gQuadVertices[3].y = SCREEN_HEIGHT * 3.f / 4.f;
+	if (!gRepeatingTexture.loadTextureFromFile("opengl.png"))
+	{
+		printf("Unable to load OpenGL texture!\n");
+		success = false;
+	}
 
 	return success;
 }
@@ -226,16 +220,6 @@ bool Game::manageInput(SDL_KeyboardEvent key)
 
 void Game::update()
 {
-	// Scroll texture
-	gTexX++;
-	gTexY++;
-
-	// Cap Scrolling
-	if (gTexX >= gRepeatingTexture.textureWidth())
-		gTexX = 0.f;
-
-	if (gTexY >= gRepeatingTexture.textureHeight())
-		gTexY = 0.f;
 
 }
 
@@ -245,15 +229,10 @@ void Game::render()
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	// Enable vertex arrays
-	glEnableClientState(GL_VERTEX_ARRAY);
+	glLoadIdentity();
 
-		// Set vertex data
-		glVertexPointer(2, GL_FLOAT, 0, gQuadVertices);
-		// Draw quad using vertex data
-		glDrawArrays(GL_QUADS, 0, 4);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
-	
+	// Render textured quad using VBOs
+	gRepeatingTexture.render((SCREEN_WIDTH - gRepeatingTexture.imageWidth()) / 2.f, (SCREEN_HEIGHT - gRepeatingTexture.imageHeight()) / 2.f);
 
 	// Render arrows
 	//gArrowTexture.render(0.f, 0.f, &gArrowClips[0]);

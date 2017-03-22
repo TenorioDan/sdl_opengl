@@ -62,7 +62,14 @@ public:
 	GLuint imageHeight();
 
 private:
+	// Returns nearest power of two integer that is greater
 	GLuint powerOfTwo(GLuint num);
+
+	// Generates VBO and IBO to use for rendering
+	void initVBO();
+
+	// Frees VBO and IBO
+	void freeVBO();
 
 	// Texture name
 	GLuint mTextureID;
@@ -77,6 +84,10 @@ private:
 	// Unpadded image dimensions
 	GLuint mImageWidth;
 	GLuint mImageHeight;
+
+	// VBO IDs
+	GLuint mVBOID;
+	GLuint mIBOID;
 
 	GLenum DEFAULT_TEXTURE_WRAP = GL_REPEAT;
 

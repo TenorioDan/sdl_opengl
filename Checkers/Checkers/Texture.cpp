@@ -2,6 +2,7 @@
 #include <SDL_image.h>
 #include <IL/il.h>;
 #include <IL/ilu.h>
+#include "LVertexData2D.h"
 #include <Box2D\Box2D.h>
 
 #pragma region Texture Loading
@@ -19,12 +20,46 @@ Texture::Texture()
 	// Initialize texture dimensions
 	mTextureWidth = 0;
 	mTextureHeight = 0;
+
+	// Initialize VBO
+	mVBOID = 0;
+	mIBOID = 0;
+}
+
+void Texture::initVBO()
+{
+	// If texture is loaded and VBO does not already exist
+	if (mTextureID != 0 && mVBOID == 0)
+	{
+		// Vertex data
+		LVertexData2D vData[4];
+		GLuint iData[4];
+
+		// SEt rendering indices
+		iData[0] = 0;
+		iData[1] = 1;
+		iData[2] = 2;
+		iData[3] = 3;
+
+		// Create VBO
+		glGenBuffers(1, &mVBOID);
+		glBindBuffer(GL_ARRAY_BUFFER, mVBOID);
+		glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(LVertexData2D), vData, GL_DYNAMIC_DRAW);
+
+		// Create IBO
+		glGenBuffers(1, &mIBOID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBOID);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLuint), iData, GL_DYNAMIC_DRAW);
+	}
 }
 
 Texture::~Texture()
 {
 	// Dealocate texture
 	freeTexture();
+
+	// Free VBO and IBO if needed
+	freeVBO();
 }
 
 void Texture::freeTexture()
@@ -47,6 +82,16 @@ void Texture::freeTexture()
 	mImageHeight = 0;
 	mTextureWidth = 0;
 	mTextureHeight = 0;
+}
+
+void Texture::freeVBO()
+{
+	// Free VBO and IBO
+	if (mVBOID != 0)
+	{
+		glDeleteBuffers(1, &mVBOID);
+		glDeleteBuffers(1, &mIBOID);
+	}
 }
 
 bool Texture::loadPixelsFromFile(std::string path)
@@ -235,6 +280,8 @@ bool Texture::loadTextureFromPixels32(GLuint* pixels, GLuint imgWidth, GLuint im
 	bool success = true;
 	checkGL_Error(glGetError(), success);
 
+	initVBO();
+
 	return success;
 	
 }
@@ -331,8 +378,20 @@ void Texture::render(GLfloat x, GLfloat y, LFRect* clip)
 		//Move to rendering point
 		glTranslatef(x, y, 0.f);
 
-		//Set texture ID
-		glBindTexture(GL_TEXTURE_2D, mTextureID);
+		// Set vertex data
+		LVertexData2D vData[4];
+
+		// Texture coordinates
+		vData[0].texCoord.s = texLeft;  vData[0].texCoord.t = texTop;
+		vData[1].texCoord.s = texRight; vData[1].texCoord.t = texTop;
+		vData[2].texCoord.s = texRight; vData[2].texCoord.t = texBottom;
+		vData[3].texCoord.s = texLeft;  vData[3].texCoord.t = texBottom;
+
+		// Vertex position
+		vData[0].position.x = 0.f;       vData[0].position.y = 0.f;
+		vData[1].position.x = quadWidth; vData[1].position.y = 0.f;
+		vData[2].position.x = quadWidth; vData[2].position.y = quadHeight;
+		vData[3].position.x = 0.f;       vData[3].position.y = quadHeight;
 
 		//Render textured quad
 		glBegin(GL_QUADS);
@@ -341,6 +400,33 @@ void Texture::render(GLfloat x, GLfloat y, LFRect* clip)
 			glTexCoord2f(texRight, texBottom); glVertex2f(quadWidth, quadHeight);
 			glTexCoord2f(texLeft,  texBottom); glVertex2f(0.f,       quadHeight);
 		glEnd();
+
+		//Set texture ID
+		glBindTexture(GL_TEXTURE_2D, mTextureID);
+
+		// Enable vertex and texure coordinate arryas
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+		// Bind vertex buffer
+		glBindBuffer(GL_ARRAY_BUFFER, mVBOID);
+
+		// Update vertex buffer data
+		glBufferSubData(GL_ARRAY_BUFFER, 0, 4 * sizeof(LVertexData2D), vData);
+
+		// Set texture coordinate data
+		glTexCoordPointer(2, GL_FLOAT, sizeof(LVertexData2D), (GLvoid*)offsetof(LVertexData2D, texCoord));
+
+		// Set vertex data
+		glVertexPointer(2, GL_FLOAT, sizeof(LVertexData2D), (GLvoid*)offsetof(LVertexData2D, position));
+
+		// Draw quad using vertex data and index data
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBOID);
+		glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT, NULL);
+
+		// Disable vertex and texture coordinate arrays
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		glDisableClientState(GL_VERTEX_ARRAY);
 	}
 }
 bool Texture::lock()

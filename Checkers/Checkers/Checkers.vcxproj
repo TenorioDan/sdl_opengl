@@ -128,6 +128,8 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GL_helpers.h" />
     <ClInclude Include="LFRect.h" />
+    <ClInclude Include="LTexCoord.h" />
+    <ClInclude Include="LVertexData2D.h" />
     <ClInclude Include="LVertexPos2D.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Tile.h" />
