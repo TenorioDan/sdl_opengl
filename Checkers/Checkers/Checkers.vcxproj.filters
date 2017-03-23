@@ -22,6 +22,9 @@
     <Filter Include="Resource Files\Tile Maps">
       <UniqueIdentifier>{ece2f897-6aef-4072-b604-4ef6f96738c8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Sprite Sheets">
+      <UniqueIdentifier>{8382064c-3afd-4455-88b5-42d4adfc48e1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -40,6 +43,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GL_helpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteSheet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Character.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -65,6 +74,18 @@
     <ClInclude Include="LVertexPos2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LTexCoord.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LVertexData2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteSheet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Character.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="grass_dirt_tile.png">
@@ -87,6 +108,9 @@
     </Image>
     <Image Include="texture.png">
       <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="character_test.png">
+      <Filter>Resource Files\Sprite Sheets</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

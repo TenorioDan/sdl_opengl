@@ -4,7 +4,7 @@
 #include "World.h"
 #include <IL/il.h>
 #include <IL/ilu.h>
-#include "LVertexPos2D.h"
+#include "Character.h"
 
 class Game
 {
@@ -38,43 +38,9 @@ private:
 
 	// OpenGL Context
 	SDL_GLContext gContext = NULL;
+
+	Character character;
 	
 	GLfloat gCameraX = 0.f, gCameraY = 0.f;
-	Texture gCheckerBoardTexture;
-	Texture gLoadedTexture;
-	Texture gNon2NTexture;
-	Texture gCircleTexture;
-	Texture gRotatingTexture;
-	Texture gRepeatingTexture;
-
-	// Sprite Sheet texture
-	Texture gArrowTexture;
-
-	// Srpite areas
-	LFRect gArrowClips[4];
-
-	// Quad Vertices
-	LVertexPos2D gQuadVertices[4];
-
-	// Vertex Indices
-	GLuint gIndices[4];
-
-	// Vertex buffer
-	GLuint gVertexBuffer = 0;
-
-	// Index buffer
-	GLuint gIndexBuffer = 0;
-
-	// Rotation angle
-	GLfloat gAngle = 0.f;
-
-	// Transformation state
-	int gTransformationCombo = 0;
-
-	// Texture offeset
-	GLfloat gTexX = 0.f, gTexY = 0.f;
-
-	// Texture wrap type
-	int gTextureWrapType = 0;
 
 };

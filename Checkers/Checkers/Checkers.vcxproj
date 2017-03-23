@@ -117,20 +117,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Character.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GL_helpers.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="SpriteSheet.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Character.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GL_helpers.h" />
     <ClInclude Include="LFRect.h" />
     <ClInclude Include="LTexCoord.h" />
     <ClInclude Include="LVertexData2D.h" />
     <ClInclude Include="LVertexPos2D.h" />
+    <ClInclude Include="SpriteSheet.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="World.h" />
@@ -138,6 +142,7 @@
   <ItemGroup>
     <Image Include="arrow.png" />
     <Image Include="arrows.png" />
+    <Image Include="character_test.png" />
     <Image Include="circle.png" />
     <Image Include="grass_dirt_tile.png" />
     <Image Include="opengl.png" />

@@ -40,7 +40,7 @@ bool Game::initGL()
 	glPushMatrix();
 
 	// Initialize clear color
-	glClearColor(0.f, 0.f, 0.f, 1.f);
+	glClearColor(0.31f, 0.66f, 0.79f, 1.f);
 	glEnable(GL_TEXTURE_2D);
 	checkGL_Error(glGetError(), success);
 
@@ -132,42 +132,9 @@ bool Game::init()
 bool Game::loadMedia() {
 	// Loading success flag
 	bool success = true;
-
-	// TODO: Add menu textures and load them here
-	// Set clip rectangles
-	//gArrowClips[0].x = 0.f;
-	//gArrowClips[0].y = 0.f;
-	//gArrowClips[0].w = 128.f;
-	//gArrowClips[0].h = 128.f;
-
-	//gArrowClips[1].x = 128.f;
-	//gArrowClips[1].y = 0.f;
-	//gArrowClips[1].w = 128.f;
-	//gArrowClips[1].h = 128.f;
-
-	//gArrowClips[2].x = 0.f;
-	//gArrowClips[2].y = 128.f;
-	//gArrowClips[2].w = 128.f;
-	//gArrowClips[2].h = 128.f;
-
-	//gArrowClips[3].x = 128.f;
-	//gArrowClips[3].y = 128.f;
-	//gArrowClips[3].w = 128.f;
-	//gArrowClips[3].h = 128.f;
-
-	/*if (!gNon2NTexture.loadTextureFromFile("opengl.png"))
-	{
-		printf("Unable to load arrow texture!\n");
-		success = false;
-	}*/
-
-	if (!gRepeatingTexture.loadTextureFromFile("opengl.png"))
-	{
-		printf("Unable to load OpenGL texture!\n");
-		success = false;
-	}
-
+	success = character.loadMedia();
 	return success;
+	
 }
 
 void Game::close()
@@ -189,16 +156,16 @@ bool Game::manageInput(SDL_KeyboardEvent key)
 		return true;
 		break;
 	case SDLK_w:
-		gCameraY -= 16.f;
+		//character.moveY(-character.MoveSpeed());
 		break;
 	case SDLK_s:
-		gCameraY += 16.f;
+		//character.moveY(character.MoveSpeed());
 		break;
 	case SDLK_a:
-		gCameraX -= 16.f;
+		character.moveX(-character.MoveSpeed());
 		break;
 	case SDLK_d:
-		gCameraX += 16.f;
+		character.moveX(character.MoveSpeed());
 		break;
 	case SDLK_q:
 		break;
@@ -206,12 +173,12 @@ bool Game::manageInput(SDL_KeyboardEvent key)
 		break;
 	}
 
-	glMatrixMode(GL_MODELVIEW);
-	glPopMatrix();
-	glLoadIdentity();
+	//glMatrixMode(GL_MODELVIEW);
+	//glPopMatrix();
+	//glLoadIdentity();
 
-	// Move camera to position
-	glTranslatef(-gCameraX, -gCameraY, 0.f);
+	//// Move camera to position
+	//glTranslatef(-gCameraX, -gCameraY, 0.f);
 
 	// Save default matrix again with camera translation
 
@@ -220,28 +187,15 @@ bool Game::manageInput(SDL_KeyboardEvent key)
 
 void Game::update()
 {
-
+	character.update(SDL_GetTicks());
 }
 
 void Game::render()
 {
 	// Clear color buffer
 	glClear(GL_COLOR_BUFFER_BIT);
-
-	// Enable vertex arrays
 	glLoadIdentity();
-
-	// Render textured quad using VBOs
-	gRepeatingTexture.render((SCREEN_WIDTH - gRepeatingTexture.imageWidth()) / 2.f, (SCREEN_HEIGHT - gRepeatingTexture.imageHeight()) / 2.f);
-
-	// Render arrows
-	//gArrowTexture.render(0.f, 0.f, &gArrowClips[0]);
-	//gArrowTexture.render(SCREEN_WIDTH - gArrowClips[1].w, 0.f, &gArrowClips[1]);
-	//gArrowTexture.render(0.f, SCREEN_HEIGHT - gArrowClips[2].h, &gArrowClips[2]);
-	//gArrowTexture.render(SCREEN_WIDTH - gArrowClips[3].w, SCREEN_HEIGHT - gArrowClips[3].h, &gArrowClips[3]);
-
-	//Render OpenGL texture
-	//gNon2NTexture.render((SCREEN_WIDTH - gNon2NTexture.imageWidth()) / 2.f, (SCREEN_HEIGHT - gNon2NTexture.imageHeight()) / 2.f);
-
+	glScalef(2.f, 2.f, 0.f);
+	character.render();
 	SDL_GL_SwapWindow(gWindow);
 }

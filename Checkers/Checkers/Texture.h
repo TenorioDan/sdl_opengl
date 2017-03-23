@@ -13,14 +13,14 @@ public:
 	// Initializes variables
 	Texture();
 	// Deallocates memory
-	~Texture();
+	virtual ~Texture();
 
 #pragma region OpenGL Methods
 
 	// Creates a textures from the give pixels
 	bool loadTextureFromPixels32(GLuint* pixels, GLuint imgWidth, GLuint imgHeight, GLuint texWidth, GLuint texHeight);
 	bool loadTextureFromFile(std::string path);
-	void freeTexture();
+	virtual void freeTexture();
 
 	// Loads member pixels frok the given file
 	bool loadPixelsFromFile(std::string path);
