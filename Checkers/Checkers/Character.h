@@ -1,9 +1,18 @@
 #pragma once
 #include "SpriteSheet.h"
+#include "Collider.h"
 
 class Character
 {
 public:
+	
+	enum State
+	{
+		IDLE,
+		RUNNING,
+		JUMPING
+	};
+
 	Character();
 	~Character();
 	
@@ -29,5 +38,7 @@ protected:
 	int previousAnimationTime;
 	int currentAnimationTime;
 	int animationSpeed; // time between animations in miliseconds
+
+	LFRect collider;
 
 };

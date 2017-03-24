@@ -195,7 +195,7 @@ void Game::render()
 	// Clear color buffer
 	glClear(GL_COLOR_BUFFER_BIT);
 	glLoadIdentity();
-	glScalef(2.f, 2.f, 0.f);
+	glScalef(2.0f, 2.0f, 0.f);
 	character.render();
 	SDL_GL_SwapWindow(gWindow);
 }
