@@ -3,7 +3,6 @@
 #include <IL/il.h>;
 #include <IL/ilu.h>
 #include "LVertexData2D.h"
-#include <Box2D\Box2D.h>
 
 #pragma region Texture Loading
 

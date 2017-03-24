@@ -162,10 +162,13 @@ bool Game::manageInput(SDL_KeyboardEvent key)
 		//character.moveY(character.MoveSpeed());
 		break;
 	case SDLK_a:
-		character.moveX(-character.MoveSpeed());
+		character.translate(-character.MoveSpeed(), 0.f);
 		break;
 	case SDLK_d:
-		character.moveX(character.MoveSpeed());
+		character.translate(character.MoveSpeed(), 0.f);
+		break;
+	case SDLK_SPACE:
+		character.jump();
 		break;
 	case SDLK_q:
 		break;

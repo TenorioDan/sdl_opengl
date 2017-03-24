@@ -20,8 +20,8 @@ void Collider::setBounds(GLfloat maxX, GLfloat maxY, GLfloat minX, GLfloat minY)
 
 bool Collider::collision(Collider c)
 {
-	if (maxX < c.MinX || minX > c.MaxX()) return false;
-	if (maxY < c.minY || minY > c.MaxY()) return false;
+	if (maxX < c.MinX() || minX > c.MaxX()) return false;
+	if (maxY < c.MinY() || minY > c.MaxY()) return false;
 
 	return true;
 }

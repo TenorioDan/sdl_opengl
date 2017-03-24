@@ -10,6 +10,10 @@ Character::Character()
 	previousAnimationTime = 0;
 	currentAnimationTime = 0;
 	animationSpeed = 100;
+	jumpAnimationSpeed = 50;
+	currentState = IDLE;
+	verticleVelocity = 0;
+	useGravity = true;
 }
 
 Character::~Character()
@@ -59,8 +63,18 @@ bool Character::loadMedia()
 	return true;
 }
 
+
+// Virtual character update that switches between character states
+// applies gravity and swaps animations 
 void Character::update(int time)
 {
+	GameObject::update(time);
+
+	if (currentState == JUMPING)
+	{
+		applyGravity();
+	}
+
 	if (time - currentAnimationTime >= animationSpeed)
 	{
 		previousAnimationTime = currentAnimationTime;
@@ -72,9 +86,18 @@ void Character::update(int time)
 		{
 			spriteIndex = 0;
 		}
-
 	}
 }
+
+void Character::jump()
+{
+	if (currentPhysicsState != FALLING)
+	{
+		currentPhysicsState = FALLING;
+		verticleVelocity = baseJumpSpeed;
+	}
+}
+
 
 void Character::render()
 {
@@ -83,17 +106,8 @@ void Character::render()
 	characterSpriteSheet.renderSprite(spriteIndex);
 }
 
-int Character::PositionX()
-{
-	return positionX;
-}
 
-int Character::PositionY()
-{
-	return positionY;
-}
-
-int Character::MoveSpeed()
+GLfloat Character::MoveSpeed()
 {
 	return moveSpeed;
 }
@@ -101,15 +115,4 @@ int Character::MoveSpeed()
 void Character::setMoveSpeed(int newSpeed)
 {
 	moveSpeed = newSpeed;
-}
-
-
-void Character::moveX(int displacement)
-{
-	positionX += displacement;
-}
-
-void Character::moveY(int displacement)
-{
-	positionY += displacement;
 }

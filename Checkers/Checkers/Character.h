@@ -1,12 +1,12 @@
 #pragma once
 #include "SpriteSheet.h"
-#include "Collider.h"
+#include "GameObject.h"
 
-class Character
+class Character : public GameObject
 {
 public:
 	
-	enum State
+	enum ChracterState
 	{
 		IDLE,
 		RUNNING,
@@ -16,29 +16,31 @@ public:
 	Character();
 	~Character();
 	
-	void update(int time);
-	void render();
+	virtual void update(int time);
+	virtual void render();
 	bool loadMedia();
 
-	int PositionX();
-	int PositionY();
-	
-	int MoveSpeed();
+	GLfloat MoveSpeed();
+
 	void setMoveSpeed(int newSpeed);
-	void moveX(int displacement);
-	void moveY(int displacement);
+	void jump();
+	
 
 protected:
-	SpriteSheet characterSpriteSheet;
-	int positionX;
-	int positionY;
-	int totalSprites;
-	int spriteIndex;
-	int moveSpeed;
+	// Protected primitives
+	GLfloat totalSprites;
+	GLfloat spriteIndex;
+	GLfloat moveSpeed;
+
+	const GLfloat baseJumpSpeed = -50.f; // move upwards which is the negative y direction
+
 	int previousAnimationTime;
 	int currentAnimationTime;
 	int animationSpeed; // time between animations in miliseconds
+	int jumpAnimationSpeed;
 
-	LFRect collider;
+	// Protected object member variables
+	SpriteSheet characterSpriteSheet;
+	ChracterState currentState;
 
 };
