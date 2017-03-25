@@ -9,7 +9,7 @@ Collider::Collider()
 }
 
 
-void Collider::setBounds(GLfloat maxX, GLfloat maxY, GLfloat minX, GLfloat minY)
+void Collider::setBounds(GLuint maxX, GLuint maxY, GLuint minX, GLuint minY)
 {
 	this->maxX = maxX;
 	this->maxY = maxY;

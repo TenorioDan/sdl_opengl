@@ -7,7 +7,8 @@ GameObject::GameObject()
 	positionX = 0;
 	positionY = 0;
 	verticleVelocity = 0;
-	currentPhysicsState = AT_REST;
+	currentPhysicsState = FALLING;
+	landingCollisionNextFrame = false;
 }
 
 Collider GameObject::getCollider()
@@ -20,34 +21,41 @@ void GameObject::translate(GLfloat x, GLfloat y)
 {
 	positionX += x;
 	positionY += y;
-	collider.setBounds(positionX + width, positionY + height, positionX, positionY);
+	collider.setBounds(positionX + (width / 2), positionY + (height / 2 ), positionX - (width / 2), positionY - (height / 2));
 }
 
 void GameObject::applyGravity()
 {
 	if (currentPhysicsState == FALLING && useGravity)
 	{
-		translate(0.f, verticleVelocity);
-
-		if (verticleVelocity > 0)
+		if (landingCollisionNextFrame)
 		{
-			std::vector<Collider> platforms = TileManager::getInstance()->getPlatforms();
-			// check against platforms
-
-			for (auto p : platforms)
-			{
-				printf("(%f, %f, %f, %f) vs (%f, %f, %f, %f)\n", collider.MaxX(), collider.MaxY(), collider.MinX(), collider.MinY(), p.MaxX(), p.MaxY(), p.MinX(), p.MinY());
-				if (collider.collision(p))
-				{
-					currentPhysicsState = AT_REST;
-					printf("collision");
-				}
-			}
+			currentPhysicsState = AT_REST;
+			landingCollisionNextFrame = false;
+			positionY = currentPlatform.MinY() - (height / 2);
 		}
-
-		if (verticleVelocity < maxVerticleSpeed)
+		else
 		{
-			verticleVelocity += 4.f;
+			translate(0.f, verticleVelocity);
+			verticleVelocity = verticleVelocity >= maxVerticleSpeed ? verticleVelocity : verticleVelocity += 4.f;
+
+			if (verticleVelocity > 0)
+			{
+				translate(0.f, verticleVelocity);
+				std::vector<Collider> platforms = TileManager::getInstance()->getPlatforms();
+
+				// check against platforms that 
+				for (auto p : platforms)
+				{
+					if (collider.collision(p))
+					{
+						landingCollisionNextFrame = true;
+						currentPlatform = p;
+					}
+				}
+
+				translate(0.f, -verticleVelocity);
+			}
 		}
 	}
 }

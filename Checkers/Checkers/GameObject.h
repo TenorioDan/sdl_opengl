@@ -31,13 +31,16 @@ protected:
 	GLfloat width;
 	GLfloat height;
 	GLfloat verticleVelocity;
+	GLfloat horizontalVelocity;
 
-	const GLfloat maxVerticleSpeed = 50.f; // TODO figure out what max positive verticle velocity should be
+	const GLfloat maxVerticleSpeed = 36.f; // TODO figure out what max positive verticle velocity should be
 
 	Collider collider;
+	Collider currentPlatform;
 
 	// Protected methods
 	void applyGravity();
+	bool landingCollisionNextFrame;
 
 	PhysicsState currentPhysicsState;
 

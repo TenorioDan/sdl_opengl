@@ -168,10 +168,10 @@ bool Game::manageInput(SDL_KeyboardEvent key)
 		//character.moveY(character.MoveSpeed());
 		break;
 	case SDLK_a:
-		character.translate(-character.MoveSpeed(), 0.f);
+		character.translate(-character.MoveSpeed(), 0);
 		break;
 	case SDLK_d:
-		character.translate(character.MoveSpeed(), 0.f);
+		character.translate(character.MoveSpeed(), 0);
 		break;
 	case SDLK_SPACE:
 		character.jump();
@@ -205,7 +205,7 @@ void Game::render()
 	// Clear color buffer
 	glClear(GL_COLOR_BUFFER_BIT);
 	glLoadIdentity();
-	glScalef(1.75f, 1.75f, 1.75f);
+	//glScalef(1.75f, 1.75f, 1.75f);
 	tileManager->render();
 	character.render();
 	SDL_GL_SwapWindow(gWindow);

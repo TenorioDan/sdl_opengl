@@ -89,7 +89,6 @@ bool TileManager::loadMedia()
 		for (auto s : values)
 		{
 			int val = std::stoi(s);
-			printf("%d\n", val);
 			switch (counter)
 			{
 			case 0:
@@ -110,7 +109,8 @@ bool TileManager::loadMedia()
 		}
 
 		Collider c;
-		c.setBounds(maxX, maxY, minX, minY);
+		c.setBounds(maxX - (32 / 2 ), maxY - (tileSheet.textureHeight() / 2), minX - (32 / 2 ), minY - (tileSheet.textureHeight() / 2));
+		printf("%f, %f, %f, %f\n", c.MaxX(), c.MaxY(), c.MinX(), c.MinY());
 		platforms.push_back(c);
 	}	
 

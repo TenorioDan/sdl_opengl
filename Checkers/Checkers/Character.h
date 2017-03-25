@@ -28,11 +28,11 @@ public:
 
 protected:
 	// Protected primitives
-	GLfloat totalSprites;
-	GLfloat spriteIndex;
+	GLuint totalSprites;
+	GLuint spriteIndex;
 	GLfloat moveSpeed;
 
-	const GLfloat baseJumpSpeed = -50.f; // move upwards which is the negative y direction
+	const GLfloat baseJumpSpeed = -52.f; // move upwards which is the negative y direction
 
 	int previousAnimationTime;
 	int currentAnimationTime;

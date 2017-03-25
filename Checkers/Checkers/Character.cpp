@@ -4,9 +4,9 @@ Character::Character()
 	: GameObject()
 {
 	positionX = 128;
-	positionY = 450;
-	width = 64;
-	height = 128;
+	positionY = 512;
+	width = 32;
+	height = 64;
 	spriteIndex = 0;
 	totalSprites = 0;
 	moveSpeed = 2;
@@ -33,7 +33,7 @@ bool Character::loadMedia()
 	}
 
 	// set clips
-	LFRect clip = { 0.f, 0.f, 64.f, 128.f };
+	LFRect clip = { 0.f, 0.f, 32.f, 64.f };
 
 	// Top left
 	clip.x = 0.f;
@@ -41,17 +41,17 @@ bool Character::loadMedia()
 	characterSpriteSheet.addClipSprite(clip);
 
 	// Top right
-	clip.x = 64.f;
+	clip.x = 32.f;
 	clip.y = 0.f;
 	characterSpriteSheet.addClipSprite(clip);
 
 	// Bottom left
-	clip.x = 128.f;
+	clip.x = 64.f;
 	clip.y = 0.f;
 	characterSpriteSheet.addClipSprite(clip);
 
 	// Bottom right
-	clip.x = 192.f;
+	clip.x = 96.f;
 	clip.y = 0.f;
 	characterSpriteSheet.addClipSprite(clip);
 
@@ -98,6 +98,7 @@ void Character::jump()
 	{
 		currentPhysicsState = FALLING;
 		verticleVelocity = baseJumpSpeed;
+		//currentPlatform = NULL;
 	}
 }
 
