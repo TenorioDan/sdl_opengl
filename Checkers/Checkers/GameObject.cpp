@@ -3,6 +3,9 @@
 GameObject::GameObject()
 {
 	verticleVelocity = 0.f;
+	positionX = 0;
+	positionY = 0;
+	verticleVelocity = 0;
 	currentPhysicsState = AT_REST;
 }
 
@@ -11,10 +14,6 @@ Collider GameObject::getCollider()
 	return collider;
 }
 
-void GameObject::update(int time)
-{
-	applyGravity();
-}
 
 void GameObject::translate(GLfloat x, GLfloat y)
 {
@@ -24,7 +23,7 @@ void GameObject::translate(GLfloat x, GLfloat y)
 
 void GameObject::applyGravity()
 {
-	if (currentPhysicsState == FALLING)
+	if (currentPhysicsState == FALLING && useGravity)
 	{
 		translate(0.f, verticleVelocity);
 
@@ -53,4 +52,16 @@ GLfloat GameObject::PositionX()
 GLfloat GameObject::PositionY()
 {
 	return positionY;
+}
+
+
+void GameObject::update(int time)
+{
+	applyGravity();
+}
+
+void GameObject::render()
+{
+	glLoadIdentity();
+	glTranslatef(positionX, positionY, 0.f);
 }

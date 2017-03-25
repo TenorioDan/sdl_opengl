@@ -132,7 +132,10 @@ bool Game::init()
 bool Game::loadMedia() {
 	// Loading success flag
 	bool success = true;
+
 	success = character.loadMedia();
+	success = tileManager.loadMedia();
+
 	return success;
 	
 }
@@ -191,6 +194,7 @@ bool Game::manageInput(SDL_KeyboardEvent key)
 void Game::update()
 {
 	character.update(SDL_GetTicks());
+	ground.update(SDL_GetTicks());
 }
 
 void Game::render()
@@ -198,7 +202,8 @@ void Game::render()
 	// Clear color buffer
 	glClear(GL_COLOR_BUFFER_BIT);
 	glLoadIdentity();
-	glScalef(2.0f, 2.0f, 0.f);
+	glScalef(1.75f, 1.75f, 1.75f);
+	tileManager.render();
 	character.render();
 	SDL_GL_SwapWindow(gWindow);
 }

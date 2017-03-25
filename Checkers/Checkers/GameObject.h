@@ -8,13 +8,15 @@ public:
 	enum PhysicsState
 	{
 		AT_REST,
-		IN_MOTION, 
+		IN_MOTION, // IN_MOTION and FALLING: too similar? If falling then IN_MOTION, but if IN_MOTION not always falling
 		FALLING
 	};
 
 	GameObject();
 
-	void update(int time);
+	virtual void update(int time);
+	virtual void render();
+
 	void translate(GLfloat x, GLfloat y);
 	Collider getCollider();
 

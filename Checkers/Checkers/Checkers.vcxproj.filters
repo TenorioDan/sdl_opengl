@@ -60,6 +60,9 @@
     <ClCompile Include="Platform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TileManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -104,6 +107,9 @@
     <ClInclude Include="GameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TileManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="grass_dirt_tile.png">
@@ -128,6 +134,9 @@
       <Filter>Resource Files\Textures</Filter>
     </Image>
     <Image Include="character_test.png">
+      <Filter>Resource Files\Sprite Sheets</Filter>
+    </Image>
+    <Image Include="tileset_platforms.png">
       <Filter>Resource Files\Sprite Sheets</Filter>
     </Image>
   </ItemGroup>

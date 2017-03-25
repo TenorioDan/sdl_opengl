@@ -5,6 +5,8 @@
 #include <IL/il.h>
 #include <IL/ilu.h>
 #include "Character.h"
+#include "Platform.h"
+#include "TileManager.h"
 
 class Game
 {
@@ -30,8 +32,8 @@ public:
 
 private:
 	//Screen dimension constants
-	const int SCREEN_WIDTH = 1920;
-	const int SCREEN_HEIGHT = 1080;
+	const int SCREEN_WIDTH = 1280;
+	const int SCREEN_HEIGHT = 720;
 	const int SCREEN_FPS = 240;
 	//The window we'll be rendering to
 	SDL_Window* gWindow = NULL;
@@ -40,6 +42,8 @@ private:
 	SDL_GLContext gContext = NULL;
 
 	Character character;
+	Platform ground;
+	TileManager tileManager;
 	
 	GLfloat gCameraX = 0.f, gCameraY = 0.f;
 

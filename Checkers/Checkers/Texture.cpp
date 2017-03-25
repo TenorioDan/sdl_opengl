@@ -4,6 +4,7 @@
 #include <IL/ilu.h>
 #include "LVertexData2D.h"
 
+
 #pragma region Texture Loading
 
 Texture::Texture()

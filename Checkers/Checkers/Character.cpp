@@ -1,6 +1,7 @@
 #include "Character.h"
 
 Character::Character()
+	: GameObject()
 {
 	positionX = 128;
 	positionY = 450;
@@ -101,8 +102,7 @@ void Character::jump()
 
 void Character::render()
 {
-	//glLoadIdentity();
-	glTranslated(positionX, positionY, 0.f);
+	GameObject::render();
 	characterSpriteSheet.renderSprite(spriteIndex);
 }
 
