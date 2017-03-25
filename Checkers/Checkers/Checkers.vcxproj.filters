@@ -39,9 +39,6 @@
     <ClCompile Include="World.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Tile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GL_helpers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -72,9 +69,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="World.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Tile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GL_helpers.h">
@@ -142,6 +136,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="test_level.txt">
+      <Filter>Resource Files\Tile Maps</Filter>
+    </Text>
+    <Text Include="Platforms.txt">
       <Filter>Resource Files\Tile Maps</Filter>
     </Text>
   </ItemGroup>

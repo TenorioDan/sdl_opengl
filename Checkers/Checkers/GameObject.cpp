@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include "TileManager.h"
 
 GameObject::GameObject()
 {
@@ -19,6 +20,7 @@ void GameObject::translate(GLfloat x, GLfloat y)
 {
 	positionX += x;
 	positionY += y;
+	collider.setBounds(positionX + width, positionY + height, positionX, positionY);
 }
 
 void GameObject::applyGravity()
@@ -29,15 +31,27 @@ void GameObject::applyGravity()
 
 		if (verticleVelocity > 0)
 		{
+			std::vector<Collider> platforms = TileManager::getInstance()->getPlatforms();
 			// check against platforms
+
+			for (auto p : platforms)
+			{
+				printf("(%f, %f, %f, %f) vs (%f, %f, %f, %f)\n", collider.MaxX(), collider.MaxY(), collider.MinX(), collider.MinY(), p.MaxX(), p.MaxY(), p.MinX(), p.MinY());
+				if (collider.collision(p))
+				{
+					currentPhysicsState = AT_REST;
+					printf("collision");
+				}
+			}
 		}
 
 		if (verticleVelocity < maxVerticleSpeed)
 		{
-			verticleVelocity += 5.f;
+			verticleVelocity += 4.f;
 		}
 	}
 }
+
 
 GameObject::PhysicsState GameObject::getPhysicsState()
 {

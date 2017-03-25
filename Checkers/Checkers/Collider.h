@@ -12,11 +12,11 @@ public:
 	GLfloat MaxY();
 	GLfloat MinX();
 	GLfloat MinY();
+	bool collision(Collider c);
 
 private:
 	GLfloat maxX;
 	GLfloat maxY;
 	GLfloat minX;
 	GLfloat minY;
-	bool collision(Collider c);
 };

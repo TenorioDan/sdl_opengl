@@ -1,10 +1,20 @@
 #pragma once
 
+#include <vector>
 #include "SpriteSheet.h"
+#include "Collider.h"
 
 class TileManager
 {
 public:
+	static TileManager* getInstance();
+
+	std::vector<Collider> getPlatforms();
+
+	bool loadMedia();
+	void render();
+
+private:
 	struct Tile
 	{
 		unsigned int spriteIndex;
@@ -12,13 +22,14 @@ public:
 		GLfloat positionY;
 	};
 
+	// Singleton stuff
 	TileManager();
-	bool loadMedia();
-	void render();
+	TileManager(TileManager const&);
+	//TileManager& operator=(TileManager const&);
+	static TileManager* instance;
 
-private:
 	SpriteSheet tileSheet;
-	int spriteOffeset;
 	Tile* tileset[40][23];
+	std::vector<Collider> platforms;
 	
 };

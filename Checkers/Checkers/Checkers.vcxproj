@@ -126,7 +126,6 @@
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="SpriteSheet.cpp" />
     <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TileManager.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
@@ -143,7 +142,6 @@
     <ClInclude Include="Platform.h" />
     <ClInclude Include="SpriteSheet.h" />
     <ClInclude Include="Texture.h" />
-    <ClInclude Include="Tile.h" />
     <ClInclude Include="TileManager.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
@@ -159,6 +157,7 @@
     <Image Include="tileset_platforms.png" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Platforms.txt" />
     <Text Include="test_level.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

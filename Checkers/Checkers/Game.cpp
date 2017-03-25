@@ -126,6 +126,9 @@ bool Game::init()
 		}
 	}
 
+
+	// Create instance of Tile Manager
+	tileManager = TileManager::getInstance();
 	return success;
 }
 
@@ -134,7 +137,7 @@ bool Game::loadMedia() {
 	bool success = true;
 
 	success = character.loadMedia();
-	success = tileManager.loadMedia();
+	success = tileManager->loadMedia();
 
 	return success;
 	
@@ -203,7 +206,7 @@ void Game::render()
 	glClear(GL_COLOR_BUFFER_BIT);
 	glLoadIdentity();
 	glScalef(1.75f, 1.75f, 1.75f);
-	tileManager.render();
+	tileManager->render();
 	character.render();
 	SDL_GL_SwapWindow(gWindow);
 }

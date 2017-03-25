@@ -5,6 +5,8 @@ Character::Character()
 {
 	positionX = 128;
 	positionY = 450;
+	width = 64;
+	height = 128;
 	spriteIndex = 0;
 	totalSprites = 0;
 	moveSpeed = 2;

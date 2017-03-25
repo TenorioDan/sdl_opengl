@@ -28,6 +28,8 @@ protected:
 	bool useGravity;
 	GLfloat positionX;
 	GLfloat positionY;
+	GLfloat width;
+	GLfloat height;
 	GLfloat verticleVelocity;
 
 	const GLfloat maxVerticleSpeed = 50.f; // TODO figure out what max positive verticle velocity should be
@@ -38,5 +40,6 @@ protected:
 	void applyGravity();
 
 	PhysicsState currentPhysicsState;
+
 
 };

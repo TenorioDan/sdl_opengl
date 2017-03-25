@@ -43,7 +43,7 @@ private:
 
 	Character character;
 	Platform ground;
-	TileManager tileManager;
+	TileManager* tileManager;
 	
 	GLfloat gCameraX = 0.f, gCameraY = 0.f;
 
