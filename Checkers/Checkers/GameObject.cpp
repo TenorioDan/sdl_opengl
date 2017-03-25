@@ -24,6 +24,15 @@ void GameObject::translate(GLfloat x, GLfloat y)
 	collider.setBounds(positionX + (width / 2), positionY + (height / 2 ), positionX - (width / 2), positionY - (height / 2));
 }
 
+
+// Simple algorithm for adding gravity to a gameobject. If the physics state of the object is that it is currently falling,
+// update the vertical velocity by the accerlation of gravity. 
+// We check collisions against all platforms.
+// Update the current y position of the object and then check whether or not the object will collide in the next 
+// frame, and keep track of that so that the next time this method is called, the y position of the object is just set to the
+// colliding platform.
+
+// TODO: Quad Trees for per section collision detection
 void GameObject::applyGravity()
 {
 	if (currentPhysicsState == FALLING && useGravity)
@@ -32,7 +41,7 @@ void GameObject::applyGravity()
 		{
 			currentPhysicsState = AT_REST;
 			landingCollisionNextFrame = false;
-			positionY = currentPlatform.MinY() - (height / 2);
+			positionY = currentPlatform->MinY() - (height / 2);
 		}
 		else
 		{
@@ -42,20 +51,29 @@ void GameObject::applyGravity()
 			if (verticleVelocity > 0)
 			{
 				translate(0.f, verticleVelocity);
-				std::vector<Collider> platforms = TileManager::getInstance()->getPlatforms();
+				std::vector<Collider*> platforms = TileManager::getInstance()->getPlatforms();
 
 				// check against platforms that 
 				for (auto p : platforms)
 				{
-					if (collider.collision(p))
+					if (collider.collision(*p))
 					{
 						landingCollisionNextFrame = true;
 						currentPlatform = p;
+						break;
 					}
 				}
 
 				translate(0.f, -verticleVelocity);
 			}
+		}
+	}
+	else if (currentPlatform != NULL)
+	{
+		if (!collider.collision(*currentPlatform))
+		{
+			currentPhysicsState = FALLING;
+			verticleVelocity = 0;
 		}
 	}
 }

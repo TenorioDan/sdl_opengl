@@ -36,7 +36,7 @@ protected:
 	const GLfloat maxVerticleSpeed = 36.f; // TODO figure out what max positive verticle velocity should be
 
 	Collider collider;
-	Collider currentPlatform;
+	Collider* currentPlatform;
 
 	// Protected methods
 	void applyGravity();

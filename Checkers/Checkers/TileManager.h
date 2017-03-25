@@ -9,7 +9,7 @@ class TileManager
 public:
 	static TileManager* getInstance();
 
-	std::vector<Collider> getPlatforms();
+	std::vector<Collider*> getPlatforms();
 
 	bool loadMedia();
 	void render();
@@ -30,6 +30,6 @@ private:
 
 	SpriteSheet tileSheet;
 	Tile* tileset[40][23];
-	std::vector<Collider> platforms;
+	std::vector<Collider*> platforms;
 	
 };

@@ -2,6 +2,8 @@
 
 Game::Game()
 {
+	previousFrameTime = 0;
+	currentFrameTime = 0;
 }
 
 bool Game::initGL()
@@ -196,8 +198,16 @@ bool Game::manageInput(SDL_KeyboardEvent key)
 
 void Game::update()
 {
-	character.update(SDL_GetTicks());
-	ground.update(SDL_GetTicks());
+	currentFrameTime = SDL_GetTicks();
+	inputManager.update();
+	
+
+	if (SDL_GetTicks() - previousFrameTime >= 16)
+	{
+		previousFrameTime = currentFrameTime;
+		character.update(SDL_GetTicks());
+		ground.update(SDL_GetTicks());
+	}
 }
 
 void Game::render()

@@ -108,16 +108,16 @@ bool TileManager::loadMedia()
 			++counter;
 		}
 
-		Collider c;
-		c.setBounds(maxX - (32 / 2 ), maxY - (tileSheet.textureHeight() / 2), minX - (32 / 2 ), minY - (tileSheet.textureHeight() / 2));
-		printf("%f, %f, %f, %f\n", c.MaxX(), c.MaxY(), c.MinX(), c.MinY());
+		// TODO: Fix texture width magic numbers
+		Collider* c = new Collider();
+		c->setBounds(maxX - (32 / 2 ), maxY - (tileSheet.textureHeight() / 2), minX - (32 / 2 ), minY - (tileSheet.textureHeight() / 2));
 		platforms.push_back(c);
 	}	
 
 	return true;
 }
 
-std::vector<Collider> TileManager::getPlatforms()
+std::vector<Collider*> TileManager::getPlatforms()
 {
 	return platforms;
 }
