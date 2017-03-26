@@ -76,12 +76,7 @@ void Character::update(int time)
 
 	translate(horizontalVelocity, 0.f);
 
-	if (currentState == JUMPING)
-	{
-		applyGravity();
-	}
-
-	if (time - currentAnimationTime >= animationSpeed)
+	if (time - currentAnimationTime >= animationSpeed && horizontalVelocity != 0 && currentPhysicsState != FALLING)
 	{
 		previousAnimationTime = currentAnimationTime;
 		currentAnimationTime = time;
