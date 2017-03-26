@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Character.h"
+
 class InputManager
 {
 public:
@@ -11,5 +13,12 @@ public:
 
 	InputManager();
 	void update();
-	
+	void swapStates();
+	InputState CurrentState();
+	void setInputCharacter(Character& c);
+
+private:
+	InputState currentState;
+	Character* inputCharacter;
+
 };

@@ -46,7 +46,7 @@ void GameObject::applyGravity()
 		else
 		{
 			translate(0.f, verticleVelocity);
-			verticleVelocity = verticleVelocity >= maxVerticleSpeed ? verticleVelocity : verticleVelocity += 4.f;
+			verticleVelocity = verticleVelocity >= maxVerticleSpeed ? verticleVelocity : verticleVelocity += 2.f;
 
 			if (verticleVelocity > 0)
 			{

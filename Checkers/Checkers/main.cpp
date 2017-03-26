@@ -25,22 +25,8 @@ int main(int argc, char* args[])
 			SDL_Event e;
 
 			//While application is running
-			while (!quit)
+			while (!game.quit)
 			{
-				//Handle events on queue
-				while (SDL_PollEvent(&e) != 0)
-				{
-					//User requests quit
-					if (e.type == SDL_QUIT)
-					{
-						quit = true;
-					}
-					else if (e.type == SDL_KEYDOWN)
-					{
-						quit = game.manageInput(e.key);
-					}
-				}
-
 				// Render the game
 				game.update();
 				game.render();

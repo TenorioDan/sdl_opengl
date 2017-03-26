@@ -18,6 +18,7 @@ public:
 	virtual void render();
 
 	void translate(GLfloat x, GLfloat y);
+	//void applyHorizontalVelocity;
 	Collider getCollider();
 
 	GLfloat PositionX();
@@ -33,7 +34,7 @@ protected:
 	GLfloat verticleVelocity;
 	GLfloat horizontalVelocity;
 
-	const GLfloat maxVerticleSpeed = 36.f; // TODO figure out what max positive verticle velocity should be
+	const GLfloat maxVerticleSpeed = 24.f; // TODO figure out what max positive verticle velocity should be
 
 	Collider collider;
 	Collider* currentPlatform;

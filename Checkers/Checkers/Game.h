@@ -9,7 +9,7 @@
 #include "TileManager.h"
 #include "InputManager.h"
 
-class Game
+class Game 
 {
 public:
 	// Initializes variables
@@ -31,7 +31,10 @@ public:
 	void update();
 	void render();
 
+	bool quit;
+
 private:
+	friend class InputManager;
 	//Screen dimension constants
 	const int SCREEN_WIDTH = 1280;
 	const int SCREEN_HEIGHT = 720;

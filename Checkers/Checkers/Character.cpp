@@ -1,4 +1,5 @@
 #include "Character.h"
+#include <cmath>
 
 Character::Character()
 	: GameObject()
@@ -9,7 +10,7 @@ Character::Character()
 	height = 64;
 	spriteIndex = 0;
 	totalSprites = 0;
-	moveSpeed = 2;
+	moveSpeed = 4;
 	previousAnimationTime = 0;
 	currentAnimationTime = 0;
 	animationSpeed = 100;
@@ -73,6 +74,8 @@ void Character::update(int time)
 {
 	GameObject::update(time);
 
+	translate(horizontalVelocity, 0.f);
+
 	if (currentState == JUMPING)
 	{
 		applyGravity();
@@ -102,6 +105,17 @@ void Character::jump()
 	}
 }
 
+void Character::applyHorizontalMovement(GLfloat directionModifier)
+{
+
+	horizontalVelocity = (moveSpeed * directionModifier);
+}
+
+void Character::reduceHorizontalMovement()
+{
+	horizontalVelocity = 0;
+}
+
 
 void Character::render()
 {
@@ -118,4 +132,10 @@ GLfloat Character::MoveSpeed()
 void Character::setMoveSpeed(int newSpeed)
 {
 	moveSpeed = newSpeed;
+}
+
+void Character::resetPosition()
+{
+	positionX = 128;
+	positionY = 512;
 }

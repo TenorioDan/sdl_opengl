@@ -22,7 +22,10 @@ public:
 
 	GLfloat MoveSpeed();
 
+	void applyHorizontalMovement(GLfloat directionModifier);
+	void reduceHorizontalMovement();
 	void setMoveSpeed(int newSpeed);
+	void resetPosition();
 	void jump();
 	
 

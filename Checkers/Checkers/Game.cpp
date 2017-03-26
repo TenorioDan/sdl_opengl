@@ -4,6 +4,7 @@ Game::Game()
 {
 	previousFrameTime = 0;
 	currentFrameTime = 0;
+	quit = false;
 }
 
 bool Game::initGL()
@@ -141,6 +142,11 @@ bool Game::loadMedia() {
 	success = character.loadMedia();
 	success = tileManager->loadMedia();
 
+	if (success)
+	{
+		inputManager.setInputCharacter(character);
+	}
+
 	return success;
 	
 }
@@ -158,41 +164,6 @@ void Game::close()
 
 bool Game::manageInput(SDL_KeyboardEvent key)
 {
-	switch (key.keysym.sym)
-	{
-	case SDLK_ESCAPE:
-		return true;
-		break;
-	case SDLK_w:
-		//character.moveY(-character.MoveSpeed());
-		break;
-	case SDLK_s:
-		//character.moveY(character.MoveSpeed());
-		break;
-	case SDLK_a:
-		character.translate(-character.MoveSpeed(), 0);
-		break;
-	case SDLK_d:
-		character.translate(character.MoveSpeed(), 0);
-		break;
-	case SDLK_SPACE:
-		character.jump();
-		break;
-	case SDLK_q:
-		break;
-	default:
-		break;
-	}
-
-	//glMatrixMode(GL_MODELVIEW);
-	//glPopMatrix();
-	//glLoadIdentity();
-
-	//// Move camera to position
-	//glTranslatef(-gCameraX, -gCameraY, 0.f);
-
-	// Save default matrix again with camera translation
-
 	return false;
 }
 
