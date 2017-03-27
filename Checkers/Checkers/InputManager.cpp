@@ -3,7 +3,7 @@
 
 InputManager::InputManager()
 {
-
+	spaceReleased = true;
 }
 
 void InputManager::update()
@@ -24,6 +24,10 @@ void InputManager::update()
 				{
 					inputCharacter->reduceHorizontalMovement();
 				}
+				if (e.key.keysym.sym == SDLK_SPACE)
+				{
+					spaceReleased = true;
+				}
 			}
 		}
 		else if(e.type == SDL_KEYDOWN)
@@ -43,9 +47,10 @@ void InputManager::update()
 					inputCharacter->resetPosition();
 				}
 
-				if (e.key.keysym.sym == SDLK_SPACE)
+				if (e.key.keysym.sym == SDLK_SPACE && spaceReleased)
 				{
 					inputCharacter->jump();
+					spaceReleased = false;
 				}
 
 			}

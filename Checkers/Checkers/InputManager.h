@@ -20,5 +20,6 @@ public:
 private:
 	InputState currentState;
 	Character* inputCharacter;
+	bool spaceReleased;
 
 };

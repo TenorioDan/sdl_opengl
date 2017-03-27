@@ -26,10 +26,10 @@ bool TileManager::loadMedia()
 		return false;
 	}
 
-	int spriteOffset = 5;
+	int spriteOffset = 10;
 
 	// set clips
-	LFRect clip = { 0.f, 0.f, 32.f, 32.f };
+	LFRect clip = { 0.f, 0.f, 128.f, 128.f };
 
 	// Top left
 	clip.x = 0.f;
@@ -37,12 +37,12 @@ bool TileManager::loadMedia()
 	tileSheet.addClipSprite(clip);
 
 	// Top right
-	clip.x = 32.f + spriteOffset;
+	clip.x = 64.f + spriteOffset;
 	clip.y = 0.f;
 	tileSheet.addClipSprite(clip);
 
 	// Bottom left
-	clip.x = 64.f + ( spriteOffset * 2);
+	clip.x = 128.f + ( spriteOffset * 2);
 	clip.y = 0.f;
 	tileSheet.addClipSprite(clip);
 
@@ -64,8 +64,8 @@ bool TileManager::loadMedia()
 		{
 			Tile* t = new Tile();
 			t->spriteIndex = line[x] - '0';
-			t->positionX = x * 32.f;
-			t->positionY = y * 32.f;
+			t->positionX = x * 64.f;
+			t->positionY = y * 64.f;
 
 			tileset[x][y] = t;
 		}
