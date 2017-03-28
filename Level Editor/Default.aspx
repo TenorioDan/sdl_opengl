@@ -73,25 +73,27 @@
         for (var i = 0; i < 40; i++) {
             $('#tableTiles tbody').append('<tr></tr>');
             for (var j = 0; j < 40; j++) {
-                $("#tableTiles tr:last").append("<td><div class='tile' style='width:64px;height:64px;border:2px solid;' id='tile_" + i + "_" + j + "'></div><td>");
+                $("#tableTiles tr:last").append("<td><div class='tile' style='width:64px;height:64px;border:2px solid;' id='tile_" + i + "_" + j + "'></div></td>");
             }
         }
 
         $('.tile').click(function (event) {
             var tileID = $('#tileSelector').val();
-            switch (tileID)
-            {
-                case '1':
-                    $(this).css("background", 'url("images/tileset_platforms.png") 0 0');
-                    break;
-                case '2':
-                    $(this).css("background", 'url("images/tileset_platforms.png") 74px 0');
-                    break;
-                case '3':
-
-                    $(this).css("background", 'url("images/tileset_platforms.png") 148px 0px');
-                    break;
-            }   
+            if (event.shiftKey) {
+                $(this).css('background', '');
+            } else {
+                switch (tileID) {
+                    case '1':
+                        $(this).css("background", 'url("images/tileset_platforms.png") 0 0');
+                        break;
+                    case '2':
+                        $(this).css("background", 'url("images/tileset_platforms.png") 138px ');
+                        break;
+                    case '3':
+                        $(this).css("background", 'url("images/tileset_platforms.png") 64px 0px');
+                        break;
+                }
+            }
         });
     });
 
