@@ -26,6 +26,11 @@
            border: 2px solid;
        }
 
+       textarea {
+           overflow-x: scroll;
+           overflow-y: scroll;
+       }
+
 
     </style>
 </head>
@@ -76,7 +81,9 @@
                     <td><input class="numeric" style="width:50px;" type="text" id="txtHeight"/></td>
                 </tr>
                 <tr><td><input type="button" value="Generate Area" id="btnGenerate"/></td></tr>
+                <tr><td><input type="button" value="Download Tilemap" id="btnDownload"/></td></tr>
             </table>
+            <textarea rows="20" cols="20" id="txtTileMap"></textarea>
         </div>
     </form>
 </body>
@@ -112,6 +119,22 @@
                 }
             }
         });
+    });
+
+    $('#btnDownload').on('click', function () {
+        var width = $('#hdnWidth').prop('value');
+        var height = $('#hdnHeight').prop('value');
+        var tileMap = '';
+
+        for (var i = 0; i < height; i++) {
+            for (var j = 0; j < width; j++) {
+                var $tile = $('#tile_' + i + '_' + j);
+                tileMap += $tile.attr('data-tile-type');
+            }
+            tileMap += '\n';
+        }
+
+        $('#txtTileMap').prop('value', tileMap);
     });
 
     // Click on dynamically created divs to set their background image sprites

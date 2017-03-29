@@ -29,7 +29,7 @@ bool TileManager::loadMedia()
 	int spriteOffset = 10;
 
 	// set clips
-	LFRect clip = { 0.f, 0.f, 128.f, 128.f };
+	LFRect clip = { 0.f, 0.f, 64.f, 64.f };
 
 	// Top left
 	clip.x = 0.f;
@@ -60,7 +60,7 @@ bool TileManager::loadMedia()
 
 	while (std::getline(tilesetFile, line))
 	{
-		for (int x = 0; x < 40; ++x)
+		for (int x = 0; x < 20; ++x)
 		{
 			Tile* t = new Tile();
 			t->spriteIndex = line[x] - '0';
@@ -124,9 +124,9 @@ std::vector<Collider*> TileManager::getPlatforms()
 
 void TileManager::render()
 {
-	for (int y = 0; y < 23; ++y)
+	for (int y = 0; y < 20; ++y)
 	{
-		for (int x = 0; x < 40; ++x)
+		for (int x = 0; x < 20; ++x)
 		{
 			Tile t = *tileset[x][y];
 
