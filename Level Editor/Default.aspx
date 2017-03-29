@@ -8,7 +8,7 @@
     <title></title>
     <style>
         #divEditor {
-            width: 65%;
+            width: 80%;
             height: 1200px;
             border: 5px solid;
             overflow-x: scroll;
@@ -16,12 +16,14 @@
             float: left;
         }
 
-       table {
+       #tableTiles {
            border-spacing: 0px;
        }
 
        .tile {
-
+           width: 64px;
+           height: 64px;
+           border: 2px solid;
        }
 
 
@@ -36,13 +38,11 @@
                 </tbody>
             </table>
         </div>
-        <div id="divControls" style="float:right;width:30%">
+        <div id="divControls" style="float:right;width:15%">
             <h2>Controls</h2>
             <table>
                 <tr>
-                    <td>
-                        <label>Select Tile</label>
-                    </td>
+                    <td><label>Select Tile</label></td>
                     <td>
                         <select id="tileSelector">
                             <option value="1">1</option>
@@ -52,9 +52,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>
-                        <label>Tile Type</label>
-                    </td>
+                    <td><label>Tile Type</label></td>
                     <td>
                         <select>
                             <option value="1">Tile</option>
@@ -63,6 +61,22 @@
                     </td>
                 </tr>
             </table>
+            <!-- Hidden inputs for saving the width and height of the current tileset -->
+            <input type="hidden" id="hdnWidth" />
+            <input type="hidden" id="hdnHeight" />
+            <table>
+                <tr>
+                    <td><label><b>Level Size</b></label></td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td><label>Width</label></td>
+                    <td><input class="numeric" style="width:50px;" type="text" id="txtWidth"/></td>
+                    <td><label>Height</label></td>
+                    <td><input class="numeric" style="width:50px;" type="text" id="txtHeight"/></td>
+                </tr>
+                <tr><td><input type="button" value="Generate Area" id="btnGenerate"/></td></tr>
+            </table>
         </div>
     </form>
 </body>
@@ -70,33 +84,57 @@
 
 <script>
     $(document).ready(function () {
-        for (var i = 0; i < 40; i++) {
-            $('#tableTiles tbody').append('<tr></tr>');
-            for (var j = 0; j < 40; j++) {
-                $("#tableTiles tr:last").append("<td><div class='tile' style='width:64px;height:64px;border:2px solid;' id='tile_" + i + "_" + j + "'></div></td>");
-            }
-        }
 
-        $('.tile').click(function (event) {
-            var tileID = $('#tileSelector').val();
-            if (event.shiftKey) {
-                $(this).css('background', '');
-            } else {
-                switch (tileID) {
-                    case '1':
-                        $(this).css("background", 'url("images/tileset_platforms.png") 0 0');
-                        break;
-                    case '2':
-                        $(this).css("background", 'url("images/tileset_platforms.png") 138px ');
-                        break;
-                    case '3':
-                        $(this).css("background", 'url("images/tileset_platforms.png") 64px 0px');
-                        break;
+        // Restric the inputs with the numeric class to cleanse any non intenger values
+        $('.numeric').keyup(function () {
+            $(this).prop('value', $(this).prop('value').replace(/[^0-9\.]/g, ''));
+        });
+
+        $("#btnGenerate").click(function () {
+            // clear out the current table
+            $("#tableTiles tr").remove();
+
+            // set loop variables and hidden inputs
+            var width = $('#txtWidth').prop('value');
+            var height = $('#txtHeight').prop('value');
+            $('#hdnWidth').prop('value', width);
+            $('#hdnHeight').prop('value', height);
+
+            if (width == '' || height == '') {
+                alert("Select a valid width and height");
+            }
+            else {
+                for (var i = 0; i < height; i++) {
+                    $('#tableTiles tbody').append('<tr></tr>');
+                    for (var j = 0; j < width; j++) {
+                        $("#tableTiles tr:last").append('<td><div data-tile-x="' + j + '" data-tile-y="' + i + '" data-tile-type="0" class="tile" id="tile_' + i + '_' + j + '"></div></td>');
+                    }
                 }
             }
         });
     });
 
-    
-
+    // Click on dynamically created divs to set their background image sprites
+    $(document).on('click', '.tile', function (event) {
+        var tileID = $('#tileSelector').val();
+        if (event.shiftKey) {
+            $(this).css('background', '');
+            $(this).attr('data-tile-type', '0');
+        } else {
+            switch (tileID) {
+                case '1':
+                    $(this).css('background', 'url("images/tileset_platforms.png") 0 0');
+                    $(this).attr('data-tile-type', '1');
+                    break;
+                case '2':
+                    $(this).css('background', 'url("images/tileset_platforms.png") -74px 0');
+                    $(this).attr('data-tile-type', '2');
+                    break;
+                case '3':
+                    $(this).css('background', 'url("images/tileset_platforms.png") -148px 0px');
+                    $(this).attr('data-tile-type', '3');
+                    break;
+            }
+        }
+    });
 </script>
