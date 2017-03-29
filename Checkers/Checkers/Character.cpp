@@ -6,8 +6,8 @@ Character::Character()
 {
 	positionX = 128;
 	positionY = 512;
-	width = 32;
-	height = 64;
+	width = 85.f;
+	height = 87.f;
 	spriteIndex = 0;
 	totalSprites = 0;
 	moveSpeed = 4;
@@ -27,33 +27,34 @@ Character::~Character()
 
 bool Character::loadMedia()
 {
-	if (!characterSpriteSheet.loadTextureFromFileWithColorKey("character_test.png", 255, 0, 255))
+	if (!characterSpriteSheet.loadTextureFromFileWithColorKey("shovel_knight_original.png", 255, 255, 255))
 	{
 		printf("Unable to load sprite sheet!\n");
 		return false;
 	}
 
 	// set clips
-	LFRect clip = { 0.f, 0.f, 32.f, 64.f };
+	LFRect clip = { 0.f, 0.f, 85.f, 87.f };
+	int offset = 5;
 
 	// Top left
-	clip.x = 0.f;
-	clip.y = 0.f;
+	clip.x = 266.f;
+	clip.y = 10.f;
 	characterSpriteSheet.addClipSprite(clip);
 
 	// Top right
-	clip.x = 32.f;
-	clip.y = 0.f;
+	clip.x = 266.f + (85 * 1) + (offset * 1);
+	clip.y = 10.f;
 	characterSpriteSheet.addClipSprite(clip);
 
 	// Bottom left
-	clip.x = 64.f;
-	clip.y = 0.f;
+	clip.x = 266.f + (85 * 2) + (offset * 2);
+	clip.y = 10.f;
 	characterSpriteSheet.addClipSprite(clip);
 
 	// Bottom right
-	clip.x = 96.f;
-	clip.y = 0.f;
+	clip.x = 266.f + (85 * 3) + (offset * 3);
+	clip.y = 10.f;
 	characterSpriteSheet.addClipSprite(clip);
 
 	if (!characterSpriteSheet.generateDataBuffer())

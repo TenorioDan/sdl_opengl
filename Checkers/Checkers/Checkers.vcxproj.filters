@@ -139,6 +139,9 @@
     <Image Include="tileset_platforms.png">
       <Filter>Resource Files\Sprite Sheets</Filter>
     </Image>
+    <Image Include="shovel_knight_original.png">
+      <Filter>Resource Files\Tile Maps</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="test_level.txt">
