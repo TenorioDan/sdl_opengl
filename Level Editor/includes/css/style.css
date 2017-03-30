@@ -1,0 +1,40 @@
+﻿.tileSelect[data-tile-type="1"]  { background: url(../images/tileset_platforms.png) 0 0 }
+.tileSelect[data-tile-type="2"]  { background: url(../images/tileset_platforms.png) -74px   0 }
+.tileSelect[data-tile-type="3"]  { background: url(../images/tileset_platforms.png) -148px  0 }
+.tileSelect[data-tile-type="4"]  { background: url(../images/tileset_platforms.png)  0     -74px }
+.tileSelect[data-tile-type="5"]  { background: url(../images/tileset_platforms.png) -74px  -74px }
+.tileSelect[data-tile-type="6"]  { background: url(../images/tileset_platforms.png) -148px -74px }
+.tileSelect[data-tile-type="7"]  { background: url(../images/tileset_platforms.png) -222px -74px }
+.tileSelect[data-tile-type="8"]  { background: url(../images/tileset_platforms.png) -296px -74px }
+.tileSelect[data-tile-type="9"]  { background: url(../images/tileset_platforms.png) -370px -74px }
+.tileSelect[data-tile-type="10"] { background: url(../images/tileset_platforms.png) -444px -74px }
+.tileSelect[data-tile-type="11"] { background: url(../images/tileset_platforms.png) -518px -74px }
+.tileSelect[data-tile-type="12"] { background: url(../images/tileset_platforms.png) -592px -74px }
+
+#divEditor {
+    width: 60%;
+    height: 1200px;
+    border: 5px solid;
+    overflow: scroll;
+    float: left;
+}
+
+#tableTiles {
+    border-spacing: 0px;
+}
+
+.tile, .tileSelect {
+    width: 64px;
+    height: 64px;
+    border: 2px solid;
+}
+
+textarea {
+    overflow-x: scroll;
+    overflow-y: scroll;
+}
+
+label {
+    font-weight: bold;
+}
+

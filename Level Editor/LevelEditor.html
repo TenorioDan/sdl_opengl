@@ -1,55 +1,10 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="_Default" %>
-
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="includes/css/style.css" media="screen" />
     <title></title>
-    <style>
-        #divEditor {
-            width: 60%;
-            height: 1200px;
-            border: 5px solid;
-            overflow: scroll;
-            float: left;
-        }
-
-        /*#divTileSelect {
-            width: 350px;
-            height: 300px;
-            overflow: scroll;
-        }*/
-
-       #tableTiles {
-           border-spacing: 0px;
-       }
-
-       .tile, .tileSelect {
-           width: 64px;
-           height: 64px;
-           border: 2px solid;
-       }
-
-       textarea {
-           overflow-x: scroll;
-           overflow-y: scroll;
-       }
-
-       .tileSelect[data-tile-type="1"]  { background: url(images/tileset_platforms.png) 0 0 }
-       .tileSelect[data-tile-type="2"]  { background: url(images/tileset_platforms.png) -74px   0 }
-       .tileSelect[data-tile-type="3"]  { background: url(images/tileset_platforms.png) -148px  0 }
-       .tileSelect[data-tile-type="4"]  { background: url(images/tileset_platforms.png)  0     -74px }
-       .tileSelect[data-tile-type="5"]  { background: url(images/tileset_platforms.png) -74px  -74px }
-       .tileSelect[data-tile-type="6"]  { background: url(images/tileset_platforms.png) -148px -74px }
-       .tileSelect[data-tile-type="7"]  { background: url(images/tileset_platforms.png) -222px -74px }
-       .tileSelect[data-tile-type="8"]  { background: url(images/tileset_platforms.png) -296px -74px }
-       .tileSelect[data-tile-type="9"]  { background: url(images/tileset_platforms.png) -370px -74px }
-       .tileSelect[data-tile-type="10"] { background: url(images/tileset_platforms.png) -444px -74px }
-       .tileSelect[data-tile-type="11"] { background: url(images/tileset_platforms.png) -518px -74px }
-       .tileSelect[data-tile-type="12"] { background: url(images/tileset_platforms.png) -592px -74px }
-
-    </style>
 </head>
 <body>
     <form id="form1" runat="server">
@@ -97,8 +52,8 @@
                     <td><label>Tile Type</label></td>
                     <td>
                         <select>
-                            <option value="1">Tile</option>
-                            <option value="2">Collider</option>
+                            <option>Tile</option>
+                            <option>Collider</option>
                         </select>
                     </td>
                 </tr>
@@ -108,7 +63,7 @@
             <input type="hidden" id="hdnHeight" />
             <table>
                 <tr>
-                    <td><label><b>Level Size</b></label></td>
+                    <td><label>Level Size</label></td>
                 </tr>
                 <tr>
                     <td>&nbsp;</td>
@@ -192,6 +147,7 @@
     // Click on dynamically created divs to set their background image sprites
     $(document).on('click', '.tile', function (event) {
         var tileID = $('#tileSelector').val();
+        var 
 
         if (event.shiftKey) {
             $(this).css('background', '');
