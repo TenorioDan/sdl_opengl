@@ -129,7 +129,9 @@
 </body>
 </html>
 
-<script>
+<script type="text/javascript">
+    var currentTile;
+
     $(document).ready(function () {
 
         $('#tileSelector option[value="1"').attr('background', 'url(images/tileset_platforms.png) 0 0')
@@ -164,7 +166,11 @@
     });
 
     $('.tileSelect').on('click', function () {
-
+        if (currentTile != null) {
+            currentTile.css({ 'border-width': '2px', 'border-color': '#000000' })
+        }
+        currentTile = $(this);
+        currentTile.css({ 'border-width': '4px', 'border-color': '#0000FF' })
     });
 
     $('#btnDownload').on('click', function () {
@@ -186,61 +192,16 @@
     // Click on dynamically created divs to set their background image sprites
     $(document).on('click', '.tile', function (event) {
         var tileID = $('#tileSelector').val();
+
         if (event.shiftKey) {
             $(this).css('background', '');
             $(this).attr('data-tile-type', '0');
         } else {
-            var img = 'url("images/tileset_platforms.png") ';
-            var dataattr = 'data-tile-type';
-            switch (tileID) {
-                case '1':
-                    $(this).css('background', img + '0 0');
-                    $(this).attr(dataattr, '1');
-                    break;
-                case '2':
-                    $(this).css('background', img + '-74px 0');
-                    $(this).attr(dataattr, '2');
-                    break;
-                case '3':
-                    $(this).css('background', img + '-148px 0px');
-                    $(this).attr(dataattr, '3');
-                    break;
-                case '4':
-                    $(this).css('background', img + '0 -74px')
-                    $(this).attr(dataattr, '4');
-                    break;
-                case '5':
-                    $(this).css('background', img + '-74px -74px')
-                    $(this).attr(dataattr, '5');
-                    break;
-                case '6':
-                    $(this).css('background', img + '-148px -74px')
-                    $(this).attr(dataattr, '6');
-                    break;
-                case '7':
-                    $(this).css('background', img + '-222px -74px')
-                    $(this).attr(dataattr, '7');
-                    break;
-                case '8':
-                    $(this).css('background', img + '-296px -74px')
-                    $(this).attr(dataattr, '8');
-                    break;
-                case '9':
-                    $(this).css('background', img + '-370px -74px')
-                    $(this).attr(dataattr, '9');
-                    break;
-                case '10':
-                    $(this).css('background', img + '-444px -74px')
-                    $(this).attr(dataattr, '10');
-                    break;
-                case '11':
-                    $(this).css('background', img + '-518px -74px')
-                    $(this).attr(dataattr, '11');
-                    break;
-                case '12':
-                    $(this).css('background', img + '-592px -74px')
-                    $(this).attr(dataattr, '11');
-                    break;
+            if (currentTile == null) {
+                alert("Please select a tile");
+            } else {
+                $(this).css('background', currentTile.css('background'));
+                $(this).attr('data-tile-type', currentTile.attr('data-tile-type'));
             }
         }
     });
