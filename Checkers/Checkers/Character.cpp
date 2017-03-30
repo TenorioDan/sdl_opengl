@@ -5,7 +5,7 @@ Character::Character()
 	: GameObject()
 {
 	positionX = 128;
-	positionY = 512;
+	positionY = 0;
 	width = 85.f;
 	height = 87.f;
 	spriteIndex = 0;
@@ -133,5 +133,5 @@ void Character::setMoveSpeed(int newSpeed)
 void Character::resetPosition()
 {
 	positionX = 128;
-	positionY = 512;
+	positionY = 0;
 }

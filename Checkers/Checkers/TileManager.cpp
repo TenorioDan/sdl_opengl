@@ -46,6 +46,13 @@ bool TileManager::loadMedia()
 	clip.y = 0.f;
 	tileSheet.addClipSprite(clip);
 
+	// TODO: Fix sprite sheet tile index allocations
+	for (int i = 0; i < 9; ++i)
+	{
+		clip.x = i * 64 + (spriteOffset * i);
+		clip.y = 74.f;
+		tileSheet.addClipSprite(clip);
+	}
 
 	if (!tileSheet.generateDataBuffer())
 	{
@@ -57,19 +64,26 @@ bool TileManager::loadMedia()
 	std::ifstream  tilesetFile("test_level.txt");
 	std::string line;
 	int y = 0;
+	int x = 0;
 
 	while (std::getline(tilesetFile, line))
 	{
-		for (int x = 0; x < 20; ++x)
+		std::istringstream buffer(line);
+		std::istream_iterator<std::string> beg(buffer), end;
+		std::vector<std::string> values(beg, end);
+		x = 0;
+
+		for (auto s : values)
 		{
+			int val = std::stoi(s);
 			Tile* t = new Tile();
-			t->spriteIndex = line[x] - '0';
+			t->spriteIndex = val;
 			t->positionX = x * 64.f;
 			t->positionY = y * 64.f;
 
 			tileset[x][y] = t;
+			++x;
 		}
-
 		++y;
 	}
 
@@ -110,7 +124,7 @@ bool TileManager::loadMedia()
 
 		// TODO: Fix texture width magic numbers
 		Collider* c = new Collider();
-		c->setBounds(maxX - (32 / 2 ), maxY - (tileSheet.textureHeight() / 2), minX - (32 / 2 ), minY - (tileSheet.textureHeight() / 2));
+		c->setBounds(maxX - (64.f / 2.f ), maxY - (64.f / 2.f), minX - (64.f / 2.f ), minY - (64.f / 2));
 		platforms.push_back(c);
 	}	
 

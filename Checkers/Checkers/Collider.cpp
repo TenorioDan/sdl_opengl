@@ -9,7 +9,7 @@ Collider::Collider()
 }
 
 
-void Collider::setBounds(GLuint maxX, GLuint maxY, GLuint minX, GLuint minY)
+void Collider::setBounds(GLfloat maxX, GLfloat maxY, GLfloat minX, GLfloat minY)
 {
 	this->maxX = maxX;
 	this->maxY = maxY;
@@ -20,10 +20,8 @@ void Collider::setBounds(GLuint maxX, GLuint maxY, GLuint minX, GLuint minY)
 
 bool Collider::collision(Collider c)
 {
-	if (maxX < c.MinX() || minX > c.MaxX()) return false;
-	if (maxY < c.MinY() || minY > c.MaxY()) return false;
-
-	return true;
+	return  (minX <= c.MaxX() && maxX >= c.MinX()) &&
+			(minY <= c.MaxY() && maxY >= c.MinY());
 }
 
 GLfloat Collider::MaxX()

@@ -6,7 +6,7 @@ class Collider
 {
 public:
 	Collider();
-	void setBounds(GLuint maxX, GLuint maxY, GLuint minX, GLuint minY);
+	void setBounds(GLfloat maxX, GLfloat maxY, GLfloat minX, GLfloat minY);
 
 	GLfloat MaxX();
 	GLfloat MaxY();
