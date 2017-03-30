@@ -8,19 +8,24 @@
     <title></title>
     <style>
         #divEditor {
-            width: 80%;
+            width: 60%;
             height: 1200px;
             border: 5px solid;
-            overflow-x: scroll;
-            overflow-y: scroll;
+            overflow: scroll;
             float: left;
         }
+
+        /*#divTileSelect {
+            width: 350px;
+            height: 300px;
+            overflow: scroll;
+        }*/
 
        #tableTiles {
            border-spacing: 0px;
        }
 
-       .tile {
+       .tile, .tileSelect {
            width: 64px;
            height: 64px;
            border: 2px solid;
@@ -31,6 +36,18 @@
            overflow-y: scroll;
        }
 
+       .tileSelect[data-tile-type="1"]  { background: url(images/tileset_platforms.png) 0 0 }
+       .tileSelect[data-tile-type="2"]  { background: url(images/tileset_platforms.png) -74px   0 }
+       .tileSelect[data-tile-type="3"]  { background: url(images/tileset_platforms.png) -148px  0 }
+       .tileSelect[data-tile-type="4"]  { background: url(images/tileset_platforms.png)  0     -74px }
+       .tileSelect[data-tile-type="5"]  { background: url(images/tileset_platforms.png) -74px  -74px }
+       .tileSelect[data-tile-type="6"]  { background: url(images/tileset_platforms.png) -148px -74px }
+       .tileSelect[data-tile-type="7"]  { background: url(images/tileset_platforms.png) -222px -74px }
+       .tileSelect[data-tile-type="8"]  { background: url(images/tileset_platforms.png) -296px -74px }
+       .tileSelect[data-tile-type="9"]  { background: url(images/tileset_platforms.png) -370px -74px }
+       .tileSelect[data-tile-type="10"] { background: url(images/tileset_platforms.png) -444px -74px }
+       .tileSelect[data-tile-type="11"] { background: url(images/tileset_platforms.png) -518px -74px }
+       .tileSelect[data-tile-type="12"] { background: url(images/tileset_platforms.png) -592px -74px }
 
     </style>
 </head>
@@ -43,17 +60,37 @@
                 </tbody>
             </table>
         </div>
-        <div id="divControls" style="float:right;width:15%">
+        <input type="hidden" id="hdnTileSelected" />
+        <div id="divControls" style="float:right;width:35%">
             <h2>Controls</h2>
             <table>
                 <tr>
                     <td><label>Select Tile</label></td>
                     <td>
-                        <select id="tileSelector">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                        </select>
+                        <div id="divTileSelect">
+                            <table id="tableTileSelect">
+                                <tbody>
+                                    <tr>
+                                        <td><div class="tileSelect" data-tile-type="1"></div></td>
+                                        <td><div class="tileSelect" data-tile-type="2"></div></td>
+                                        <td><div class="tileSelect" data-tile-type="3"></div></td>
+                                        <td><div class="tileSelect" data-tile-type="4"></div></td>
+                                    </tr>
+                                    <tr>
+                                        <td><div class="tileSelect" data-tile-type="5"></div></td>
+                                        <td><div class="tileSelect" data-tile-type="6"></div></td>
+                                        <td><div class="tileSelect" data-tile-type="7"></div></td>
+                                        <td><div class="tileSelect" data-tile-type="8"></div></td>
+                                    </tr>
+                                    <tr>
+                                        <td><div class="tileSelect" data-tile-type="9"></div></td>
+                                        <td><div class="tileSelect" data-tile-type="10"></div></td>
+                                        <td><div class="tileSelect" data-tile-type="11"></div></td>
+                                        <td><div class="tileSelect" data-tile-type="12"></div></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -83,7 +120,10 @@
                 <tr><td><input type="button" value="Generate Area" id="btnGenerate"/></td></tr>
                 <tr><td><input type="button" value="Download Tilemap" id="btnDownload"/></td></tr>
             </table>
-            <textarea rows="20" cols="20" id="txtTileMap"></textarea>
+            <label>Tilemap</label><br />
+            <textarea rows="20" cols="20" id="txtTileMap"></textarea> <br />
+            <label>Colliders</label><br />
+            <textarea rows="20" cols="20" id="txtColliderMap"></textarea>
         </div>
     </form>
 </body>
@@ -91,6 +131,8 @@
 
 <script>
     $(document).ready(function () {
+
+        $('#tileSelector option[value="1"').attr('background', 'url(images/tileset_platforms.png) 0 0')
 
         // Restric the inputs with the numeric class to cleanse any non intenger values
         $('.numeric').keyup(function () {
@@ -121,6 +163,10 @@
         });
     });
 
+    $('.tileSelect').on('click', function () {
+
+    });
+
     $('#btnDownload').on('click', function () {
         var width = $('#hdnWidth').prop('value');
         var height = $('#hdnHeight').prop('value');
@@ -129,7 +175,7 @@
         for (var i = 0; i < height; i++) {
             for (var j = 0; j < width; j++) {
                 var $tile = $('#tile_' + i + '_' + j);
-                tileMap += $tile.attr('data-tile-type');
+                tileMap += $tile.attr('data-tile-type') + ' ';
             }
             tileMap += '\n';
         }
@@ -144,18 +190,56 @@
             $(this).css('background', '');
             $(this).attr('data-tile-type', '0');
         } else {
+            var img = 'url("images/tileset_platforms.png") ';
+            var dataattr = 'data-tile-type';
             switch (tileID) {
                 case '1':
-                    $(this).css('background', 'url("images/tileset_platforms.png") 0 0');
-                    $(this).attr('data-tile-type', '1');
+                    $(this).css('background', img + '0 0');
+                    $(this).attr(dataattr, '1');
                     break;
                 case '2':
-                    $(this).css('background', 'url("images/tileset_platforms.png") -74px 0');
-                    $(this).attr('data-tile-type', '2');
+                    $(this).css('background', img + '-74px 0');
+                    $(this).attr(dataattr, '2');
                     break;
                 case '3':
-                    $(this).css('background', 'url("images/tileset_platforms.png") -148px 0px');
-                    $(this).attr('data-tile-type', '3');
+                    $(this).css('background', img + '-148px 0px');
+                    $(this).attr(dataattr, '3');
+                    break;
+                case '4':
+                    $(this).css('background', img + '0 -74px')
+                    $(this).attr(dataattr, '4');
+                    break;
+                case '5':
+                    $(this).css('background', img + '-74px -74px')
+                    $(this).attr(dataattr, '5');
+                    break;
+                case '6':
+                    $(this).css('background', img + '-148px -74px')
+                    $(this).attr(dataattr, '6');
+                    break;
+                case '7':
+                    $(this).css('background', img + '-222px -74px')
+                    $(this).attr(dataattr, '7');
+                    break;
+                case '8':
+                    $(this).css('background', img + '-296px -74px')
+                    $(this).attr(dataattr, '8');
+                    break;
+                case '9':
+                    $(this).css('background', img + '-370px -74px')
+                    $(this).attr(dataattr, '9');
+                    break;
+                case '10':
+                    $(this).css('background', img + '-444px -74px')
+                    $(this).attr(dataattr, '10');
+                    break;
+                case '11':
+                    $(this).css('background', img + '-518px -74px')
+                    $(this).attr(dataattr, '11');
+                    break;
+                case '12':
+                    $(this).css('background', img + '-592px -74px')
+                    $(this).attr(dataattr, '11');
                     break;
             }
         }

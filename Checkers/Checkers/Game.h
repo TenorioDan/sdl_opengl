@@ -38,7 +38,7 @@ private:
 	//Screen dimension constants
 	const int SCREEN_WIDTH = 1280;
 	const int SCREEN_HEIGHT = 720;
-	const int SCREEN_FPS = 120;
+	const int SCREEN_FPS = 240;
 	//The window we'll be rendering to
 	SDL_Window* gWindow = NULL;
 
