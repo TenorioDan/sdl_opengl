@@ -49,11 +49,11 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><label>Tile Type</label></td>
+                    <td><label>Object Type</label></td>
                     <td>
-                        <select>
-                            <option>Tile</option>
-                            <option>Collider</option>
+                        <select id="selectObjectType">
+                            <option value="Tile">Tile</option>
+                            <option value="Collider">Collider</option>
                         </select>
                     </td>
                 </tr>
@@ -86,6 +86,7 @@
 
 <script type="text/javascript">
     var currentTile;
+    var setMax = false;
 
     $(document).ready(function () {
 
@@ -146,19 +147,44 @@
 
     // Click on dynamically created divs to set their background image sprites
     $(document).on('click', '.tile', function (event) {
-        var tileID = $('#tileSelector').val();
-        var 
+        var objectType = $('#selectObjectType').val();
 
-        if (event.shiftKey) {
-            $(this).css('background', '');
-            $(this).attr('data-tile-type', '0');
-        } else {
-            if (currentTile == null) {
-                alert("Please select a tile");
+        switch (objectType){
+            // If we want to place tiles, change the image of the selected div and 
+            // add the attr for the tile type
+            case "Tile":
+            if (event.shiftKey) {
+                $(this).css('background', '');
+                $(this).attr('data-tile-type', '0');
             } else {
-                $(this).css('background', currentTile.css('background'));
-                $(this).attr('data-tile-type', currentTile.attr('data-tile-type'));
+                if (currentTile == null) {
+                    alert("Please select a tile");
+                } else {
+                    $(this).css('background', currentTile.css('background'));
+                    $(this).attr('data-tile-type', currentTile.attr('data-tile-type'));
+                }
             }
-        }
+                break;
+            // If we want to add a collider we need to set the min and maximums in the
+            // correct order, first the min then the max
+            case "Collider":
+            var positionX, positionY, colliderString;
+            var x = $(this).attr('data-tile-x');
+            var y = $(this).attr('data-tile-y');
+
+            if (setMax){
+                positionX = (64 * x) + 64;
+                positionY = (64 * y) + 64;
+                colliderString = " "+ positionX + " " + positionY + "\n";
+                setMax = false;
+            } else {
+                positionX = 64 * x;
+                positionY = 64 * y;
+                setMax = true;
+                colliderString = positionX + " " + positionY;
+            }
+
+            $('#txtColliderMap').prop('value', $('#txtColliderMap').prop('value') + colliderString);
+        } 
     });
 </script>
