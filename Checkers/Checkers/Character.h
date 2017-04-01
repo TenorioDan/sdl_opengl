@@ -15,10 +15,11 @@ public:
 
 	Character();
 	~Character();
+	bool loadMedia();
 	
 	virtual void update(int time);
 	virtual void render();
-	bool loadMedia();
+	virtual void translate(GLfloat x, GLfloat y) override;
 
 	GLfloat MoveSpeed();
 

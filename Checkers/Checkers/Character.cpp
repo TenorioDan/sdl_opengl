@@ -10,7 +10,7 @@ Character::Character()
 	height = 87.f;
 	spriteIndex = 0;
 	totalSprites = 0;
-	moveSpeed = 6;
+	moveSpeed = 8;
 	previousAnimationTime = 0;
 	currentAnimationTime = 0;
 	animationSpeed = 100;
@@ -23,6 +23,22 @@ Character::Character()
 Character::~Character()
 {
 	characterSpriteSheet.freeSheet();
+}
+
+void Character::translate(GLfloat x, GLfloat y)
+{
+	positionX += x;
+	positionY += y;
+
+	collider.prevMaxX = collider.maxX;
+	collider.prevMaxY = collider.maxY;
+	collider.prevMinX = collider.minX;
+	collider.prevMinY = collider.minY;
+
+	collider.maxX = positionX + (width / 2) - 30;
+	collider.maxY = positionY + (height / 2);
+	collider.minX = positionX - (width / 2) + 30;
+	collider.minY = positionY - (height / 2);
 }
 
 bool Character::loadMedia()

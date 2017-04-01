@@ -60,16 +60,14 @@ void GameObject::checkCollisions()
 		switch (collider.collision(*p))
 		{
 		case Collider::CollisionDirection::LEFT:
-			//positionX = p->minX - (width / 2.f);
 			translate(-horizontalVelocity, 0.f);
 			break;
 		case Collider::CollisionDirection::RIGHT:
-			//positionX = p->maxX + (width / 2.f) + .01;
 			translate(-horizontalVelocity, 0.f);
 			break;
 		case Collider::CollisionDirection::ABOVE:
 			currentPlatform = p;
-			positionY = p->minY - (width / 2.f);
+			positionY = p->minY - (height / 2.f);
 			verticalPhysicsState = AT_REST;
 			verticleVelocity = 0;
 			break;

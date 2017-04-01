@@ -16,7 +16,7 @@ public:
 	virtual void update(int time);
 	virtual void render();
 
-	void translate(GLfloat x, GLfloat y);
+	virtual void translate(GLfloat x, GLfloat y);
 	//void applyHorizontalVelocity;
 	Collider getCollider();
 

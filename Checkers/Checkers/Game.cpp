@@ -187,7 +187,7 @@ void Game::render()
 	glClear(GL_COLOR_BUFFER_BIT);
 	glLoadIdentity();
 	//glScalef(1.75f, 1.75f, 1.75f);
-	tileManager->render();
 	character.render();
+	tileManager->render();
 	SDL_GL_SwapWindow(gWindow);
 }
