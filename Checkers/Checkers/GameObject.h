@@ -9,7 +9,6 @@ public:
 	{
 		AT_REST,
 		IN_MOTION, // IN_MOTION and FALLING: too similar? If falling then IN_MOTION, but if IN_MOTION not always falling
-		FALLING
 	};
 
 	GameObject();
@@ -23,7 +22,6 @@ public:
 
 	GLfloat PositionX();
 	GLfloat PositionY();
-	PhysicsState getPhysicsState();
 
 protected:
 	bool useGravity;
@@ -33,6 +31,7 @@ protected:
 	GLfloat height;
 	GLfloat verticleVelocity;
 	GLfloat horizontalVelocity;
+	const GLfloat gravity = 4.f;
 
 	const GLfloat maxVerticleSpeed = 24.f; // TODO figure out what max positive verticle velocity should be
 
@@ -40,10 +39,12 @@ protected:
 	Collider* currentPlatform;
 
 	// Protected methods
+	void checkCollisions();
 	void applyGravity();
 	bool landingCollisionNextFrame;
 
-	PhysicsState currentPhysicsState;
+	PhysicsState horizontalPhysicsState;
+	PhysicsState verticalPhysicsState;
 
 
 };

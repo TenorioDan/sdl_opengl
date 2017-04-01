@@ -10,7 +10,7 @@ Character::Character()
 	height = 87.f;
 	spriteIndex = 0;
 	totalSprites = 0;
-	moveSpeed = 4;
+	moveSpeed = 6;
 	previousAnimationTime = 0;
 	currentAnimationTime = 0;
 	animationSpeed = 100;
@@ -75,9 +75,7 @@ void Character::update(int time)
 {
 	GameObject::update(time);
 
-	translate(horizontalVelocity, 0.f);
-
-	if (time - currentAnimationTime >= animationSpeed && horizontalVelocity != 0 && currentPhysicsState != FALLING)
+	if (time - currentAnimationTime >= animationSpeed && horizontalPhysicsState == IN_MOTION)
 	{
 		previousAnimationTime = currentAnimationTime;
 		currentAnimationTime = time;
@@ -93,11 +91,11 @@ void Character::update(int time)
 
 void Character::jump()
 {
-	if (currentPhysicsState != FALLING)
+	if (verticalPhysicsState == AT_REST)
 	{
-		currentPhysicsState = FALLING;
+		verticalPhysicsState = IN_MOTION;
 		verticleVelocity = baseJumpSpeed;
-		//currentPlatform = NULL;
+		currentPlatform = NULL;
 	}
 }
 
@@ -105,11 +103,14 @@ void Character::applyHorizontalMovement(GLfloat directionModifier)
 {
 
 	horizontalVelocity = (moveSpeed * directionModifier);
+	horizontalPhysicsState = IN_MOTION;
 }
 
 void Character::reduceHorizontalMovement()
 {
 	horizontalVelocity = 0;
+	horizontalPhysicsState = AT_REST;
+
 }
 
 

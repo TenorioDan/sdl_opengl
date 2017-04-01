@@ -16,7 +16,7 @@
             </table>
         </div>
         <input type="hidden" id="hdnTileSelected" />
-        <div id="divControls" style="float:right;width:35%">
+        <div id="divControls">
             <h2>Controls</h2>
             <table>
                 <tr>
@@ -66,13 +66,12 @@
                     <td><label>Level Size</label></td>
                 </tr>
                 <tr>
-                    <td>&nbsp;</td>
+                    <td><input type="button" value="Generate Area" id="btnGenerate"/></td>
                     <td><label>Width</label></td>
                     <td><input class="numeric" style="width:50px;" type="text" id="txtWidth"/></td>
                     <td><label>Height</label></td>
                     <td><input class="numeric" style="width:50px;" type="text" id="txtHeight"/></td>
                 </tr>
-                <tr><td><input type="button" value="Generate Area" id="btnGenerate"/></td></tr>
                 <tr><td><input type="button" value="Download Tilemap" id="btnDownload"/></td></tr>
             </table>
             <label>Tilemap</label><br />
@@ -133,6 +132,9 @@
         var width = $('#hdnWidth').prop('value');
         var height = $('#hdnHeight').prop('value');
         var tileMap = '';
+
+        // Clear current tilemap
+        $('#txtTileMap').prop('value', '');
 
         for (var i = 0; i < height; i++) {
             for (var j = 0; j < width; j++) {

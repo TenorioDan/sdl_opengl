@@ -2,21 +2,60 @@
 
 #include "LFRect.h"
 
-class Collider
+struct Collider
 {
 public:
-	Collider();
-	void setBounds(GLfloat maxX, GLfloat maxY, GLfloat minX, GLfloat minY);
+	enum CollisionDirection
+	{
+		ABOVE,
+		BELOW,
+		LEFT,
+		RIGHT,
+		COLLISION,
+		NO_COLLISION
+	};
 
-	GLfloat MaxX();
-	GLfloat MaxY();
-	GLfloat MinX();
-	GLfloat MinY();
-	bool collision(Collider c);
+	GLfloat maxX = 0;
+	GLfloat maxY = 0;
+	GLfloat minX = 0;
+	GLfloat minY = 0;
 
-private:
-	GLfloat maxX;
-	GLfloat maxY;
-	GLfloat minX;
-	GLfloat minY;
+	GLfloat prevMaxX = 0;
+	GLfloat prevMaxY = 0;
+	GLfloat prevMinX = 0;
+	GLfloat prevMinY = 0;
+
+
+	CollisionDirection collision(Collider c)
+	{
+		if ((minX <= c.maxX && maxX >= c.minX) &&
+			(minY <= c.maxY && maxY >= c.minY))
+		{
+			if (prevMaxX < c.minX && maxX >= c.minX)
+			{
+				printf("left\n");
+				return LEFT;
+			}	
+			else if (prevMinX >= c.maxX && minX < c.maxX)
+			{
+				printf("right\n");
+				return RIGHT;
+			}	
+			else if (prevMaxY < c.minY && maxY >= c.minY)
+			{
+				printf("above\n");
+				return ABOVE;
+			}	
+			else if (prevMinY >= c.maxY && minY < c.maxY)
+			{
+				printf("below\n");
+				return BELOW;
+			}
+			
+			return COLLISION;
+		}
+
+		//printf("none\n");
+		return NO_COLLISION;
+	}
 };

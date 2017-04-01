@@ -12,11 +12,16 @@
 .tileSelect[data-tile-type="12"] { background: url(../images/tileset_platforms.png) -592px -74px }
 
 #divEditor {
-    width: 60%;
+    width: 70%;
     height: 1200px;
     border: 5px solid;
     overflow: scroll;
     float: left;
+}
+
+#divControls {
+    float:right;
+    width:25%;
 }
 
 #tableTiles {

@@ -124,7 +124,10 @@ bool TileManager::loadMedia()
 
 		// TODO: Fix texture width magic numbers
 		Collider* c = new Collider();
-		c->setBounds(maxX - (64.f / 2.f ), maxY - (64.f / 2.f), minX - (64.f / 2.f ), minY - (64.f / 2));
+		c->maxX = maxX - (64.f / 2.f);
+		c->maxY = maxY - (64.f / 2.f);
+		c->minX = minX - (64.f / 2.f);
+		c->minY = minY - (64.f / 2.f);
 		platforms.push_back(c);
 	}	
 

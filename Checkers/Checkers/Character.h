@@ -35,7 +35,7 @@ protected:
 	GLuint spriteIndex;
 	GLfloat moveSpeed;
 
-	const GLfloat baseJumpSpeed = -28.f; // move upwards which is the negative y direction
+	const GLfloat baseJumpSpeed = -44.f; // move upwards which is the negative y direction
 
 	int previousAnimationTime;
 	int currentAnimationTime;
