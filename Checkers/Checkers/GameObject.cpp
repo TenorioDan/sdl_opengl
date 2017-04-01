@@ -56,13 +56,16 @@ void GameObject::checkCollisions()
 	// check against platforms that 
 	for (auto p : platforms)
 	{
+		translate(horizontalVelocity, verticleVelocity);
 		switch (collider.collision(*p))
 		{
 		case Collider::CollisionDirection::LEFT:
-			horizontalVelocity = 0;
+			//positionX = p->minX - (width / 2.f);
+			translate(-horizontalVelocity, 0.f);
 			break;
 		case Collider::CollisionDirection::RIGHT:
-			horizontalVelocity = 0;
+			//positionX = p->maxX + (width / 2.f) + .01;
+			translate(-horizontalVelocity, 0.f);
 			break;
 		case Collider::CollisionDirection::ABOVE:
 			currentPlatform = p;
@@ -74,6 +77,7 @@ void GameObject::checkCollisions()
 			verticleVelocity = 0;
 			break;
 		}
+		translate(-horizontalVelocity, -verticleVelocity);
 	}
 }
 

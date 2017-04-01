@@ -41,6 +41,7 @@ protected:
 	// Protected methods
 	void checkCollisions();
 	void applyGravity();
+
 	bool landingCollisionNextFrame;
 
 	PhysicsState horizontalPhysicsState;
