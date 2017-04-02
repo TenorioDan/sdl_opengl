@@ -8,6 +8,7 @@
 #include "Platform.h"
 #include "TileManager.h"
 #include "InputManager.h"
+#include "Camera.h"
 
 class Game 
 {
@@ -49,9 +50,10 @@ private:
 	Platform ground;
 	TileManager* tileManager;
 	InputManager inputManager;
+	Camera camera;
 
 	int previousFrameTime, currentFrameTime;
 	
-	GLfloat gCameraX = 0.f, gCameraY = 0.f;
+	
 
 };

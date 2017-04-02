@@ -23,6 +23,7 @@ void InputManager::update()
 				if (e.key.keysym.sym == SDLK_a || e.key.keysym.sym == SDLK_d)
 				{
 					inputCharacter->reduceHorizontalMovement();
+					//glTranslatef(camera.positionX, camera.positionY, 0.f);
 				}
 				if (e.key.keysym.sym == SDLK_SPACE)
 				{
@@ -65,7 +66,6 @@ void InputManager::update()
 		}
 	}
 }
-
 
 // TODO: Do i really need an accessor for input state?
 InputManager::InputState InputManager::CurrentState()

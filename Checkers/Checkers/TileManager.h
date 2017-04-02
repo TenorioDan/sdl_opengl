@@ -29,7 +29,7 @@ private:
 	static TileManager* instance;
 
 	SpriteSheet tileSheet;
-	Tile* tileset[40][23];
+	Tile* tileset[40][40];
 	std::vector<Collider*> platforms;
 	
 };

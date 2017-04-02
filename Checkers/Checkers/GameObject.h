@@ -8,7 +8,7 @@ public:
 	enum PhysicsState
 	{
 		AT_REST,
-		IN_MOTION, // IN_MOTION and FALLING: too similar? If falling then IN_MOTION, but if IN_MOTION not always falling
+		IN_MOTION,
 	};
 
 	GameObject();
@@ -31,8 +31,8 @@ protected:
 	GLfloat height;
 	GLfloat verticleVelocity;
 	GLfloat horizontalVelocity;
-	const GLfloat gravity = 4.f;
 
+	const GLfloat gravity = 4.f;
 	const GLfloat maxVerticleSpeed = 24.f; // TODO figure out what max positive verticle velocity should be
 
 	Collider collider;
@@ -46,6 +46,4 @@ protected:
 
 	PhysicsState horizontalPhysicsState;
 	PhysicsState verticalPhysicsState;
-
-
 };

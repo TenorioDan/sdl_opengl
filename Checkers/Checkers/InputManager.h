@@ -21,5 +21,7 @@ private:
 	InputState currentState;
 	Character* inputCharacter;
 	bool spaceReleased;
+	GLfloat cameraX;
+	GLfloat cameraY;
 
 };

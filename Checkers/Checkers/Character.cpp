@@ -35,6 +35,7 @@ void Character::translate(GLfloat x, GLfloat y)
 	collider.prevMinX = collider.minX;
 	collider.prevMinY = collider.minY;
 
+	// TODO: Test and fix magic numbers
 	collider.maxX = positionX + (width / 2) - 30;
 	collider.maxY = positionY + (height / 2);
 	collider.minX = positionX - (width / 2) + 30;
@@ -134,6 +135,7 @@ void Character::render()
 {
 	GameObject::render();
 	characterSpriteSheet.renderSprite(spriteIndex);
+	glTranslatef(-positionX, -positionY, 0.f);
 }
 
 

@@ -141,17 +141,17 @@ std::vector<Collider*> TileManager::getPlatforms()
 
 void TileManager::render()
 {
-	for (int y = 0; y < 20; ++y)
+	for (int y = 0; y < 40; ++y)
 	{
-		for (int x = 0; x < 20; ++x)
+		for (int x = 0; x < 40; ++x)
 		{
 			Tile t = *tileset[x][y];
 
 			if (t.spriteIndex > 0)
 			{
-				glLoadIdentity();
 				glTranslatef(t.positionX, t.positionY, 0.f);
 				tileSheet.renderSprite(t.spriteIndex - 1);
+				glTranslatef(-t.positionX, -t.positionY, 0.f);
 			}
 		}
 	}

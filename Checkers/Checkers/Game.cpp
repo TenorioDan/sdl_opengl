@@ -145,6 +145,9 @@ bool Game::loadMedia() {
 	if (success)
 	{
 		inputManager.setInputCharacter(character);
+		camera.objectToFollow = dynamic_cast<GameObject*>(&character);
+		camera.offsetX = SCREEN_WIDTH / 2.f;
+		camera.offsetY = SCREEN_HEIGHT / 1.75f;
 	}
 
 	return success;
@@ -186,8 +189,10 @@ void Game::render()
 	// Clear color buffer
 	glClear(GL_COLOR_BUFFER_BIT);
 	glLoadIdentity();
-	//glScalef(1.75f, 1.75f, 1.75f);
+	camera.render();
 	character.render();
+	//glTranslatef(camera.positionX, camera.positionY, 0.f)
 	tileManager->render();
+
 	SDL_GL_SwapWindow(gWindow);
 }
