@@ -3,6 +3,9 @@
 #include "Command.h"
 #include "Character.h"
 
+#define JOYSTICK_X_AXIS 0;
+#define JOYSTICK_Y_AXIS 1;
+
 class InputManager
 {
 public:
@@ -16,6 +19,8 @@ public:
 	~InputManager();
 
 	void swapStates();
+	void setJoystick(SDL_Joystick* joystick);
+
 	Command* handleInput();
 	InputState CurrentState();
 
@@ -24,19 +29,19 @@ private:
 
 	GLfloat cameraX;
 	GLfloat cameraY;
+	int joyStickDeadZone;
 
 	InputState currentState;
-	Character* inputCharacter;
-	
+	SDL_Joystick* gameController = NULL;
+
 	// Key press commands
-	Command* pressKeyA;
-	Command* pressKeyD;
+	Command* moveLeftStick_Left;
+	Command* moveLeftStick_Right;
 	Command* pressKeyP;
-	Command* pressKeySpace;
+	Command* pressButtonA;
 	Command* pressKeyEsc;
 
 	// Key release commands
-	Command* releaseKeyA;
-	Command* releaseKeyD;
-	Command* releaseKeySpace;
+	Command* releaseLeftStick;
+	Command* releaseButtonA;
 };

@@ -77,7 +77,7 @@ bool Game::init()
 	bool success = true;
 
 	//Initialize SDL
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0)
 	{
 		printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
 		success = false;
@@ -91,7 +91,16 @@ bool Game::init()
 		// Set texture filtering to linear
 		if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"))
 		{
-			printf("Warning: Linear texture filtering not enabled!");
+			printf("Warning: Linear texture filtering not enabled!\n");
+		}
+
+		if (SDL_NumJoysticks() < 1)
+		{
+			printf("Warning: No joysticks detected\n");
+		}
+		else
+		{
+			inputManager.setJoystick(SDL_JoystickOpen(0));
 		}
 
 		// Create window

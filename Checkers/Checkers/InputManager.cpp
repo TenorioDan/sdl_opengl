@@ -1,17 +1,19 @@
 #include "InputManager.h"
 #include <SDL.h>
+#include <math.h>
 
 InputManager::InputManager()
 {
 	spaceReleased = true;
+	joyStickDeadZone = 8000;
 
 	// Set command objects
-	pressKeyA = new MoveLeftCommand();
-	pressKeyD = new MoveRightCommand();
+	moveLeftStick_Left = new MoveLeftCommand();
+	moveLeftStick_Right = new MoveRightCommand();
 	pressKeyP = new ResetPositionCommand();
-	pressKeySpace = new JumpCommand();
-	releaseKeyA = new StopCommand();
-	releaseKeySpace = new ResetJumpCommand();
+	pressButtonA = new JumpCommand();
+	releaseLeftStick = new StopCommand();
+	releaseButtonA = new ResetJumpCommand();
 }
 
 Command* InputManager::handleInput()
@@ -22,32 +24,47 @@ Command* InputManager::handleInput()
 	//Handle events on queue
 	while (SDL_PollEvent(&e) != 0)
 	{
-		SDL_Keycode key = e.key.keysym.sym;
+		// Joystick Axis Input Handling
+		if (e.type == SDL_JOYAXISMOTION)
+		{
+			if (e.jaxis.which == 0)
+			{
+				if (e.jaxis.axis == 0)
+				{
+					if (e.jaxis.value > joyStickDeadZone) { return moveLeftStick_Right; }
+					if (e.jaxis.value < -joyStickDeadZone) { return moveLeftStick_Left; }
+					if (e.jaxis.value <= std::abs(joyStickDeadZone)) { return releaseLeftStick; }
+				}
 
-		//User requests quit
-		if (e.type == SDL_KEYUP)
-		{
-			// if key is a or d then stop moving
-			if (key == SDLK_a || key == SDLK_d) { return releaseKeyA; }
-			if (e.key.keysym.sym == SDLK_SPACE) { return releaseKeySpace; }
+			}
 		}
-		else if (e.type == SDL_KEYDOWN)
+		// Joystick Button Down Handling
+		else if (e.type == SDL_JOYBUTTONDOWN)
 		{
-			// if key is a or d then start moving left to right
-			if (key == SDLK_a) { return pressKeyA; }
-			if (key == SDLK_d) { return pressKeyD; }
-			if (key == SDLK_p) { return pressKeyP; }
-			if (key == SDLK_SPACE) { return pressKeySpace; }
+			switch (e.jbutton.button)
+			{
+			case 0:
+				return pressButtonA;
+			}
 		}
-		else if (e.type == SDL_QUIT)
+		// Joystick Button Up Handling
+		else if (e.type == SDL_JOYBUTTONUP)
 		{
-
+			switch (e.jbutton.button)
+			{
+			case 0:
+				return releaseButtonA;
+			}
 		}
 	}
 
 	return NULL;
 }
 
+void InputManager::setJoystick(SDL_Joystick* joystick)
+{
+	gameController = joystick;
+}
 
 void InputManager::swapStates()
 {
@@ -63,13 +80,12 @@ InputManager::InputState InputManager::CurrentState()
 
 InputManager::~InputManager()
 {
-	delete pressKeyA;
-	delete pressKeyD;
+	delete moveLeftStick_Left;
+	delete moveLeftStick_Right;
 	delete pressKeyP;
-	delete pressKeySpace;
+	delete pressButtonA;
 	delete pressKeyEsc;
 
-	delete releaseKeyA;
-	delete releaseKeyD;
-	delete releaseKeySpace;
+	delete releaseLeftStick;
+	delete releaseButtonA;
 }
