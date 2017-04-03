@@ -13,8 +13,8 @@ public:
 	};
 
 	InputManager();
+	~InputManager();
 
-	void update();
 	void swapStates();
 	Command* handleInput();
 	InputState CurrentState();

@@ -14,11 +14,6 @@ InputManager::InputManager()
 	releaseKeySpace = new ResetJumpCommand();
 }
 
-void InputManager::update()
-{
-	
-}
-
 Command* InputManager::handleInput()
 {
 	//Event handler
@@ -32,27 +27,17 @@ Command* InputManager::handleInput()
 		//User requests quit
 		if (e.type == SDL_KEYUP)
 		{
-			if (currentState == GAME)
-			{
-				// if key is a or d then stop moving
-				if (key == SDLK_a || key == SDLK_d) { return releaseKeyA; }
-				if (e.key.keysym.sym == SDLK_SPACE) { return releaseKeySpace; }
-			}
+			// if key is a or d then stop moving
+			if (key == SDLK_a || key == SDLK_d) { return releaseKeyA; }
+			if (e.key.keysym.sym == SDLK_SPACE) { return releaseKeySpace; }
 		}
 		else if (e.type == SDL_KEYDOWN)
 		{
-			if (currentState == GAME)
-			{
-				// if key is a or d then start moving left to right
-				if (key == SDLK_a) { return pressKeyA; }
-				if (key == SDLK_d) { return pressKeyD; }
-				if (key == SDLK_p) { return pressKeyP; }
-				if (key == SDLK_SPACE) { return pressKeySpace; }
-			}
-			else if (currentState == MENU)
-			{
-
-			}
+			// if key is a or d then start moving left to right
+			if (key == SDLK_a) { return pressKeyA; }
+			if (key == SDLK_d) { return pressKeyD; }
+			if (key == SDLK_p) { return pressKeyP; }
+			if (key == SDLK_SPACE) { return pressKeySpace; }
 		}
 		else if (e.type == SDL_QUIT)
 		{
@@ -63,12 +48,28 @@ Command* InputManager::handleInput()
 	return NULL;
 }
 
+
+void InputManager::swapStates()
+{
+	currentState = currentState == GAME ? MENU : GAME;
+
+	// TODO: Swap command objects depending on state
+}
+
 InputManager::InputState InputManager::CurrentState()
 {
 	return currentState;
 }
 
-void InputManager::swapStates()
+InputManager::~InputManager()
 {
-	currentState = currentState == GAME ? MENU : GAME;
+	delete pressKeyA;
+	delete pressKeyD;
+	delete pressKeyP;
+	delete pressKeySpace;
+	delete pressKeyEsc;
+
+	delete releaseKeyA;
+	delete releaseKeyD;
+	delete releaseKeySpace;
 }
