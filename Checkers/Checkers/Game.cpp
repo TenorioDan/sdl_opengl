@@ -148,11 +148,13 @@ bool Game::loadMedia() {
 		camera.objectToFollow = dynamic_cast<GameObject*>(&character);
 		camera.offsetX = SCREEN_WIDTH / 2.f;
 		camera.offsetY = SCREEN_HEIGHT / 1.75f;
+
+
 	}
 
 	return success;
-	
 }
+
 
 void Game::close()
 {

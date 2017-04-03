@@ -22,6 +22,12 @@ private:
 		GLfloat positionY;
 	};
 
+	const GLfloat tileWidth = 64.f;
+
+	GLint numTilesX;
+	GLint numTilesY;
+	GLfloat tileSpriteOffeset = 10;
+
 	// Singleton stuff
 	TileManager();
 	TileManager(TileManager const&);
@@ -29,7 +35,11 @@ private:
 	static TileManager* instance;
 
 	SpriteSheet tileSheet;
-	Tile* tileset[40][40];
+	Tile** tileset;
 	std::vector<Collider*> platforms;
+
+	void clearTiles();
+	void createTileset(GLint tilesX, GLint tilesY, std::string path);
+	void createColliders(std::string path);
 	
 };

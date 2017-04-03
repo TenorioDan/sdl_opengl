@@ -35,10 +35,9 @@ void Character::translate(GLfloat x, GLfloat y)
 	collider.prevMinX = collider.minX;
 	collider.prevMinY = collider.minY;
 
-	// TODO: Test and fix magic numbers
-	collider.maxX = positionX + (width / 2) - 30;
+	collider.maxX = positionX + (width / 2) - colliderOffset;
 	collider.maxY = positionY + (height / 2);
-	collider.minX = positionX - (width / 2) + 30;
+	collider.minX = positionX - (width / 2) + colliderOffset;
 	collider.minY = positionY - (height / 2);
 }
 
@@ -50,6 +49,7 @@ bool Character::loadMedia()
 		return false;
 	}
 
+	// TODO: Create character spritesheet and define locations
 	// set clips
 	LFRect clip = { 0.f, 0.f, 85.f, 87.f };
 	int offset = 5;

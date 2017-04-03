@@ -37,6 +37,7 @@ protected:
 	GLfloat moveSpeed;
 
 	const GLfloat baseJumpSpeed = -44.f; // move upwards which is the negative y direction
+	const GLfloat colliderOffset = 30.f;
 
 	int previousAnimationTime;
 	int currentAnimationTime;

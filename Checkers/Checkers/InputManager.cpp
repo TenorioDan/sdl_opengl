@@ -67,7 +67,6 @@ void InputManager::update()
 	}
 }
 
-// TODO: Do i really need an accessor for input state?
 InputManager::InputState InputManager::CurrentState()
 {
 	return currentState;

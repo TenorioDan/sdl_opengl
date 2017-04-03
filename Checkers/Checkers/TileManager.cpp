@@ -26,8 +26,6 @@ bool TileManager::loadMedia()
 		return false;
 	}
 
-	int spriteOffset = 10;
-
 	// set clips
 	LFRect clip = { 0.f, 0.f, 64.f, 64.f };
 
@@ -37,19 +35,19 @@ bool TileManager::loadMedia()
 	tileSheet.addClipSprite(clip);
 
 	// Top right
-	clip.x = 64.f + spriteOffset;
+	clip.x = 64.f + tileSpriteOffeset;
 	clip.y = 0.f;
 	tileSheet.addClipSprite(clip);
 
 	// Bottom left
-	clip.x = 128.f + ( spriteOffset * 2);
+	clip.x = 128.f + (tileSpriteOffeset * 2);
 	clip.y = 0.f;
 	tileSheet.addClipSprite(clip);
 
 	// TODO: Fix sprite sheet tile index allocations
 	for (int i = 0; i < 9; ++i)
 	{
-		clip.x = i * 64 + (spriteOffset * i);
+		clip.x = (i * tileWidth) + (tileSpriteOffeset * i);
 		clip.y = 74.f;
 		tileSheet.addClipSprite(clip);
 	}
@@ -60,8 +58,23 @@ bool TileManager::loadMedia()
 		return false;
 	}
 
+	createTileset(40, 40, "test_level.txt");
+	createColliders("Platforms.txt");
+
+	return true;
+}
+
+// Called when creating the tilset of a new level.
+void TileManager::createTileset(GLint tilesX, GLint tilesY, std::string path)
+{
+	numTilesX = tilesX;
+	numTilesY = tilesY;
+
+	// dynamically create the number of tiles for this this area
+	tileset = new Tile*[numTilesX * numTilesY];
+
 	// Add all tiles that will be rendered to the screen
-	std::ifstream  tilesetFile("test_level.txt");
+	std::ifstream  tilesetFile(path.c_str());
 	std::string line;
 	int y = 0;
 	int x = 0;
@@ -78,17 +91,23 @@ bool TileManager::loadMedia()
 			int val = std::stoi(s);
 			Tile* t = new Tile();
 			t->spriteIndex = val;
-			t->positionX = x * 64.f;
-			t->positionY = y * 64.f;
+			t->positionX = x * tileWidth;
+			t->positionY = y * tileWidth;
 
-			tileset[x][y] = t;
+			tileset[x*numTilesY + y] = t;
 			++x;
 		}
 		++y;
 	}
+}
 
+
+// Create the colliders from the provided text file
+void TileManager::createColliders(std::string path)
+{
 	// Read the platforms file and create colliders based on input
-	std::ifstream colliderFile("Platforms.txt");
+	std::ifstream colliderFile(path.c_str());
+	std::string line;
 	char n;
 
 	while (std::getline(colliderFile, line))
@@ -97,55 +116,37 @@ bool TileManager::loadMedia()
 		std::istream_iterator<std::string> beg(buffer), end;
 		std::vector<std::string> values(beg, end);
 
-		int counter = 0;
-		int maxX = 0, maxY = 0, minX = 0, minY = 0;
+		auto it = values.begin();
+		int minX = std::stoi(*it++);
+		int minY = std::stoi(*it++);
+		int maxX = std::stoi(*it++);
+		int maxY = std::stoi(*it);
 
-		for (auto s : values)
-		{
-			int val = std::stoi(s);
-			switch (counter)
-			{
-			case 0:
-				minX = val;
-				break;
-			case 1:
-				minY = val;
-				break;
-			case 2:
-				maxX = val;
-				break;
-			case 3:
-				maxY = val;
-				break;
-			}
-
-			++counter;
-		}
-
-		// TODO: Fix texture width magic numbers
 		Collider* c = new Collider();
-		c->maxX = maxX - (64.f / 2.f);
-		c->maxY = maxY - (64.f / 2.f);
-		c->minX = minX - (64.f / 2.f);
-		c->minY = minY - (64.f / 2.f);
+		c->maxX = maxX - (tileWidth / 2.f);
+		c->maxY = maxY - (tileWidth / 2.f);
+		c->minX = minX - (tileWidth / 2.f);
+		c->minY = minY - (tileWidth / 2.f);
 		platforms.push_back(c);
-	}	
-
-	return true;
+	}
 }
 
+
+// Return the colliders int his level. Typically used for collision detection
 std::vector<Collider*> TileManager::getPlatforms()
 {
 	return platforms;
 }
 
+
+// Render all the tiles in the tileset
 void TileManager::render()
 {
-	for (int y = 0; y < 40; ++y)
+	for (int y = 0; y < numTilesY; ++y)
 	{
-		for (int x = 0; x < 40; ++x)
+		for (int x = 0; x < numTilesX; ++x)
 		{
-			Tile t = *tileset[x][y];
+			Tile t = *tileset[x * numTilesY + y];
 
 			if (t.spriteIndex > 0)
 			{
@@ -155,4 +156,12 @@ void TileManager::render()
 			}
 		}
 	}
+}
+
+// Clear the tileset to give room for loading different levels
+void TileManager::clearTiles()
+{
+	delete[] tileset;
+	numTilesX = 0;
+	numTilesY = 0;
 }
