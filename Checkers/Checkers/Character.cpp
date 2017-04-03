@@ -18,6 +18,7 @@ Character::Character()
 	currentState = IDLE;
 	verticleVelocity = 0;
 	useGravity = true;
+	canJump = true;
 }
 
 Character::~Character()
@@ -108,12 +109,18 @@ void Character::update(int time)
 
 void Character::jump()
 {
-	if (verticalPhysicsState == AT_REST)
+	if (verticalPhysicsState == AT_REST && canJump)
 	{
 		verticalPhysicsState = IN_MOTION;
 		verticleVelocity = baseJumpSpeed;
 		currentPlatform = NULL;
+		canJump = false;
 	}
+}
+
+void Character::resetJump()
+{
+	canJump = true;
 }
 
 void Character::applyHorizontalMovement(GLfloat directionModifier)
@@ -127,9 +134,7 @@ void Character::reduceHorizontalMovement()
 {
 	horizontalVelocity = 0;
 	horizontalPhysicsState = AT_REST;
-
 }
-
 
 void Character::render()
 {

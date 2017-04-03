@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "Command.h"
 
 Game::Game()
 {
@@ -144,7 +145,6 @@ bool Game::loadMedia() {
 
 	if (success)
 	{
-		inputManager.setInputCharacter(character);
 		camera.objectToFollow = dynamic_cast<GameObject*>(&character);
 		camera.offsetX = SCREEN_WIDTH / 2.f;
 		camera.offsetY = SCREEN_HEIGHT / 1.75f;
@@ -174,12 +174,17 @@ bool Game::manageInput(SDL_KeyboardEvent key)
 
 void Game::update()
 {
-	currentFrameTime = SDL_GetTicks();
-	inputManager.update();
-	
-
+	// Update at 60fps
 	if (SDL_GetTicks() - previousFrameTime >= 16)
 	{
+		currentFrameTime = SDL_GetTicks();
+		Command* command = inputManager.handleInput();
+	
+		if (command)
+		{
+			command->execute(character);
+		}
+			
 		previousFrameTime = currentFrameTime;
 		character.update(SDL_GetTicks());
 		ground.update(SDL_GetTicks());

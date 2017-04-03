@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Command.h"
 #include "Character.h"
 
 class InputManager
@@ -12,16 +13,30 @@ public:
 	};
 
 	InputManager();
+
 	void update();
 	void swapStates();
+	Command* handleInput();
 	InputState CurrentState();
-	void setInputCharacter(Character& c);
 
 private:
-	InputState currentState;
-	Character* inputCharacter;
 	bool spaceReleased;
+
 	GLfloat cameraX;
 	GLfloat cameraY;
 
+	InputState currentState;
+	Character* inputCharacter;
+	
+	// Key press commands
+	Command* pressKeyA;
+	Command* pressKeyD;
+	Command* pressKeyP;
+	Command* pressKeySpace;
+	Command* pressKeyEsc;
+
+	// Key release commands
+	Command* releaseKeyA;
+	Command* releaseKeyD;
+	Command* releaseKeySpace;
 };

@@ -4,9 +4,22 @@
 InputManager::InputManager()
 {
 	spaceReleased = true;
+
+	// Set command objects
+	pressKeyA = new MoveLeftCommand();
+	pressKeyD = new MoveRightCommand();
+	pressKeyP = new ResetPositionCommand();
+	pressKeySpace = new JumpCommand();
+	releaseKeyA = new StopCommand();
+	releaseKeySpace = new ResetJumpCommand();
 }
 
 void InputManager::update()
+{
+	
+}
+
+Command* InputManager::handleInput()
 {
 	//Event handler
 	SDL_Event e;
@@ -14,46 +27,27 @@ void InputManager::update()
 	//Handle events on queue
 	while (SDL_PollEvent(&e) != 0)
 	{
+		SDL_Keycode key = e.key.keysym.sym;
+
 		//User requests quit
 		if (e.type == SDL_KEYUP)
 		{
 			if (currentState == GAME)
 			{
 				// if key is a or d then stop moving
-				if (e.key.keysym.sym == SDLK_a || e.key.keysym.sym == SDLK_d)
-				{
-					inputCharacter->reduceHorizontalMovement();
-					//glTranslatef(camera.positionX, camera.positionY, 0.f);
-				}
-				if (e.key.keysym.sym == SDLK_SPACE)
-				{
-					spaceReleased = true;
-				}
+				if (key == SDLK_a || key == SDLK_d) { return releaseKeyA; }
+				if (e.key.keysym.sym == SDLK_SPACE) { return releaseKeySpace; }
 			}
 		}
-		else if(e.type == SDL_KEYDOWN)
+		else if (e.type == SDL_KEYDOWN)
 		{
 			if (currentState == GAME)
 			{
 				// if key is a or d then start moving left to right
-				switch (e.key.keysym.sym)
-				{
-				case SDLK_a:
-					inputCharacter->applyHorizontalMovement(-1.f);
-					break;
-				case SDLK_d:
-					inputCharacter->applyHorizontalMovement(1.f);
-					break;
-				case SDLK_p:
-					inputCharacter->resetPosition();
-				}
-
-				if (e.key.keysym.sym == SDLK_SPACE && spaceReleased)
-				{
-					inputCharacter->jump();
-					spaceReleased = false;
-				}
-
+				if (key == SDLK_a) { return pressKeyA; }
+				if (key == SDLK_d) { return pressKeyD; }
+				if (key == SDLK_p) { return pressKeyP; }
+				if (key == SDLK_SPACE) { return pressKeySpace; }
 			}
 			else if (currentState == MENU)
 			{
@@ -62,9 +56,11 @@ void InputManager::update()
 		}
 		else if (e.type == SDL_QUIT)
 		{
-			
+
 		}
 	}
+
+	return NULL;
 }
 
 InputManager::InputState InputManager::CurrentState()
@@ -75,9 +71,4 @@ InputManager::InputState InputManager::CurrentState()
 void InputManager::swapStates()
 {
 	currentState = currentState == GAME ? MENU : GAME;
-}
-
-void InputManager::setInputCharacter(Character& c)
-{
-	inputCharacter = &c;
 }

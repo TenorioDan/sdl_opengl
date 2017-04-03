@@ -33,14 +33,7 @@ void GameObject::translate(GLfloat x, GLfloat y)
 	collider.minY = positionY - (height / 2);
 }
 
-
-// Simple algorithm for adding gravity to a gameobject. If the physics state of the object is that it is currently falling,
-// update the vertical velocity by the accerlation of gravity. 
-// We check collisions against all platforms.
-// Update the current y position of the object and then check whether or not the object will collide in the next 
-// frame, and keep track of that so that the next time this method is called, the y position of the object is just set to the
-// colliding platform.
-
+// TODO: Change collision results based on object type
 // TODO: Quad Trees for per section collision detection
 void GameObject::checkCollisions()
 {
@@ -50,13 +43,15 @@ void GameObject::checkCollisions()
 	{
 		currentPlatform = NULL;
 		verticalPhysicsState = IN_MOTION;
-		verticleVelocity = 0;
+		verticleVelocity = 0.f;
 	}
 
 	// check against platforms that 
 	for (auto p : platforms)
 	{
+		// Predictive collision detection
 		translate(horizontalVelocity, verticleVelocity);
+
 		switch (collider.collision(*p))
 		{
 		case Collider::CollisionDirection::LEFT:
@@ -75,6 +70,7 @@ void GameObject::checkCollisions()
 			verticleVelocity = 0;
 			break;
 		}
+
 		translate(-horizontalVelocity, -verticleVelocity);
 	}
 }
@@ -97,7 +93,6 @@ GLfloat GameObject::PositionY()
 {
 	return positionY;
 }
-
 
 void GameObject::update(int time)
 {

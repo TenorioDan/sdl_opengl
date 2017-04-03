@@ -21,28 +21,29 @@ public:
 	virtual void render();
 	virtual void translate(GLfloat x, GLfloat y) override;
 
-	GLfloat MoveSpeed();
-
 	void applyHorizontalMovement(GLfloat directionModifier);
 	void reduceHorizontalMovement();
 	void setMoveSpeed(int newSpeed);
 	void resetPosition();
 	void jump();
-	
+	void resetJump();
+
+	GLfloat MoveSpeed();
 
 protected:
+	int previousAnimationTime;
+	int currentAnimationTime;
+	int animationSpeed; // time between animations in miliseconds
+	int jumpAnimationSpeed;
+	bool canJump;
+
 	// Protected primitives
 	GLuint totalSprites;
 	GLuint spriteIndex;
 	GLfloat moveSpeed;
 
 	const GLfloat baseJumpSpeed = -44.f; // move upwards which is the negative y direction
-	const GLfloat colliderOffset = 30.f;
-
-	int previousAnimationTime;
-	int currentAnimationTime;
-	int animationSpeed; // time between animations in miliseconds
-	int jumpAnimationSpeed;
+	const GLfloat colliderOffset = 30.f;	
 
 	// Protected object member variables
 	SpriteSheet characterSpriteSheet;

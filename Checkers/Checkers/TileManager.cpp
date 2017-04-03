@@ -115,18 +115,13 @@ void TileManager::createColliders(std::string path)
 		std::istringstream buffer(line);
 		std::istream_iterator<std::string> beg(buffer), end;
 		std::vector<std::string> values(beg, end);
-
 		auto it = values.begin();
-		int minX = std::stoi(*it++);
-		int minY = std::stoi(*it++);
-		int maxX = std::stoi(*it++);
-		int maxY = std::stoi(*it);
 
 		Collider* c = new Collider();
-		c->maxX = maxX - (tileWidth / 2.f);
-		c->maxY = maxY - (tileWidth / 2.f);
-		c->minX = minX - (tileWidth / 2.f);
-		c->minY = minY - (tileWidth / 2.f);
+		c->minX = std::stoi(*it++) - (tileWidth / 2.f);
+		c->minY = std::stoi(*it++) - (tileWidth / 2.f);
+		c->maxX = std::stoi(*it++) - (tileWidth / 2.f);
+		c->maxY = std::stoi(*it) - (tileWidth / 2.f);
 		platforms.push_back(c);
 	}
 }
@@ -150,6 +145,8 @@ void TileManager::render()
 
 			if (t.spriteIndex > 0)
 			{
+				// Move to the spot to render and then move back to render the next texture 
+				// in the correct spot
 				glTranslatef(t.positionX, t.positionY, 0.f);
 				tileSheet.renderSprite(t.spriteIndex - 1);
 				glTranslatef(-t.positionX, -t.positionY, 0.f);
