@@ -3,8 +3,11 @@
 #include "Command.h"
 #include "Character.h"
 
-#define JOYSTICK_X_AXIS 0;
-#define JOYSTICK_Y_AXIS 1;
+#define JOYSTICK_LEFT 0
+#define JOYSTICK_RIGHT 1
+#define JOYSTICK_X_AXIS 0
+#define JOYSTICK_Y_AXIS 1
+#define JOYSTICK_DEADZONE 8000
 
 class InputManager
 {
@@ -29,7 +32,6 @@ private:
 
 	GLfloat cameraX;
 	GLfloat cameraY;
-	int joyStickDeadZone;
 
 	InputState currentState;
 	SDL_Joystick* gameController = NULL;

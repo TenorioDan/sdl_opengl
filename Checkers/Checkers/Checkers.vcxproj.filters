@@ -148,6 +148,12 @@
     <Image Include="shovel_knight_original.png">
       <Filter>Resource Files\Tile Maps</Filter>
     </Image>
+    <Image Include="samus_spritesheet.png">
+      <Filter>Resource Files\Sprite Sheets</Filter>
+    </Image>
+    <Image Include="Fusion-Samus.png">
+      <Filter>Resource Files\Sprite Sheets</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="test_level.txt">
@@ -155,6 +161,9 @@
     </Text>
     <Text Include="Platforms.txt">
       <Filter>Resource Files\Tile Maps</Filter>
+    </Text>
+    <Text Include="sprites.txt">
+      <Filter>Resource Files\Sprite Sheets</Filter>
     </Text>
   </ItemGroup>
 </Project>

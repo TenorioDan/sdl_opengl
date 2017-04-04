@@ -5,7 +5,6 @@
 InputManager::InputManager()
 {
 	spaceReleased = true;
-	joyStickDeadZone = 8000;
 
 	// Set command objects
 	moveLeftStick_Left = new MoveLeftCommand();
@@ -27,13 +26,13 @@ Command* InputManager::handleInput()
 		// Joystick Axis Input Handling
 		if (e.type == SDL_JOYAXISMOTION)
 		{
-			if (e.jaxis.which == 0)
+			if (e.jaxis.which == JOYSTICK_LEFT)
 			{
-				if (e.jaxis.axis == 0)
+				if (e.jaxis.axis == JOYSTICK_X_AXIS)
 				{
-					if (e.jaxis.value > joyStickDeadZone) { return moveLeftStick_Right; }
-					if (e.jaxis.value < -joyStickDeadZone) { return moveLeftStick_Left; }
-					if (e.jaxis.value <= std::abs(joyStickDeadZone)) { return releaseLeftStick; }
+					if (e.jaxis.value > JOYSTICK_DEADZONE) { return moveLeftStick_Right; }
+					if (e.jaxis.value < -JOYSTICK_DEADZONE) { return moveLeftStick_Left; }
+					if (std::abs(e.jaxis.value) <= JOYSTICK_DEADZONE) { return releaseLeftStick; }
 				}
 
 			}

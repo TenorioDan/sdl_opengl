@@ -6,8 +6,8 @@ Character::Character()
 {
 	positionX = 128;
 	positionY = 0;
-	width = 85.f;
-	height = 87.f;
+	width = 90.f;
+	height = 90.f;
 	spriteIndex = 0;
 	totalSprites = 0;
 	moveSpeed = 8;
@@ -44,7 +44,7 @@ void Character::translate(GLfloat x, GLfloat y)
 
 bool Character::loadMedia()
 {
-	if (!characterSpriteSheet.loadTextureFromFileWithColorKey("shovel_knight_original.png", 255, 255, 255))
+	if (!characterSpriteSheet.loadTextureFromFileWithColorKey("Fusion-Samus.png", 255, 255, 255))
 	{
 		printf("Unable to load sprite sheet!\n");
 		return false;
@@ -52,28 +52,18 @@ bool Character::loadMedia()
 
 	// TODO: Create character spritesheet and define locations
 	// set clips
-	LFRect clip = { 0.f, 0.f, 85.f, 87.f };
-	int offset = 5;
+	LFRect clip = { 0.f, 0.f, 80.f, 90.f };
+	int offset = 15;
+	int initialX = 15;
+	int initialY = 765;
+	int runningSpriteCount = 10;
 
-	// Top left
-	clip.x = 266.f;
-	clip.y = 10.f;
-	characterSpriteSheet.addClipSprite(clip);
-
-	// Top right
-	clip.x = 266.f + (85 * 1) + (offset * 1);
-	clip.y = 10.f;
-	characterSpriteSheet.addClipSprite(clip);
-
-	// Bottom left
-	clip.x = 266.f + (85 * 2) + (offset * 2);
-	clip.y = 10.f;
-	characterSpriteSheet.addClipSprite(clip);
-
-	// Bottom right
-	clip.x = 266.f + (85 * 3) + (offset * 3);
-	clip.y = 10.f;
-	characterSpriteSheet.addClipSprite(clip);
+	for (int i = 0; i < runningSpriteCount; ++i)
+	{
+		clip.x = initialX + (width * i) + (i * offset);
+		clip.y = 765;
+		characterSpriteSheet.addClipSprite(clip);
+	}
 
 	if (!characterSpriteSheet.generateDataBuffer())
 	{
@@ -81,7 +71,7 @@ bool Character::loadMedia()
 		return false;
 	}
 
-	totalSprites = 4;
+	totalSprites = 10;
 
 	return true;
 }
