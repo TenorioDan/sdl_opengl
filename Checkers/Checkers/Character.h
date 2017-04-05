@@ -13,6 +13,12 @@ public:
 		JUMPING
 	};
 
+	enum Direction
+	{
+		LEFT,
+		RIGHT
+	};
+
 	Character();
 	~Character();
 	bool loadMedia();
@@ -21,6 +27,7 @@ public:
 	virtual void render();
 	virtual void translate(GLfloat x, GLfloat y) override;
 
+	void createAnimations(SpriteSheet& spritesheet);
 	void applyHorizontalMovement(GLfloat directionModifier);
 	void reduceHorizontalMovement();
 	void setMoveSpeed(int newSpeed);
@@ -31,14 +38,15 @@ public:
 	GLfloat MoveSpeed();
 
 protected:
+	// Protected primitives
 	int previousAnimationTime;
 	int currentAnimationTime;
 	int animationSpeed; // time between animations in miliseconds
 	int jumpAnimationSpeed;
+	int startAnimationIndex;
+	int endAnimationIndex;
 	bool canJump;
 
-	// Protected primitives
-	GLuint totalSprites;
 	GLuint spriteIndex;
 	GLfloat moveSpeed;
 
@@ -48,5 +56,6 @@ protected:
 	// Protected object member variables
 	SpriteSheet characterSpriteSheet;
 	ChracterState currentState;
+	Direction direction;
 
 };

@@ -6,10 +6,9 @@ Character::Character()
 {
 	positionX = 128;
 	positionY = 0;
-	width = 90.f;
-	height = 90.f;
+	width = 85.f;
+	height = 87.f;
 	spriteIndex = 0;
-	totalSprites = 0;
 	moveSpeed = 8;
 	previousAnimationTime = 0;
 	currentAnimationTime = 0;
@@ -19,6 +18,7 @@ Character::Character()
 	verticleVelocity = 0;
 	useGravity = true;
 	canJump = true;
+	direction = RIGHT;
 }
 
 Character::~Character()
@@ -44,26 +44,13 @@ void Character::translate(GLfloat x, GLfloat y)
 
 bool Character::loadMedia()
 {
-	if (!characterSpriteSheet.loadTextureFromFileWithColorKey("Fusion-Samus.png", 255, 255, 255))
+	if (!characterSpriteSheet.loadTextureFromFileWithColorKey("shovel_knight_original.png", 255, 255, 255))
 	{
 		printf("Unable to load sprite sheet!\n");
 		return false;
 	}
 
-	// TODO: Create character spritesheet and define locations
-	// set clips
-	LFRect clip = { 0.f, 0.f, 80.f, 90.f };
-	int offset = 15;
-	int initialX = 15;
-	int initialY = 765;
-	int runningSpriteCount = 10;
-
-	for (int i = 0; i < runningSpriteCount; ++i)
-	{
-		clip.x = initialX + (width * i) + (i * offset);
-		clip.y = 765;
-		characterSpriteSheet.addClipSprite(clip);
-	}
+	createAnimations(characterSpriteSheet);
 
 	if (!characterSpriteSheet.generateDataBuffer())
 	{
@@ -71,9 +58,32 @@ bool Character::loadMedia()
 		return false;
 	}
 
-	totalSprites = 10;
-
 	return true;
+}
+
+// Create the character animations based on the spritesheets provided
+void Character::createAnimations(SpriteSheet& spritesheet)
+{
+	// TODO: Create character spritesheet and define locations
+	// set clips
+	LFRect clip = { 0.f, 0.f, width, height };
+	GLfloat offset = 5.f;
+	GLfloat startPositionX = 266.f;
+
+	// Add running right sprites
+	for (int i = 0; i < 4; ++i)
+	{
+		clip.x = startPositionX + (width * i) + (offset * i);
+		clip.y = 10.f;
+		spritesheet.addClipSprite(clip);
+	}
+	
+	for (int i = 0; i < 4; ++i)
+	{
+		clip.x = spritesheet.imageWidth() - (startPositionX + (width * (i + 1)) + (offset * i));
+		clip.y = 10.f;
+		spritesheet.addClipSprite(clip);
+	}
 }
 
 
@@ -90,9 +100,9 @@ void Character::update(int time)
 
 		spriteIndex++;
 
-		if (spriteIndex >= totalSprites)
+		if (spriteIndex < startAnimationIndex || spriteIndex > endAnimationIndex)
 		{
-			spriteIndex = 0;
+			spriteIndex = startAnimationIndex;
 		}
 	}
 }
@@ -118,6 +128,19 @@ void Character::applyHorizontalMovement(GLfloat directionModifier)
 
 	horizontalVelocity = (moveSpeed * directionModifier);
 	horizontalPhysicsState = IN_MOTION;
+
+	if (directionModifier >= 0)
+	{
+		direction = RIGHT;
+		startAnimationIndex = 0;
+		endAnimationIndex = 3;
+	}
+	else
+	{
+		direction = LEFT;
+		startAnimationIndex = 4;
+		endAnimationIndex = 7;
+	}
 }
 
 void Character::reduceHorizontalMovement()
