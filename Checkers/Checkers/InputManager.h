@@ -42,6 +42,7 @@ private:
 	Command* pressKeyP;
 	Command* pressButtonA;
 	Command* pressKeyEsc;
+	Command* pressButtonX;
 
 	// Key release commands
 	Command* releaseLeftStick;

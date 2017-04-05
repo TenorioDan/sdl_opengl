@@ -11,6 +11,8 @@ InputManager::InputManager()
 	moveLeftStick_Right = new MoveRightCommand();
 	pressKeyP = new ResetPositionCommand();
 	pressButtonA = new JumpCommand();
+	pressButtonX = new AttackCommand();
+
 	releaseLeftStick = new StopCommand();
 	releaseButtonA = new ResetJumpCommand();
 }
@@ -44,6 +46,8 @@ Command* InputManager::handleInput()
 			{
 			case 0:
 				return pressButtonA;
+			case 2:
+				return pressButtonX;
 			}
 		}
 		// Joystick Button Up Handling

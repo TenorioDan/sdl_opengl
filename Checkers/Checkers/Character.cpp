@@ -1,4 +1,5 @@
 #include "Character.h"
+#include "TileManager.h"
 #include <cmath>
 
 Character::Character()
@@ -15,7 +16,7 @@ Character::Character()
 	animationSpeed = 100;
 	jumpAnimationSpeed = 50;
 	currentState = IDLE;
-	verticleVelocity = 0;
+	verticalVelocity = 0;
 	useGravity = true;
 	canJump = true;
 	direction = RIGHT;
@@ -50,7 +51,7 @@ bool Character::loadMedia()
 		return false;
 	}
 
-	createAnimations(characterSpriteSheet);
+	createAnimations(characterSpriteSheet, width, height, 5.f, 266.f, 10.f, 4);
 
 	if (!characterSpriteSheet.generateDataBuffer())
 	{
@@ -58,34 +59,156 @@ bool Character::loadMedia()
 		return false;
 	}
 
+	if (!projectileSpriteSheet.loadTextureFromFileWithColorKey("blaster-1.png", 255, 0, 255))
+	{
+		printf("Unable to load blaster sprite sheet\n");
+		return false;
+	}
+
+	createAnimations(projectileSpriteSheet, 40.f, 20.f, 0.f, 0.f, 0.f, 3);
+
+	if (!projectileSpriteSheet.generateDataBuffer())
+	{
+		printf("Unable to clip blaster sprite sheet");
+		return false;
+	}
+
 	return true;
 }
 
 // Create the character animations based on the spritesheets provided
-void Character::createAnimations(SpriteSheet& spritesheet)
+void Character::createAnimations(SpriteSheet& spritesheet, GLfloat spriteWidth, GLfloat spriteHeight, GLfloat spriteOffset, 
+								 GLfloat spriteStartPositionX, GLfloat spriteStartPositionY, int animationCount)
 {
 	// TODO: Create character spritesheet and define locations
 	// set clips
-	LFRect clip = { 0.f, 0.f, width, height };
-	GLfloat offset = 5.f;
-	GLfloat startPositionX = 266.f;
+	LFRect clip = { 0.f, 0.f, spriteWidth, spriteHeight };
 
 	// Add running right sprites
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < animationCount; ++i)
 	{
-		clip.x = startPositionX + (width * i) + (offset * i);
-		clip.y = 10.f;
+		clip.x = spriteStartPositionX + (spriteWidth * i) + (spriteOffset * i);
+		clip.y = spriteStartPositionY;
 		spritesheet.addClipSprite(clip);
 	}
 	
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < animationCount; ++i)
 	{
-		clip.x = spritesheet.imageWidth() - (startPositionX + (width * (i + 1)) + (offset * i));
-		clip.y = 10.f;
+		clip.x = spritesheet.imageWidth() - (spriteStartPositionX + (spriteWidth * (i + 1)) + (spriteOffset * i));
+		clip.y = spriteStartPositionY;
 		spritesheet.addClipSprite(clip);
 	}
 }
 
+
+void Character::attack()
+{
+	Projectile *p = new Projectile(projectileSpriteSheet, positionX, positionY, direction);
+	projectiles.push_back(p);
+}
+
+void Character::jump()
+{
+	if (verticalPhysicsState == AT_REST && canJump)
+	{
+		verticalPhysicsState = IN_MOTION;
+		verticalVelocity = baseJumpSpeed;
+		currentPlatform = NULL;
+		canJump = false;
+	}
+}
+
+// TODO: Change collision results based on object type
+// TODO: Quad Trees for per section collision detection
+void Character::checkCollisions()
+{
+	std::vector<Collider*> platforms = TileManager::getInstance()->getPlatforms();
+
+	if (currentPlatform != NULL && collider.collision(*currentPlatform) == Collider::CollisionDirection::NO_COLLISION)
+	{
+		currentPlatform = NULL;
+		verticalPhysicsState = IN_MOTION;
+		verticalVelocity = 0.f;
+	}
+
+	// check against platforms that 
+	for (auto p : platforms)
+	{
+		// Predictive collision detection
+		translate(horizontalVelocity, verticalVelocity);
+
+		switch (collider.collision(*p))
+		{
+		case Collider::CollisionDirection::LEFT:
+			translate(-horizontalVelocity, 0.f);
+			break;
+		case Collider::CollisionDirection::RIGHT:
+			translate(-horizontalVelocity, 0.f);
+			break;
+		case Collider::CollisionDirection::ABOVE:
+			currentPlatform = p;
+			positionY = p->minY - (height / 2.f);
+			verticalPhysicsState = AT_REST;
+			verticalVelocity = 0;
+			break;
+		case Collider::CollisionDirection::BELOW:
+			verticalVelocity = 0;
+			break;
+		}
+
+		translate(-horizontalVelocity, -verticalVelocity);
+	}
+}
+
+
+void Character::resetJump()
+{
+	canJump = true;
+}
+
+void Character::applyHorizontalMovement(GLfloat directionModifier)
+{
+
+	horizontalVelocity = (moveSpeed * directionModifier);
+	horizontalPhysicsState = IN_MOTION;
+
+	if (directionModifier > 0)
+	{
+		direction = RIGHT;
+		startAnimationIndex = 0;
+		endAnimationIndex = 3;
+	}
+	else if (directionModifier < 0)
+	{
+		direction = LEFT;
+		startAnimationIndex = 4;
+		endAnimationIndex = 7;
+	}
+}
+
+void Character::reduceHorizontalMovement()
+{
+	horizontalVelocity = 0;
+	horizontalPhysicsState = AT_REST;
+}
+
+GLfloat Character::MoveSpeed()
+{
+	return moveSpeed;
+}
+
+void Character::setMoveSpeed(int newSpeed)
+{
+	moveSpeed = newSpeed;
+}
+
+
+// For debugging
+void Character::resetPosition()
+{
+	positionX = 128;
+	positionY = 0;
+}
 
 // Virtual character update that switches between character states
 // applies gravity and swaps animations 
@@ -105,48 +228,11 @@ void Character::update(int time)
 			spriteIndex = startAnimationIndex;
 		}
 	}
-}
 
-void Character::jump()
-{
-	if (verticalPhysicsState == AT_REST && canJump)
+	for (auto p : projectiles)
 	{
-		verticalPhysicsState = IN_MOTION;
-		verticleVelocity = baseJumpSpeed;
-		currentPlatform = NULL;
-		canJump = false;
+		p->update(time);
 	}
-}
-
-void Character::resetJump()
-{
-	canJump = true;
-}
-
-void Character::applyHorizontalMovement(GLfloat directionModifier)
-{
-
-	horizontalVelocity = (moveSpeed * directionModifier);
-	horizontalPhysicsState = IN_MOTION;
-
-	if (directionModifier >= 0)
-	{
-		direction = RIGHT;
-		startAnimationIndex = 0;
-		endAnimationIndex = 3;
-	}
-	else
-	{
-		direction = LEFT;
-		startAnimationIndex = 4;
-		endAnimationIndex = 7;
-	}
-}
-
-void Character::reduceHorizontalMovement()
-{
-	horizontalVelocity = 0;
-	horizontalPhysicsState = AT_REST;
 }
 
 void Character::render()
@@ -154,21 +240,9 @@ void Character::render()
 	GameObject::render();
 	characterSpriteSheet.renderSprite(spriteIndex);
 	glTranslatef(-positionX, -positionY, 0.f);
-}
 
-
-GLfloat Character::MoveSpeed()
-{
-	return moveSpeed;
-}
-
-void Character::setMoveSpeed(int newSpeed)
-{
-	moveSpeed = newSpeed;
-}
-
-void Character::resetPosition()
-{
-	positionX = 128;
-	positionY = 0;
+	for (auto p : projectiles)
+	{
+		p->render();
+	}
 }

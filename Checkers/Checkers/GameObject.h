@@ -11,25 +11,40 @@ public:
 		IN_MOTION,
 	};
 
+	enum Direction
+	{
+		LEFT,
+		RIGHT
+	};
+
 	GameObject();
 
 	virtual void update(int time);
 	virtual void render();
 
 	virtual void translate(GLfloat x, GLfloat y);
+	
 	//void applyHorizontalVelocity;
 	Collider getCollider();
 
 	GLfloat PositionX();
 	GLfloat PositionY();
+	void setVerticalVelocity(GLfloat v);
+	void setHorizontalVelocity(GLfloat v);
 
 protected:
+	int previousAnimationTime;
+	int currentAnimationTime;
+	int animationSpeed; // time between animations in miliseconds
+	int startAnimationIndex;
+	int endAnimationIndex;
 	bool useGravity;
+	GLuint spriteIndex;
 	GLfloat positionX;
 	GLfloat positionY;
 	GLfloat width;
 	GLfloat height;
-	GLfloat verticleVelocity;
+	GLfloat verticalVelocity;
 	GLfloat horizontalVelocity;
 
 	const GLfloat gravity = 4.f;
@@ -39,11 +54,13 @@ protected:
 	Collider* currentPlatform;
 
 	// Protected methods
-	void checkCollisions();
+	virtual void checkCollisions() = 0;
 	void applyGravity();
 
 	bool landingCollisionNextFrame;
 
+	// Enums
 	PhysicsState horizontalPhysicsState;
 	PhysicsState verticalPhysicsState;
+	Direction direction;
 };

@@ -44,7 +44,7 @@ bool Game::initGL()
 	glPushMatrix();
 
 	// Initialize clear color
-	glClearColor(0.31f, 0.66f, 0.79f, 1.f);
+	glClearColor(0.f, 0.f, 0.f, 1.f);
 	glEnable(GL_TEXTURE_2D);
 	checkGL_Error(glGetError(), success);
 
@@ -196,7 +196,6 @@ void Game::update()
 			
 		previousFrameTime = currentFrameTime;
 		character.update(SDL_GetTicks());
-		ground.update(SDL_GetTicks());
 	}
 }
 

@@ -125,12 +125,14 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Platform.cpp" />
+    <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="SpriteSheet.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TileManager.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnimatedGameObject.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Character.h" />
     <ClInclude Include="Collider.h" />
@@ -144,14 +146,17 @@
     <ClInclude Include="LVertexData2D.h" />
     <ClInclude Include="LVertexPos2D.h" />
     <ClInclude Include="Platform.h" />
+    <ClInclude Include="Projectile.h" />
     <ClInclude Include="SpriteSheet.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TileManager.h" />
+    <ClInclude Include="Weapon.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="arrow.png" />
     <Image Include="arrows.png" />
+    <Image Include="blaster-1.png" />
     <Image Include="character_test.png" />
     <Image Include="circle.png" />
     <Image Include="Fusion-Samus.png" />

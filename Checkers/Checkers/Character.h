@@ -1,6 +1,8 @@
 #pragma once
 #include "SpriteSheet.h"
 #include "GameObject.h"
+#include "Projectile.h"
+#include <vector>
 
 class Character : public GameObject
 {
@@ -13,12 +15,6 @@ public:
 		JUMPING
 	};
 
-	enum Direction
-	{
-		LEFT,
-		RIGHT
-	};
-
 	Character();
 	~Character();
 	bool loadMedia();
@@ -27,27 +23,23 @@ public:
 	virtual void render();
 	virtual void translate(GLfloat x, GLfloat y) override;
 
-	void createAnimations(SpriteSheet& spritesheet);
+	void createAnimations(SpriteSheet& spritesheet, GLfloat spriteWidth, GLfloat spriteHeight, GLfloat spriteOffset,
+		GLfloat spriteStartPositionX, GLfloat spriteStartPositionY, int animationCount);
 	void applyHorizontalMovement(GLfloat directionModifier);
 	void reduceHorizontalMovement();
 	void setMoveSpeed(int newSpeed);
 	void resetPosition();
 	void jump();
 	void resetJump();
+	void attack();
 
 	GLfloat MoveSpeed();
 
 protected:
 	// Protected primitives
-	int previousAnimationTime;
-	int currentAnimationTime;
-	int animationSpeed; // time between animations in miliseconds
 	int jumpAnimationSpeed;
-	int startAnimationIndex;
-	int endAnimationIndex;
 	bool canJump;
 
-	GLuint spriteIndex;
 	GLfloat moveSpeed;
 
 	const GLfloat baseJumpSpeed = -44.f; // move upwards which is the negative y direction
@@ -55,7 +47,11 @@ protected:
 
 	// Protected object member variables
 	SpriteSheet characterSpriteSheet;
-	ChracterState currentState;
-	Direction direction;
+	SpriteSheet projectileSpriteSheet;
 
+	std::vector<Projectile*> projectiles;
+		
+	ChracterState currentState;
+
+	void checkCollisions();
 };

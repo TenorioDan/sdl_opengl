@@ -47,7 +47,6 @@ private:
 	SDL_GLContext gContext = NULL;
 
 	Character character;
-	Platform ground;
 	TileManager* tileManager;
 	InputManager inputManager;
 	Camera camera;

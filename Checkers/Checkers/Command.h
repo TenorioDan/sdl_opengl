@@ -12,7 +12,7 @@ public:
 class JumpCommand : public Command
 {
 public:
-	virtual void execute(Character& character)
+	void execute(Character& character)
 	{
 		character.jump();
 	}
@@ -21,7 +21,7 @@ public:
 class ResetJumpCommand : public Command
 {
 public:
-	virtual void execute(Character& character)
+	void execute(Character& character)
 	{
 		character.resetJump();
 	}
@@ -30,7 +30,7 @@ public:
 class MoveLeftCommand : public Command
 {
 public:
-	virtual void execute(Character& character)
+	void execute(Character& character)
 	{
 		character.applyHorizontalMovement(-1);
 	}
@@ -40,7 +40,7 @@ public:
 class MoveRightCommand : public Command
 {
 public:
-	virtual void execute(Character& character)
+	void execute(Character& character)
 	{
 		character.applyHorizontalMovement(1);
 	}
@@ -50,7 +50,7 @@ public:
 class StopCommand : public Command
 {
 public:
-	virtual void execute(Character& character)
+	void execute(Character& character)
 	{
 		character.reduceHorizontalMovement();
 	}
@@ -59,8 +59,17 @@ public:
 class ResetPositionCommand : public Command
 {
 public:
-	virtual void execute(Character& character)
+	void execute(Character& character)
 	{
 		character.resetPosition();
+	}
+};
+
+class AttackCommand : public Command
+{
+public:
+	void execute(Character& character)
+	{
+		character.attack();
 	}
 };
