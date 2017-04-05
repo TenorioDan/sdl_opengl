@@ -48,6 +48,8 @@ Command* InputManager::handleInput()
 				return pressButtonA;
 			case 2:
 				return pressButtonX;
+			case 6:
+				return pressKeyP;
 			}
 		}
 		// Joystick Button Up Handling

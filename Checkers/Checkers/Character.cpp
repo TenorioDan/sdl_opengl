@@ -10,7 +10,7 @@ Character::Character()
 	width = 85.f;
 	height = 87.f;
 	spriteIndex = 0;
-	moveSpeed = 8;
+	moveSpeed = 10;
 	previousAnimationTime = 0;
 	currentAnimationTime = 0;
 	animationSpeed = 100;
