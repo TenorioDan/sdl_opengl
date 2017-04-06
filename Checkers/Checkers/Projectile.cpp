@@ -6,7 +6,7 @@ Projectile::Projectile(SpriteSheet& spritesheet, GLfloat x, GLfloat y,  Directio
 {
 	useGravity = false;
 	toDelete = false;
-	this->spritesheet = spritesheet;
+	this->spritesheet = &spritesheet;
 	positionX = x;
 	positionY = y;
 	direction = d;
@@ -42,6 +42,11 @@ Projectile::Projectile(SpriteSheet& spritesheet, GLfloat x, GLfloat y,  Directio
 	}
 }
 
+Projectile::~Projectile()
+{
+
+}
+
 void Projectile::checkCollisions()
 {
 	std::vector<Collider*> platforms = TileManager::getInstance()->getPlatforms();
@@ -54,6 +59,11 @@ void Projectile::checkCollisions()
 			toDelete = true;
 		}
 	}
+}
+
+bool Projectile::ToDelete()
+{
+	return toDelete;
 }
 
 void Projectile::update(int time)
@@ -72,16 +82,11 @@ void Projectile::update(int time)
 			spriteIndex = startAnimationIndex;
 		}
 	}
-
-	if (toDelete)
-	{
-		//delete this;
-	}
 }
 
 void Projectile::render()
 {
 	GameObject::render();
-	spritesheet.renderSprite(spriteIndex);
+	spritesheet->renderSprite(spriteIndex);
 	glTranslatef(-positionX, -positionY, 0.f);
 }

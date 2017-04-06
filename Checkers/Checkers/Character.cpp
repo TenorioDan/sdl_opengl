@@ -25,6 +25,10 @@ Character::Character()
 Character::~Character()
 {
 	characterSpriteSheet.freeSheet();
+	for (auto p : projectiles)
+	{
+		delete p;
+	}
 }
 
 void Character::translate(GLfloat x, GLfloat y)
@@ -229,9 +233,21 @@ void Character::update(int time)
 		}
 	}
 
-	for (auto p : projectiles)
+	for (auto it = projectiles.begin(); it != projectiles.end();)
 	{
+		Projectile* p = *it;
 		p->update(time);
+
+		if (p->ToDelete())
+		{
+			delete p;
+			it = projectiles.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+
 	}
 }
 
