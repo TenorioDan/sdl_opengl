@@ -168,3 +168,27 @@ void SpriteSheet::renderSprite(int index)
 		glDisableClientState(GL_VERTEX_ARRAY);
 	}
 }
+
+// Create the character animations based on the spritesheets provided
+void SpriteSheet::createAnimations(GLfloat spriteWidth, GLfloat spriteHeight, GLfloat spriteOffset,
+	GLfloat spriteStartPositionX, GLfloat spriteStartPositionY, int animationCount)
+{
+	// TODO: Create character spritesheet and define locations
+	// set clips
+	LFRect clip = { 0.f, 0.f, spriteWidth, spriteHeight };
+
+	// Add running right sprites
+	for (int i = 0; i < animationCount; ++i)
+	{
+		clip.x = spriteStartPositionX + (spriteWidth * i) + (spriteOffset * i);
+		clip.y = spriteStartPositionY;
+		addClipSprite(clip);
+	}
+
+	for (int i = 0; i < animationCount; ++i)
+	{
+		clip.x = imageWidth() - (spriteStartPositionX + (spriteWidth * (i + 1)) + (spriteOffset * i));
+		clip.y = spriteStartPositionY;
+		addClipSprite(clip);
+	}
+}

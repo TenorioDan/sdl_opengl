@@ -1,10 +1,8 @@
 #pragma once
-#include "SpriteSheet.h"
-#include "GameObject.h"
-#include "Projectile.h"
-#include <vector>
+#include "AnimatedGameObject.h"
+#include "Weapon.h"
 
-class Character : public GameObject
+class Character : public AnimatedGameObject
 {
 public:
 	
@@ -23,8 +21,6 @@ public:
 	virtual void render();
 	virtual void translate(GLfloat x, GLfloat y) override;
 
-	void createAnimations(SpriteSheet& spritesheet, GLfloat spriteWidth, GLfloat spriteHeight, GLfloat spriteOffset,
-		GLfloat spriteStartPositionX, GLfloat spriteStartPositionY, int animationCount);
 	void applyHorizontalMovement(GLfloat directionModifier);
 	void reduceHorizontalMovement();
 	void setMoveSpeed(int newSpeed);
@@ -36,21 +32,18 @@ public:
 	GLfloat MoveSpeed();
 
 protected:
+	const GLfloat baseJumpSpeed = -44.f; // move upwards which is the negative y direction
+	const GLfloat colliderOffset = 30.f;
+
 	// Protected primitives
 	int jumpAnimationSpeed;
 	bool canJump;
 
 	GLfloat moveSpeed;
 
-	const GLfloat baseJumpSpeed = -44.f; // move upwards which is the negative y direction
-	const GLfloat colliderOffset = 30.f;	
-
 	// Protected object member variables
 	SpriteSheet characterSpriteSheet;
-	SpriteSheet projectileSpriteSheet;
-
-	std::vector<Projectile*> projectiles;
-		
+	Weapon weapon;
 	ChracterState currentState;
 
 	void checkCollisions();

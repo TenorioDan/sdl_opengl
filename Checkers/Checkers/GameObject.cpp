@@ -9,14 +9,9 @@ GameObject::GameObject()
 	width = 0;
 	height = 0;
 	verticalPhysicsState = IN_MOTION;
-	landingCollisionNextFrame = false;
 
 	// Animations
 	spriteIndex = 0;
-	previousAnimationTime = 0;
-	currentAnimationTime = 0;
-	startAnimationIndex = 0;
-	endAnimationIndex = 0;
 }
 
 Collider GameObject::getCollider()

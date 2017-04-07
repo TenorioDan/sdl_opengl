@@ -33,11 +33,6 @@ public:
 	void setHorizontalVelocity(GLfloat v);
 
 protected:
-	int previousAnimationTime;
-	int currentAnimationTime;
-	int animationSpeed; // time between animations in miliseconds
-	int startAnimationIndex;
-	int endAnimationIndex;
 	bool useGravity;
 	GLuint spriteIndex;
 	GLfloat positionX;
@@ -56,8 +51,6 @@ protected:
 	// Protected methods
 	virtual void checkCollisions() = 0;
 	void applyGravity();
-
-	bool landingCollisionNextFrame;
 
 	// Enums
 	PhysicsState horizontalPhysicsState;

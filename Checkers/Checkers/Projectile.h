@@ -1,8 +1,8 @@
 #pragma once
-#include "GameObject.h"
+#include "AnimatedGameObject.h"
 #include "SpriteSheet.h"
 
-class Projectile : public GameObject
+class Projectile : public AnimatedGameObject
 {
 public:
 	Projectile(SpriteSheet& spritesheet, GLfloat x, GLfloat y, Direction d);

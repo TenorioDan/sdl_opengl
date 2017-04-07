@@ -3,7 +3,7 @@
 #include <cmath>
 
 Character::Character()
-	: GameObject()
+	: AnimatedGameObject()
 {
 	positionX = 128;
 	positionY = 0;
@@ -25,10 +25,7 @@ Character::Character()
 Character::~Character()
 {
 	characterSpriteSheet.freeSheet();
-	for (auto p : projectiles)
-	{
-		delete p;
-	}
+	
 }
 
 void Character::translate(GLfloat x, GLfloat y)
@@ -55,7 +52,7 @@ bool Character::loadMedia()
 		return false;
 	}
 
-	createAnimations(characterSpriteSheet, width, height, 5.f, 266.f, 10.f, 4);
+	characterSpriteSheet.createAnimations(width, height, 5.f, 266.f, 10.f, 4);
 
 	if (!characterSpriteSheet.generateDataBuffer())
 	{
@@ -63,52 +60,18 @@ bool Character::loadMedia()
 		return false;
 	}
 
-	if (!projectileSpriteSheet.loadTextureFromFileWithColorKey("blaster-1.png", 255, 0, 255))
+	if (!weapon.loadMedia())
 	{
-		printf("Unable to load blaster sprite sheet\n");
-		return false;
-	}
-
-	createAnimations(projectileSpriteSheet, 40.f, 20.f, 0.f, 0.f, 0.f, 2);
-
-	if (!projectileSpriteSheet.generateDataBuffer())
-	{
-		printf("Unable to clip blaster sprite sheet");
+		printf("Unable to load weapon media!\n");
 		return false;
 	}
 
 	return true;
 }
 
-// Create the character animations based on the spritesheets provided
-void Character::createAnimations(SpriteSheet& spritesheet, GLfloat spriteWidth, GLfloat spriteHeight, GLfloat spriteOffset, 
-								 GLfloat spriteStartPositionX, GLfloat spriteStartPositionY, int animationCount)
-{
-	// TODO: Create character spritesheet and define locations
-	// set clips
-	LFRect clip = { 0.f, 0.f, spriteWidth, spriteHeight };
-
-	// Add running right sprites
-	for (int i = 0; i < animationCount; ++i)
-	{
-		clip.x = spriteStartPositionX + (spriteWidth * i) + (spriteOffset * i);
-		clip.y = spriteStartPositionY;
-		spritesheet.addClipSprite(clip);
-	}
-	
-	for (int i = 0; i < animationCount; ++i)
-	{
-		clip.x = spritesheet.imageWidth() - (spriteStartPositionX + (spriteWidth * (i + 1)) + (spriteOffset * i));
-		clip.y = spriteStartPositionY;
-		spritesheet.addClipSprite(clip);
-	}
-}
-
-
 void Character::attack()
 {
-	Projectile *p = new Projectile(projectileSpriteSheet, positionX, positionY, direction);
-	projectiles.push_back(p);
+	weapon.fireWeapon(positionX, positionY, direction);
 }
 
 void Character::jump()
@@ -218,37 +181,8 @@ void Character::resetPosition()
 // applies gravity and swaps animations 
 void Character::update(int time)
 {
-	GameObject::update(time);
-
-	if (time - currentAnimationTime >= animationSpeed && horizontalPhysicsState == IN_MOTION)
-	{
-		previousAnimationTime = currentAnimationTime;
-		currentAnimationTime = time;
-
-		spriteIndex++;
-
-		if (spriteIndex < startAnimationIndex || spriteIndex > endAnimationIndex)
-		{
-			spriteIndex = startAnimationIndex;
-		}
-	}
-
-	for (auto it = projectiles.begin(); it != projectiles.end();)
-	{
-		Projectile* p = *it;
-		p->update(time);
-
-		if (p->ToDelete())
-		{
-			delete p;
-			it = projectiles.erase(it);
-		}
-		else
-		{
-			++it;
-		}
-
-	}
+	AnimatedGameObject::update(time);
+	weapon.update(time);
 }
 
 void Character::render()
@@ -256,9 +190,6 @@ void Character::render()
 	GameObject::render();
 	characterSpriteSheet.renderSprite(spriteIndex);
 	glTranslatef(-positionX, -positionY, 0.f);
-
-	for (auto p : projectiles)
-	{
-		p->render();
-	}
+	
+	weapon.render();
 }

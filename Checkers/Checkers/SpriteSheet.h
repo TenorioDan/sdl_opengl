@@ -26,6 +26,10 @@ public:
 	// Renders sprite at given index
 	void renderSprite(int index);
 
+	// Adds animations frames to the clip vector
+	void createAnimations(GLfloat spriteWidth, GLfloat spriteHeight, GLfloat spriteOffset,
+		GLfloat spriteStartPositionX, GLfloat spriteStartPositionY, int animationCount);
+
 protected:
 	// Sprite clips
 	std::vector<LFRect> mClips;

@@ -2,7 +2,7 @@
 #include "TileManager.h"
 
 Projectile::Projectile(SpriteSheet& spritesheet, GLfloat x, GLfloat y,  Direction d)
-	: GameObject()
+	: AnimatedGameObject()
 {
 	useGravity = false;
 	toDelete = false;
@@ -66,22 +66,10 @@ bool Projectile::ToDelete()
 	return toDelete;
 }
 
+// Similar 
 void Projectile::update(int time)
 {
-	GameObject::update(time);
-
-	if (time - currentAnimationTime >= animationSpeed && horizontalPhysicsState == IN_MOTION)
-	{
-		previousAnimationTime = currentAnimationTime;
-		currentAnimationTime = time;
-
-		spriteIndex++;
-
-		if (spriteIndex < startAnimationIndex || spriteIndex > endAnimationIndex)
-		{
-			spriteIndex = startAnimationIndex;
-		}
-	}
+	AnimatedGameObject::update(time);
 }
 
 void Projectile::render()
