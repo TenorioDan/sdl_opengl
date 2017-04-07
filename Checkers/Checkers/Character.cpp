@@ -69,7 +69,7 @@ bool Character::loadMedia()
 		return false;
 	}
 
-	createAnimations(projectileSpriteSheet, 40.f, 20.f, 0.f, 0.f, 0.f, 3);
+	createAnimations(projectileSpriteSheet, 40.f, 20.f, 0.f, 0.f, 0.f, 2);
 
 	if (!projectileSpriteSheet.generateDataBuffer())
 	{

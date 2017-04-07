@@ -31,14 +31,14 @@ Projectile::Projectile(SpriteSheet& spritesheet, GLfloat x, GLfloat y,  Directio
 	if (direction == RIGHT)
 	{
 		startAnimationIndex = 0;
-		endAnimationIndex = 2;
-		horizontalVelocity = 30;
+		endAnimationIndex = 1;
+		horizontalVelocity = 35;
 	}
 	else
 	{
-		startAnimationIndex = 3;
-		endAnimationIndex = 5;
-		horizontalVelocity = -30;
+		startAnimationIndex = 2;
+		endAnimationIndex = 3;
+		horizontalVelocity = -35;
 	}
 }
 
