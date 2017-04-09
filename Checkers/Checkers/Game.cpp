@@ -152,14 +152,15 @@ bool Game::loadMedia() {
 	success = character.loadMedia();
 	success = tileManager->loadMedia();
 	success = enemy.loadMedia();
+	success = enemy2.loadMedia();
 
 	if (success)
 	{
 		camera.objectToFollow = dynamic_cast<GameObject*>(&character);
 		camera.offsetX = SCREEN_WIDTH / 2.f;
 		camera.offsetY = SCREEN_HEIGHT / 1.75f;
-
-
+		enemy.setCurrentPlatform(9);
+		enemy2.setCurrentPlatform(10);
 	}
 
 	return success;
@@ -200,6 +201,7 @@ void Game::update()
 		previousFrameTime = currentFrameTime;
 		character.update(time);
 		enemy.update(time);
+		enemy2.update(time);
 	}
 }
 
@@ -211,6 +213,7 @@ void Game::render()
 	camera.render();
 	character.render();
 	enemy.render();
+	enemy2.render();
 	//glTranslatef(camera.positionX, camera.positionY, 0.f)
 	tileManager->render();
 

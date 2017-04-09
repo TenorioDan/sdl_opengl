@@ -49,6 +49,7 @@ private:
 
 	Character character;
 	Enemy enemy;
+	Enemy enemy2;
 	TileManager* tileManager;
 	InputManager inputManager;
 	Camera camera;

@@ -125,6 +125,7 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GL_helpers.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="LevelManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="Projectile.cpp" />
@@ -145,6 +146,7 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GL_helpers.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="LevelManager.h" />
     <ClInclude Include="LFRect.h" />
     <ClInclude Include="LTexCoord.h" />
     <ClInclude Include="LVertexData2D.h" />
