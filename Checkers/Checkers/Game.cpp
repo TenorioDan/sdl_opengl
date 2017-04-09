@@ -151,6 +151,7 @@ bool Game::loadMedia() {
 
 	success = character.loadMedia();
 	success = tileManager->loadMedia();
+	success = enemy.loadMedia();
 
 	if (success)
 	{
@@ -183,8 +184,10 @@ bool Game::manageInput(SDL_KeyboardEvent key)
 
 void Game::update()
 {
+	int time = SDL_GetTicks();
+
 	// Update at 60fps
-	if (SDL_GetTicks() - previousFrameTime >= 16)
+	if (time - previousFrameTime >= 16)
 	{
 		currentFrameTime = SDL_GetTicks();
 		Command* command = inputManager.handleInput();
@@ -195,7 +198,8 @@ void Game::update()
 		}
 			
 		previousFrameTime = currentFrameTime;
-		character.update(SDL_GetTicks());
+		character.update(time);
+		enemy.update(time);
 	}
 }
 
@@ -206,6 +210,7 @@ void Game::render()
 	glLoadIdentity();
 	camera.render();
 	character.render();
+	enemy.render();
 	//glTranslatef(camera.positionX, camera.positionY, 0.f)
 	tileManager->render();
 

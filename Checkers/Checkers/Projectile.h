@@ -10,11 +10,11 @@ public:
 
 	void update(int time);
 	void render();
+	bool loadMedia();
 	bool ToDelete();
 
 private:
 	bool toDelete;
-	SpriteSheet* spritesheet;
 
 	void checkCollisions();
 };

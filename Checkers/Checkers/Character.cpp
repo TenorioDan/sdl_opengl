@@ -24,8 +24,7 @@ Character::Character()
 
 Character::~Character()
 {
-	characterSpriteSheet.freeSheet();
-	
+	spriteSheet->freeSheet();
 }
 
 void Character::translate(GLfloat x, GLfloat y)
@@ -46,15 +45,16 @@ void Character::translate(GLfloat x, GLfloat y)
 
 bool Character::loadMedia()
 {
-	if (!characterSpriteSheet.loadTextureFromFileWithColorKey("shovel_knight_original.png", 255, 255, 255))
+	spriteSheet = new SpriteSheet();
+	if (!spriteSheet->loadTextureFromFileWithColorKey("shovel_knight_original.png", 255, 255, 255))
 	{
 		printf("Unable to load sprite sheet!\n");
 		return false;
 	}
 
-	characterSpriteSheet.createAnimations(width, height, 5.f, 266.f, 10.f, 4);
+	spriteSheet->createAnimations(width, height, 5.f, 266.f, 10.f, 4);
 
-	if (!characterSpriteSheet.generateDataBuffer())
+	if (!spriteSheet->generateDataBuffer())
 	{
 		printf("Unable to clip sprite sheet!\n");
 		return false;
@@ -169,7 +169,6 @@ void Character::setMoveSpeed(int newSpeed)
 	moveSpeed = newSpeed;
 }
 
-
 // For debugging
 void Character::resetPosition()
 {
@@ -187,9 +186,6 @@ void Character::update(int time)
 
 void Character::render()
 {
-	GameObject::render();
-	characterSpriteSheet.renderSprite(spriteIndex);
-	glTranslatef(-positionX, -positionY, 0.f);
-	
+	AnimatedGameObject::render();
 	weapon.render();
 }

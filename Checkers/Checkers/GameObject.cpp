@@ -75,5 +75,4 @@ void GameObject::update(int time)
 void GameObject::render()
 {
 	//glLoadIdentity();
-	glTranslatef(positionX, positionY, 0.f);
 }

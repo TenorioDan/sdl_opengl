@@ -26,3 +26,10 @@ void AnimatedGameObject::update(int time)
 		}
 	}
 }
+
+void AnimatedGameObject::render()
+{
+	glTranslatef(positionX, positionY, 0.f);
+	spriteSheet->renderSprite(spriteIndex);
+	glTranslatef(-positionX, -positionY, 0.f);
+}

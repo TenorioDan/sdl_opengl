@@ -5,7 +5,6 @@
 class Character : public AnimatedGameObject
 {
 public:
-	
 	enum ChracterState
 	{
 		IDLE,
@@ -42,7 +41,7 @@ protected:
 	GLfloat moveSpeed;
 
 	// Protected object member variables
-	SpriteSheet characterSpriteSheet;
+	
 	Weapon weapon;
 	ChracterState currentState;
 

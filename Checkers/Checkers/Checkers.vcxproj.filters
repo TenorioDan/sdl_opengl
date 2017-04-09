@@ -34,6 +34,9 @@
     <Filter Include="Source Files\Graphics">
       <UniqueIdentifier>{3fe95c94-bd2d-465e-810b-6b2a6922d8e9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Sprite Sheets\Enemies">
+      <UniqueIdentifier>{2edeb772-5027-4f27-9f1d-d519e0b23529}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -79,6 +82,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AnimatedGameObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -143,6 +149,9 @@
     <ClInclude Include="AnimatedGameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="grass_dirt_tile.png">
@@ -172,9 +181,6 @@
     <Image Include="tileset_platforms.png">
       <Filter>Resource Files\Sprite Sheets</Filter>
     </Image>
-    <Image Include="shovel_knight_original.png">
-      <Filter>Resource Files\Tile Maps</Filter>
-    </Image>
     <Image Include="samus_spritesheet.png">
       <Filter>Resource Files\Sprite Sheets</Filter>
     </Image>
@@ -183,6 +189,12 @@
     </Image>
     <Image Include="blaster-1.png">
       <Filter>Resource Files\Sprite Sheets\Weapons</Filter>
+    </Image>
+    <Image Include="star_enemy.png">
+      <Filter>Resource Files\Sprite Sheets\Enemies</Filter>
+    </Image>
+    <Image Include="shovel_knight_original.png">
+      <Filter>Resource Files\Sprite Sheets</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

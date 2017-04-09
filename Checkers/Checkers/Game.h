@@ -9,6 +9,7 @@
 #include "TileManager.h"
 #include "InputManager.h"
 #include "Camera.h"
+#include "Enemy.h"
 
 class Game 
 {
@@ -47,6 +48,7 @@ private:
 	SDL_GLContext gContext = NULL;
 
 	Character character;
+	Enemy enemy;
 	TileManager* tileManager;
 	InputManager inputManager;
 	Camera camera;

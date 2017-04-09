@@ -1,11 +1,15 @@
 #pragma once
 #include "GameObject.h"
+#include "SpriteSheet.h"
+#include <string>
 
 class AnimatedGameObject : public GameObject
 {
 public:
 	AnimatedGameObject();
-	void update(int time);
+	virtual void update(int time);
+	virtual void render();
+	virtual bool loadMedia() = 0;
 
 protected:
 	int previousAnimationTime;
@@ -13,4 +17,6 @@ protected:
 	int animationSpeed; // time between animations in miliseconds
 	int startAnimationIndex;
 	int endAnimationIndex;
+
+	SpriteSheet* spriteSheet;
 };

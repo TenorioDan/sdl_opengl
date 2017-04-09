@@ -120,6 +120,7 @@
     <ClCompile Include="AnimatedGameObject.cpp" />
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="Collider.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GL_helpers.cpp" />
@@ -139,6 +140,7 @@
     <ClInclude Include="Character.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Command.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GL_helpers.h" />
@@ -167,6 +169,7 @@
     <Image Include="samus_spritesheet.png" />
     <Image Include="shovel_knight_original.png" />
     <Image Include="sky_texture.png" />
+    <Image Include="star_enemy.png" />
     <Image Include="texture.png" />
     <Image Include="tileset_platforms.png" />
   </ItemGroup>

@@ -1,12 +1,12 @@
 #include "Projectile.h"
 #include "TileManager.h"
 
-Projectile::Projectile(SpriteSheet& spritesheet, GLfloat x, GLfloat y,  Direction d)
+Projectile::Projectile(SpriteSheet& ssheet, GLfloat x, GLfloat y,  Direction d)
 	: AnimatedGameObject()
 {
 	useGravity = false;
 	toDelete = false;
-	this->spritesheet = &spritesheet;
+	spriteSheet = &ssheet;
 	positionX = x;
 	positionY = y;
 	direction = d;
@@ -47,6 +47,14 @@ Projectile::~Projectile()
 
 }
 
+bool Projectile::loadMedia()
+{
+	// TODO: Flyweight pattern ensures that media is only loaded once
+	// in the weapon class so this virtual method does nothing. Seems 
+	// like bad design if this method has to exist.
+	return true;
+}
+
 void Projectile::checkCollisions()
 {
 	std::vector<Collider*> platforms = TileManager::getInstance()->getPlatforms();
@@ -74,7 +82,5 @@ void Projectile::update(int time)
 
 void Projectile::render()
 {
-	GameObject::render();
-	spritesheet->renderSprite(spriteIndex);
-	glTranslatef(-positionX, -positionY, 0.f);
+	AnimatedGameObject::render();
 }
