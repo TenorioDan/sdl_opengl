@@ -1,6 +1,7 @@
 #include "InputManager.h"
 #include <SDL.h>
 #include <math.h>
+#include <vector>
 
 InputManager::InputManager()
 {
@@ -9,18 +10,25 @@ InputManager::InputManager()
 	// Set command objects
 	moveLeftStick_Left = new MoveLeftCommand();
 	moveLeftStick_Right = new MoveRightCommand();
+	moveLeftStick_Up = new AimUpCommand();
+	moveLeftStick_Down = new AimDownCommand();
+
 	pressKeyP = new ResetPositionCommand();
 	pressButtonA = new JumpCommand();
 	pressButtonX = new AttackCommand();
+	pressButtonLeftShoulder = new AimCommand();
 
-	releaseLeftStick = new StopCommand();
+	releaseLeftStick_X_Axis = new StopMovementCommand();
+	releaseLeftStick_Y_Axis = new ReleaseAimDirectionCommand();
 	releaseButtonA = new ResetJumpCommand();
+	releaseButtonLeftShoulder = new StopAimCommand();
 }
 
-Command* InputManager::handleInput()
+std::vector<Command*> InputManager::handleInput()
 {
 	//Event handler
 	SDL_Event e;
+	std::vector<Command*> commandQueue;
 
 	//Handle events on queue
 	while (SDL_PollEvent(&e) != 0)
@@ -32,11 +40,17 @@ Command* InputManager::handleInput()
 			{
 				if (e.jaxis.axis == JOYSTICK_X_AXIS)
 				{
-					if (e.jaxis.value > JOYSTICK_DEADZONE) { return moveLeftStick_Right; }
-					if (e.jaxis.value < -JOYSTICK_DEADZONE) { return moveLeftStick_Left; }
-					if (std::abs(e.jaxis.value) <= JOYSTICK_DEADZONE) { return releaseLeftStick; }
+					if (e.jaxis.value > JOYSTICK_X_DEADZONE) { commandQueue.push_back(moveLeftStick_Right); }
+					if (e.jaxis.value < -JOYSTICK_X_DEADZONE) { commandQueue.push_back(moveLeftStick_Left); }
+					if (std::abs(e.jaxis.value) <= JOYSTICK_X_DEADZONE) { commandQueue.push_back(releaseLeftStick_X_Axis); }
 				}
 
+				if (e.jaxis.axis == JOYSTICK_Y_AXIS)
+				{
+					if (e.jaxis.value > JOYSTICK_Y_DEADZONE) { commandQueue.push_back(moveLeftStick_Up); }
+					if (e.jaxis.value < -JOYSTICK_Y_DEADZONE) { commandQueue.push_back(moveLeftStick_Down); }
+					if (std::abs(e.jaxis.value) <= JOYSTICK_Y_DEADZONE) { commandQueue.push_back(releaseLeftStick_Y_Axis); }
+				}
 			}
 		}
 		// Joystick Button Down Handling
@@ -44,12 +58,19 @@ Command* InputManager::handleInput()
 		{
 			switch (e.jbutton.button)
 			{
+			// TODO: Clean up magic numbers
 			case 0:
-				return pressButtonA;
+				commandQueue.push_back(pressButtonA);
+				break;
 			case 2:
-				return pressButtonX;
+				commandQueue.push_back(pressButtonX);
+				break;
+			case 4:
+				commandQueue.push_back(pressButtonLeftShoulder);
+				break;
 			case 6:
-				return pressKeyP;
+				commandQueue.push_back(pressKeyP);
+				break;
 			}
 		}
 		// Joystick Button Up Handling
@@ -58,12 +79,16 @@ Command* InputManager::handleInput()
 			switch (e.jbutton.button)
 			{
 			case 0:
-				return releaseButtonA;
+				commandQueue.push_back(releaseButtonA);
+				break;
+			case 4:
+				commandQueue.push_back(releaseButtonLeftShoulder);
+				break;
 			}
 		}
 	}
 
-	return NULL;
+	return commandQueue;
 }
 
 void InputManager::setJoystick(SDL_Joystick* joystick)
@@ -91,6 +116,7 @@ InputManager::~InputManager()
 	delete pressButtonA;
 	delete pressKeyEsc;
 
-	delete releaseLeftStick;
+	delete releaseLeftStick_X_Axis;
+	delete releaseLeftStick_Y_Axis;
 	delete releaseButtonA;
 }

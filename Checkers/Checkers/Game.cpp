@@ -191,9 +191,9 @@ void Game::update()
 	if (time - previousFrameTime >= 16)
 	{
 		currentFrameTime = SDL_GetTicks();
-		Command* command = inputManager.handleInput();
-	
-		if (command)
+		std::vector<Command*> commandQueue= inputManager.handleInput();
+
+		for (auto command : commandQueue)
 		{
 			command->execute(character);
 		}

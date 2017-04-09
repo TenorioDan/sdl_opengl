@@ -9,6 +9,9 @@ public:
 	virtual void execute(Character& character) = 0;
 };
 
+
+#pragma region  Movement Commands
+
 class JumpCommand : public Command
 {
 public:
@@ -46,8 +49,7 @@ public:
 	}
 };
 
-
-class StopCommand : public Command
+class StopMovementCommand : public Command
 {
 public:
 	void execute(Character& character)
@@ -55,6 +57,36 @@ public:
 		character.reduceHorizontalMovement();
 	}
 };
+
+#pragma endregion
+
+class AimUpCommand : public Command
+{
+public:
+	void execute(Character& character)
+	{
+		character.applyVerticalAimDirection(-1);
+	}
+};
+
+
+class AimDownCommand : public Command
+{
+public:
+	void execute(Character& character)
+	{
+		character.applyVerticalAimDirection(1);
+	}
+};
+
+class ReleaseAimDirectionCommand : public Command
+{
+	void execute(Character& character)
+	{
+		character.releaseVerticalAimDirection();
+	}
+};
+
 
 class ResetPositionCommand : public Command
 {
@@ -71,5 +103,23 @@ public:
 	void execute(Character& character)
 	{
 		character.attack();
+	}
+};
+
+class AimCommand : public Command
+{
+public:
+	void execute(Character& character)
+	{
+		character.aim();
+	}
+};
+
+class StopAimCommand : public Command
+{
+public:
+	void execute(Character& character)
+	{
+		character.stopAiming();
 	}
 };

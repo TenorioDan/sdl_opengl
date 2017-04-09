@@ -2,6 +2,9 @@
 
 GameObject::GameObject()
 {
+	gravity = 2.f;
+	maxVerticleSpeed = 24.f;
+
 	verticalVelocity = 0.f;
 	horizontalVelocity = 0.f;
 	positionX = 0;
@@ -9,6 +12,8 @@ GameObject::GameObject()
 	width = 0;
 	height = 0;
 	verticalPhysicsState = IN_MOTION;
+
+	canMove = true;
 
 	// Animations
 	spriteIndex = 0;
@@ -69,7 +74,11 @@ void GameObject::update(int time)
 {
 	applyGravity();
 	checkCollisions();
-	translate(horizontalVelocity, verticalVelocity);
+
+	if (canMove)
+	{
+		translate(horizontalVelocity, verticalVelocity);
+	}
 }
 
 void GameObject::render()

@@ -21,22 +21,29 @@ public:
 	virtual void translate(GLfloat x, GLfloat y) override;
 
 	void applyHorizontalMovement(GLfloat directionModifier);
+	void applyVerticalAimDirection(GLfloat directionModifier);
+	void releaseVerticalAimDirection();
 	void reduceHorizontalMovement();
 	void setMoveSpeed(int newSpeed);
 	void resetPosition();
 	void jump();
 	void resetJump();
 	void attack();
+	void aim();
+	void stopAiming();
 
 	GLfloat MoveSpeed();
 
 protected:
-	const GLfloat baseJumpSpeed = -44.f; // move upwards which is the negative y direction
-	const GLfloat colliderOffset = 30.f;
+	GLfloat baseJumpSpeed = -48.f; // move upwards which is the negative y direction
+	GLfloat colliderOffset = 30.f;
+	GLfloat aimDirectionX;
+	GLfloat aimDirectionY;
 
 	// Protected primitives
 	int jumpAnimationSpeed;
 	bool canJump;
+	bool aiming;
 
 	GLfloat moveSpeed;
 

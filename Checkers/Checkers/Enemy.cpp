@@ -4,6 +4,7 @@
 Enemy::Enemy()
 	: AnimatedGameObject()
 {
+	// TODO: Clean up magic numbers
 	width = 50.f;
 	height = 50.f;
 	health = 50.f;
@@ -47,31 +48,32 @@ void Enemy::attackRoutine()
 {
 	if (currentPlatform != NULL)
 	{
+		// TODO: Clean up magic numbers
 		if (collider.collision(*currentPlatform) == Collider::NO_COLLISION)
 		{
 			// assumes clockwise movement
 			if (horizontalVelocity > 0)
 			{
 				horizontalVelocity = 0;
-				verticalVelocity = 4;
+				verticalVelocity = 2;
 				positionX = currentPlatform->maxX + (width / 2.f);
 			}
 			else if (horizontalVelocity < 0)
 			{
 				horizontalVelocity = 0;
-				verticalVelocity = -4;
+				verticalVelocity = -2;
 				positionX = currentPlatform->minX - (width / 2.f);
 			}
 			else if (verticalVelocity > 0)
 			{
 				verticalVelocity = 0;
-				horizontalVelocity = -4;
+				horizontalVelocity = -2;
 				positionY = currentPlatform->maxY + (height / 2.f);
 			}
 			else if (verticalVelocity < 0)
 			{
 				verticalVelocity = 0;
-				horizontalVelocity = 4;
+				horizontalVelocity = 2;
 				positionY = currentPlatform->minY - (height / 2.f);
 			}
 		}

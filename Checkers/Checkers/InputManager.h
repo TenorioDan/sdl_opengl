@@ -7,7 +7,8 @@
 #define JOYSTICK_RIGHT 1
 #define JOYSTICK_X_AXIS 0
 #define JOYSTICK_Y_AXIS 1
-#define JOYSTICK_DEADZONE 8000
+#define JOYSTICK_X_DEADZONE 8000
+#define JOYSTICK_Y_DEADZONE 20000
 
 class InputManager
 {
@@ -24,7 +25,7 @@ public:
 	void swapStates();
 	void setJoystick(SDL_Joystick* joystick);
 
-	Command* handleInput();
+	std::vector<Command*> handleInput();
 	InputState CurrentState();
 
 private:
@@ -43,8 +44,13 @@ private:
 	Command* pressButtonA;
 	Command* pressKeyEsc;
 	Command* pressButtonX;
+	Command* pressButtonLeftShoulder;
+	Command* moveLeftStick_Up;
+	Command* moveLeftStick_Down;
 
 	// Key release commands
-	Command* releaseLeftStick;
+	Command* releaseLeftStick_X_Axis;
+	Command* releaseLeftStick_Y_Axis;
 	Command* releaseButtonA;
+	Command* releaseButtonLeftShoulder;
 };

@@ -5,6 +5,9 @@
 Character::Character()
 	: AnimatedGameObject()
 {
+	baseJumpSpeed = -32.f; // move upwards which is the negative y direction
+	colliderOffset = 30.f;
+
 	positionX = 128;
 	positionY = 0;
 	width = 85.f;
@@ -17,8 +20,11 @@ Character::Character()
 	jumpAnimationSpeed = 50;
 	currentState = IDLE;
 	verticalVelocity = 0;
+
 	useGravity = true;
 	canJump = true;
+	aiming = false;
+
 	direction = RIGHT;
 }
 
@@ -71,12 +77,12 @@ bool Character::loadMedia()
 
 void Character::attack()
 {
-	weapon.fireWeapon(positionX, positionY, direction);
+	weapon.fireWeapon(positionX, positionY, direction, aimDirectionX, aimDirectionY);
 }
 
 void Character::jump()
 {
-	if (verticalPhysicsState == AT_REST && canJump)
+	if (verticalPhysicsState == AT_REST && canJump && canMove)
 	{
 		verticalPhysicsState = IN_MOTION;
 		verticalVelocity = baseJumpSpeed;
@@ -135,28 +141,49 @@ void Character::resetJump()
 
 void Character::applyHorizontalMovement(GLfloat directionModifier)
 {
+	aimDirectionX = directionModifier;
 
-	horizontalVelocity = (moveSpeed * directionModifier);
-	horizontalPhysicsState = IN_MOTION;
+	if (canMove)
+	{
+		horizontalVelocity = (moveSpeed * directionModifier);
+		horizontalPhysicsState = IN_MOTION;
 
-	if (directionModifier > 0)
-	{
-		direction = RIGHT;
-		startAnimationIndex = 0;
-		endAnimationIndex = 3;
-	}
-	else if (directionModifier < 0)
-	{
-		direction = LEFT;
-		startAnimationIndex = 4;
-		endAnimationIndex = 7;
+		// TODO: Clean up magic numbers
+		if (directionModifier > 0)
+		{
+			direction = RIGHT;
+			startAnimationIndex = 0;
+			endAnimationIndex = 3;
+		}
+		else if (directionModifier < 0)
+		{
+			direction = LEFT;
+			startAnimationIndex = 4;
+			endAnimationIndex = 7;
+		}
 	}
 }
 
 void Character::reduceHorizontalMovement()
 {
-	horizontalVelocity = 0;
+	if (aiming)
+	{
+		aimDirectionX = 0.f;
+	}
+
+	horizontalVelocity = 0.f;
 	horizontalPhysicsState = AT_REST;
+
+}
+
+void Character::applyVerticalAimDirection(GLfloat directionModifier)
+{
+	aimDirectionY = directionModifier;
+}
+
+void Character::releaseVerticalAimDirection()
+{
+	aimDirectionY = 0.f;
 }
 
 GLfloat Character::MoveSpeed()
@@ -167,6 +194,18 @@ GLfloat Character::MoveSpeed()
 void Character::setMoveSpeed(int newSpeed)
 {
 	moveSpeed = newSpeed;
+}
+
+void Character::aim()
+{
+	aiming = true;
+	canMove = false;
+}
+
+void Character::stopAiming()
+{
+	aiming = false;
+	canMove = true;
 }
 
 // For debugging

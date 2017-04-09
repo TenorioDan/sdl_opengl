@@ -21,7 +21,7 @@ bool Weapon::loadMedia()
 		return false;
 	}
 
-	projectileSpriteSheet.createAnimations(40.f, 20.f, 0.f, 0.f, 0.f, 2);
+	projectileSpriteSheet.createAnimations(20.f, 20.f, 0.f, 0.f, 0.f, 1);
 
 	if (!projectileSpriteSheet.generateDataBuffer())
 	{
@@ -33,9 +33,9 @@ bool Weapon::loadMedia()
 }
 
 // Spawn a new projectile into the world and set it's position according to the object that owns it
-void Weapon::fireWeapon(GLfloat positionX, GLfloat positionY, GameObject::Direction direction)
+void Weapon::fireWeapon(GLfloat positionX, GLfloat positionY, GameObject::Direction direction, GLfloat aimDirectionX, GLfloat aimDirectionY)
 {
-	Projectile *p = new Projectile(projectileSpriteSheet, positionX, positionY, direction);
+	Projectile *p = new Projectile(projectileSpriteSheet, positionX, positionY, direction, aimDirectionX, aimDirectionY);
 	projectiles.push_back(p);
 }
 

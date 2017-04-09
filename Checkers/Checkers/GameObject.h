@@ -34,6 +34,7 @@ public:
 
 protected:
 	bool useGravity;
+	bool canMove;
 	GLuint spriteIndex;
 	GLfloat positionX;
 	GLfloat positionY;
@@ -42,8 +43,8 @@ protected:
 	GLfloat verticalVelocity;
 	GLfloat horizontalVelocity;
 
-	const GLfloat gravity = 4.f;
-	const GLfloat maxVerticleSpeed = 24.f; // TODO figure out what max positive verticle velocity should be
+	GLfloat gravity;
+	GLfloat maxVerticleSpeed; // TODO figure out what max positive verticle velocity should be
 
 	Collider collider;
 	Collider* currentPlatform;

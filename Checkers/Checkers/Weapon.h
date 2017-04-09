@@ -12,7 +12,7 @@ public:
 	void update(int time);
 	void render();
 
-	void fireWeapon(GLfloat positionX, GLfloat positionY, GameObject::Direction direction);
+	void fireWeapon(GLfloat positionX, GLfloat positionY, GameObject::Direction direction, GLfloat aimDirectionX, GLfloat aimDirectionY);
 private:
 	std::vector<Projectile*> projectiles;
 	SpriteSheet projectileSpriteSheet;
