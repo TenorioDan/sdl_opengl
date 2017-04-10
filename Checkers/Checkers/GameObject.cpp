@@ -13,7 +13,8 @@ GameObject::GameObject()
 	height = 0;
 	verticalPhysicsState = IN_MOTION;
 
-	canMove = true;
+	canMoveHorizontal = true;
+	canMoveVertical = true;
 
 	// Animations
 	spriteIndex = 0;
@@ -27,8 +28,10 @@ Collider GameObject::getCollider()
 
 void GameObject::translate(GLfloat x, GLfloat y)
 {
-	positionX += x;
-	positionY += y;
+	if (canMoveHorizontal)
+		positionX += x;
+	if (canMoveVertical)
+		positionY += y;
 
 	collider.prevMaxX = collider.maxX;
 	collider.prevMaxY = collider.maxY;
@@ -60,6 +63,11 @@ GLfloat GameObject::PositionY()
 	return positionY;
 }
 
+bool GameObject::ShouldBeDeleted()
+{
+	return toDelete;
+}
+
 void GameObject::setVerticalVelocity(GLfloat v)
 {
 	verticalVelocity = v;
@@ -70,15 +78,17 @@ void GameObject::setHorizontalVelocity(GLfloat v)
 	horizontalVelocity = v;
 }
 
+void GameObject::setPlatforms(std::vector<Collider*>* c)
+{
+	platforms = c;
+}
+
+
 void GameObject::update(int time)
 {
 	applyGravity();
 	checkCollisions();
-
-	if (canMove)
-	{
-		translate(horizontalVelocity, verticalVelocity);
-	}
+	translate(horizontalVelocity, verticalVelocity);
 }
 
 void GameObject::render()

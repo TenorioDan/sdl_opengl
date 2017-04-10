@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Collider.h"
+#include <vector>
 
 class GameObject
 {
@@ -31,10 +32,15 @@ public:
 	GLfloat PositionY();
 	void setVerticalVelocity(GLfloat v);
 	void setHorizontalVelocity(GLfloat v);
+	void setPlatforms(std::vector<Collider*>* c);
+	bool ShouldBeDeleted();
 
 protected:
 	bool useGravity;
-	bool canMove;
+	bool canMoveHorizontal;
+	bool canMoveVertical;
+	bool toDelete;
+
 	GLuint spriteIndex;
 	GLfloat positionX;
 	GLfloat positionY;
@@ -57,4 +63,6 @@ protected:
 	PhysicsState horizontalPhysicsState;
 	PhysicsState verticalPhysicsState;
 	Direction direction;
+
+	std::vector<Collider*>* platforms;
 };

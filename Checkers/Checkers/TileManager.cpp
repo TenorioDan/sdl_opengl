@@ -4,19 +4,12 @@
 #include <iterator>
 #include "TileManager.h"
 
-TileManager* TileManager::instance = NULL;
 
-TileManager::TileManager() {}
-TileManager::TileManager(TileManager const&) {}
-//TileManager& TileManager::operator=(TileManager const&) { return; }
-
-TileManager* TileManager::getInstance()
+TileManager::TileManager() 
 {
-	if (!instance)
-		instance = new TileManager();
 
-	return instance;
 }
+
 
 bool TileManager::loadMedia()
 {
@@ -108,7 +101,6 @@ void TileManager::createColliders(std::string path)
 	// Read the platforms file and create colliders based on input
 	std::ifstream colliderFile(path.c_str());
 	std::string line;
-	char n;
 
 	while (std::getline(colliderFile, line))
 	{
@@ -128,11 +120,10 @@ void TileManager::createColliders(std::string path)
 
 
 // Return the colliders int his level. Typically used for collision detection
-std::vector<Collider*> TileManager::getPlatforms()
+std::vector<Collider*>* TileManager::getPlatforms()
 {
-	return platforms;
+	return &platforms;
 }
-
 
 // Render all the tiles in the tileset
 void TileManager::render()

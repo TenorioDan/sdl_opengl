@@ -176,6 +176,7 @@
     <Image Include="tileset_platforms.png" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Enemies.txt" />
     <Text Include="Platforms.txt" />
     <Text Include="sprites.txt" />
     <Text Include="test_level.txt" />

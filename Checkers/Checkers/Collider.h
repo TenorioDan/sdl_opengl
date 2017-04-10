@@ -33,22 +33,18 @@ public:
 		{
 			if (prevMaxX < c.minX && maxX >= c.minX)
 			{
-				printf("left\n");
 				return LEFT;
 			}	
 			else if (prevMinX >= c.maxX && minX < c.maxX)
 			{
-				printf("right\n");
 				return RIGHT;
 			}	
 			else if (prevMaxY < c.minY && maxY >= c.minY)
 			{
-				printf("above\n");
 				return ABOVE;
 			}	
 			else if (prevMinY >= c.maxY && minY < c.maxY)
 			{
-				printf("below\n");
 				return BELOW;
 			}
 			

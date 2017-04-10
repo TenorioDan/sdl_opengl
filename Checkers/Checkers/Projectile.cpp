@@ -1,7 +1,7 @@
 #include "Projectile.h"
-#include "TileManager.h"
+#include "LevelManager.h"
 
-Projectile::Projectile(SpriteSheet& ssheet, GLfloat x, GLfloat y,  Direction d, GLfloat aimDirectionX, GLfloat aimDirectionY)
+Projectile::Projectile(SpriteSheet& ssheet, GLfloat x, GLfloat y,  Direction d, GLfloat aimDirectionX, GLfloat aimDirectionY, GLfloat dmg)
 	: AnimatedGameObject()
 {
 	// TODO: Clean up magic numbers
@@ -13,6 +13,7 @@ Projectile::Projectile(SpriteSheet& ssheet, GLfloat x, GLfloat y,  Direction d, 
 	direction = d;
 	horizontalPhysicsState = IN_MOTION;
 	animationSpeed = 100;
+	damage = dmg;
 
 	GLfloat horizontalProjectileSpeed = 25;
 	GLfloat verticalProjectileSpeed = 25;
@@ -55,8 +56,8 @@ Projectile::Projectile(SpriteSheet& ssheet, GLfloat x, GLfloat y,  Direction d, 
 
 	if (aimDirectionX != 0 && aimDirectionY != 0)
 	{
-		horizontalVelocity *= SQRT_TWO;
-		verticalVelocity *= SQRT_TWO;
+		horizontalVelocity /= SQRT_TWO;
+		verticalVelocity /= SQRT_TWO;
 	}
 }
 
@@ -75,21 +76,28 @@ bool Projectile::loadMedia()
 
 void Projectile::checkCollisions()
 {
-	std::vector<Collider*> platforms = TileManager::getInstance()->getPlatforms();
-
 	// check against platforms that 
-	for (auto p : platforms)
+	for (auto p : *platforms)
 	{
 		if (collider.collision(*p) != Collider::NO_COLLISION)
 		{
 			toDelete = true;
 		}
 	}
+
+	for (auto e : *enemies)
+	{
+		if (collider.collision(e->getCollider()) != Collider::NO_COLLISION)
+		{
+			toDelete = true;
+			e->takeDamage(damage);
+		}
+	}
 }
 
-bool Projectile::ToDelete()
+void Projectile::setEnemies(std::vector<Enemy*>* e)
 {
-	return toDelete;
+	enemies = e;
 }
 
 // Similar 

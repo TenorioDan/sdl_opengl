@@ -2,7 +2,7 @@
 
 Weapon::Weapon()
 {
-
+	damage = 20.f;
 }
 
 Weapon::~Weapon()
@@ -33,9 +33,12 @@ bool Weapon::loadMedia()
 }
 
 // Spawn a new projectile into the world and set it's position according to the object that owns it
-void Weapon::fireWeapon(GLfloat positionX, GLfloat positionY, GameObject::Direction direction, GLfloat aimDirectionX, GLfloat aimDirectionY)
+void Weapon::fireWeapon(GLfloat positionX, GLfloat positionY, GameObject::Direction direction, GLfloat aimDirectionX, GLfloat aimDirectionY, 
+						std::vector<Collider*>* platforms, std::vector<Enemy*>* enemies)
 {
-	Projectile *p = new Projectile(projectileSpriteSheet, positionX, positionY, direction, aimDirectionX, aimDirectionY);
+	Projectile* p = new Projectile(projectileSpriteSheet, positionX, positionY, direction, aimDirectionX, aimDirectionY, damage);
+	p->setPlatforms(platforms);
+	p->setEnemies(enemies);
 	projectiles.push_back(p);
 }
 
@@ -49,7 +52,7 @@ void Weapon::update(int time)
 		Projectile* p = *it;
 		p->update(time);
 
-		if (p->ToDelete())
+		if (p->ShouldBeDeleted())
 		{
 			delete p;
 			it = projectiles.erase(it);

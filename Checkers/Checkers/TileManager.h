@@ -7,9 +7,9 @@
 class TileManager
 {
 public:
-	static TileManager* getInstance();
-
-	std::vector<Collider*> getPlatforms();
+	// Singleton stuff
+	TileManager();
+	std::vector<Collider*>* getPlatforms();
 
 	bool loadMedia();
 	void render();
@@ -27,12 +27,6 @@ private:
 	GLint numTilesX;
 	GLint numTilesY;
 	GLfloat tileSpriteOffeset = 10;
-
-	// Singleton stuff
-	TileManager();
-	TileManager(TileManager const&);
-	//TileManager& operator=(TileManager const&);
-	static TileManager* instance;
 
 	SpriteSheet tileSheet;
 	Tile** tileset;

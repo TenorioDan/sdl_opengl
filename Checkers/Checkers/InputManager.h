@@ -7,8 +7,18 @@
 #define JOYSTICK_RIGHT 1
 #define JOYSTICK_X_AXIS 0
 #define JOYSTICK_Y_AXIS 1
-#define JOYSTICK_X_DEADZONE 8000
-#define JOYSTICK_Y_DEADZONE 20000
+#define JOYSTICK_X_DEADZONE 15000
+#define JOYSTICK_Y_DEADZONE 15000
+
+#define BUTTON_A 0
+#define BUTTON_B 1
+#define BUTTON_X 2
+#define BUTTON_Y 3
+#define BUTTON_LB 4
+#define BUTTON_RB 5
+#define BUTTON_SELECT 6
+#define BUTTON_START 7
+
 
 class InputManager
 {

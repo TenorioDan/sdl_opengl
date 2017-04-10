@@ -1,6 +1,7 @@
 #pragma once
 #include "AnimatedGameObject.h"
 #include "Weapon.h"
+#include "Enemy.h"
 
 class Character : public AnimatedGameObject
 {
@@ -31,6 +32,7 @@ public:
 	void attack();
 	void aim();
 	void stopAiming();
+	void setEnemies(std::vector<Enemy*>* e);
 
 	GLfloat MoveSpeed();
 
@@ -39,6 +41,7 @@ protected:
 	GLfloat colliderOffset = 30.f;
 	GLfloat aimDirectionX;
 	GLfloat aimDirectionY;
+	GLfloat health;
 
 	// Protected primitives
 	int jumpAnimationSpeed;
@@ -51,6 +54,7 @@ protected:
 	
 	Weapon weapon;
 	ChracterState currentState;
+	std::vector<Enemy*>* enemies;
 
 	void checkCollisions();
 };

@@ -1,13 +1,15 @@
 #include "Character.h"
-#include "TileManager.h"
+#include "LevelManager.h"
 #include <cmath>
 
 Character::Character()
 	: AnimatedGameObject()
 {
+	// TODO: Clean up magic numbers
 	baseJumpSpeed = -32.f; // move upwards which is the negative y direction
 	colliderOffset = 30.f;
 
+	health = 100;
 	positionX = 128;
 	positionY = 0;
 	width = 85.f;
@@ -77,12 +79,12 @@ bool Character::loadMedia()
 
 void Character::attack()
 {
-	weapon.fireWeapon(positionX, positionY, direction, aimDirectionX, aimDirectionY);
+	weapon.fireWeapon(positionX, positionY, direction, aimDirectionX, aimDirectionY, platforms, enemies);
 }
 
 void Character::jump()
 {
-	if (verticalPhysicsState == AT_REST && canJump && canMove)
+	if (verticalPhysicsState == AT_REST && canJump && canMoveVertical && !aiming)
 	{
 		verticalPhysicsState = IN_MOTION;
 		verticalVelocity = baseJumpSpeed;
@@ -95,8 +97,6 @@ void Character::jump()
 // TODO: Quad Trees for per section collision detection
 void Character::checkCollisions()
 {
-	std::vector<Collider*> platforms = TileManager::getInstance()->getPlatforms();
-
 	if (currentPlatform != NULL && collider.collision(*currentPlatform) == Collider::CollisionDirection::NO_COLLISION)
 	{
 		currentPlatform = NULL;
@@ -105,7 +105,7 @@ void Character::checkCollisions()
 	}
 
 	// check against platforms that 
-	for (auto p : platforms)
+	for (auto p : *platforms)
 	{
 		// Predictive collision detection
 		translate(horizontalVelocity, verticalVelocity);
@@ -143,7 +143,7 @@ void Character::applyHorizontalMovement(GLfloat directionModifier)
 {
 	aimDirectionX = directionModifier;
 
-	if (canMove)
+	if (canMoveHorizontal)
 	{
 		horizontalVelocity = (moveSpeed * directionModifier);
 		horizontalPhysicsState = IN_MOTION;
@@ -166,11 +166,7 @@ void Character::applyHorizontalMovement(GLfloat directionModifier)
 
 void Character::reduceHorizontalMovement()
 {
-	if (aiming)
-	{
-		aimDirectionX = 0.f;
-	}
-
+	aimDirectionX = 0.f;
 	horizontalVelocity = 0.f;
 	horizontalPhysicsState = AT_REST;
 
@@ -178,7 +174,14 @@ void Character::reduceHorizontalMovement()
 
 void Character::applyVerticalAimDirection(GLfloat directionModifier)
 {
-	aimDirectionY = directionModifier;
+	if (directionModifier < 0 && !aiming)
+	{
+		// aiming lower based on crouch logic
+	}
+	else
+	{
+		aimDirectionY = directionModifier;
+	}
 }
 
 void Character::releaseVerticalAimDirection()
@@ -199,13 +202,20 @@ void Character::setMoveSpeed(int newSpeed)
 void Character::aim()
 {
 	aiming = true;
-	canMove = false;
+	canMoveHorizontal = false;
+
+	// only stop moving if the character is grounded. Otherwise continue
+	// applying horizontal velocty
+	if (currentPlatform != NULL)
+	{
+		horizontalVelocity = 0.f;
+	}
 }
 
 void Character::stopAiming()
 {
 	aiming = false;
-	canMove = true;
+	canMoveHorizontal = true;
 }
 
 // For debugging
@@ -213,6 +223,11 @@ void Character::resetPosition()
 {
 	positionX = 128;
 	positionY = 0;
+}
+
+void Character::setEnemies(std::vector<Enemy*>* e)
+{
+	enemies = e;
 }
 
 // Virtual character update that switches between character states

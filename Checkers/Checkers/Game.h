@@ -4,12 +4,8 @@
 #include "World.h"
 #include <IL/il.h>
 #include <IL/ilu.h>
-#include "Character.h"
-#include "Platform.h"
-#include "TileManager.h"
 #include "InputManager.h"
-#include "Camera.h"
-#include "Enemy.h"
+#include "LevelManager.h"
 
 class Game 
 {
@@ -38,21 +34,17 @@ public:
 private:
 	friend class InputManager;
 	//Screen dimension constants
-	const int SCREEN_WIDTH = 1280;
-	const int SCREEN_HEIGHT = 720;
-	const int SCREEN_FPS = 240;
+	int SCREEN_WIDTH = 1280;
+	int SCREEN_HEIGHT = 720;
+	int SCREEN_FPS = 60;
 	//The window we'll be rendering to
 	SDL_Window* gWindow = NULL;
 
 	// OpenGL Context
 	SDL_GLContext gContext = NULL;
-
-	Character character;
-	Enemy enemy;
-	Enemy enemy2;
-	TileManager* tileManager;
+	
+	LevelManager levelManager;
 	InputManager inputManager;
-	Camera camera;
 
 	int previousFrameTime, currentFrameTime;
 	

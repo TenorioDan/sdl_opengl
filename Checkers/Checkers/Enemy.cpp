@@ -1,5 +1,5 @@
 #include "Enemy.h"
-#include "TileManager.h"
+#include "LevelManager.h"
 
 Enemy::Enemy()
 	: AnimatedGameObject()
@@ -19,9 +19,9 @@ Enemy::~Enemy()
 
 }
 
-void Enemy::setCurrentPlatform(int platformIndex)
+void Enemy::setCurrentPlatform(Collider* c)
 {
-	currentPlatform = TileManager::getInstance()->getPlatforms()[platformIndex];
+	currentPlatform = c;
 	positionX = currentPlatform->maxX + (width / 2.f);;
 	positionY = currentPlatform->minY - (height / 2.f);
 }
@@ -92,6 +92,16 @@ GLfloat Enemy::Health()
 GLfloat Enemy::Damage()
 {
 	return damage;
+}
+
+void Enemy::takeDamage(GLfloat damage)
+{
+	health -= damage;
+
+	if (health <= 0.f)
+	{
+		toDelete = true;
+	}
 }
 
 void Enemy::update(int time)

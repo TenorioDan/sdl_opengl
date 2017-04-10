@@ -139,9 +139,6 @@ bool Game::init()
 		}
 	}
 
-
-	// Create instance of Tile Manager
-	tileManager = TileManager::getInstance();
 	return success;
 }
 
@@ -149,18 +146,11 @@ bool Game::loadMedia() {
 	// Loading success flag
 	bool success = true;
 
-	success = character.loadMedia();
-	success = tileManager->loadMedia();
-	success = enemy.loadMedia();
-	success = enemy2.loadMedia();
+	success = levelManager.loadMedia();
 
 	if (success)
 	{
-		camera.objectToFollow = dynamic_cast<GameObject*>(&character);
-		camera.offsetX = SCREEN_WIDTH / 2.f;
-		camera.offsetY = SCREEN_HEIGHT / 1.75f;
-		enemy.setCurrentPlatform(9);
-		enemy2.setCurrentPlatform(10);
+		levelManager.setCameraPosition(SCREEN_WIDTH, SCREEN_HEIGHT);
 	}
 
 	return success;
@@ -188,20 +178,26 @@ void Game::update()
 	int time = SDL_GetTicks();
 
 	// Update at 60fps
-	if (time - previousFrameTime >= 16)
+	if (time - previousFrameTime >= 1000 / SCREEN_FPS)
 	{
 		currentFrameTime = SDL_GetTicks();
-		std::vector<Command*> commandQueue= inputManager.handleInput();
+		std::vector<Command*> commandQueue = inputManager.handleInput();
+
+		levelManager.update(time);
 
 		for (auto command : commandQueue)
 		{
-			command->execute(character);
+			if (inputManager.CurrentState() == InputManager::GAME)
+			{
+				levelManager.executeCommand(command);
+			}
+			else
+			{
+
+			}
 		}
-			
+		
 		previousFrameTime = currentFrameTime;
-		character.update(time);
-		enemy.update(time);
-		enemy2.update(time);
 	}
 }
 
@@ -210,12 +206,7 @@ void Game::render()
 	// Clear color buffer
 	glClear(GL_COLOR_BUFFER_BIT);
 	glLoadIdentity();
-	camera.render();
-	character.render();
-	enemy.render();
-	enemy2.render();
-	//glTranslatef(camera.positionX, camera.positionY, 0.f)
-	tileManager->render();
+	levelManager.render();
 
 	SDL_GL_SwapWindow(gWindow);
 }

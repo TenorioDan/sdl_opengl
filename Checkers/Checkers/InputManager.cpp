@@ -58,17 +58,16 @@ std::vector<Command*> InputManager::handleInput()
 		{
 			switch (e.jbutton.button)
 			{
-			// TODO: Clean up magic numbers
-			case 0:
+			case BUTTON_A:
 				commandQueue.push_back(pressButtonA);
 				break;
-			case 2:
+			case BUTTON_X:
 				commandQueue.push_back(pressButtonX);
 				break;
-			case 4:
+			case BUTTON_LB:
 				commandQueue.push_back(pressButtonLeftShoulder);
 				break;
-			case 6:
+			case BUTTON_SELECT:
 				commandQueue.push_back(pressKeyP);
 				break;
 			}
@@ -78,10 +77,10 @@ std::vector<Command*> InputManager::handleInput()
 		{
 			switch (e.jbutton.button)
 			{
-			case 0:
+			case BUTTON_A:
 				commandQueue.push_back(releaseButtonA);
 				break;
-			case 4:
+			case BUTTON_LB:
 				commandQueue.push_back(releaseButtonLeftShoulder);
 				break;
 			}

@@ -19,9 +19,6 @@
     <Filter Include="Resource Files\Textures\Environment">
       <UniqueIdentifier>{7cbdb40f-640e-41d8-ac09-57856d2eedc6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Tile Maps">
-      <UniqueIdentifier>{ece2f897-6aef-4072-b604-4ef6f96738c8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource Files\Sprite Sheets">
       <UniqueIdentifier>{8382064c-3afd-4455-88b5-42d4adfc48e1}</UniqueIdentifier>
     </Filter>
@@ -36,6 +33,12 @@
     </Filter>
     <Filter Include="Resource Files\Sprite Sheets\Enemies">
       <UniqueIdentifier>{2edeb772-5027-4f27-9f1d-d519e0b23529}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Level Building">
+      <UniqueIdentifier>{524a7b87-1e59-46d9-88af-16b56f0755c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Level Building\Level 1">
+      <UniqueIdentifier>{ece2f897-6aef-4072-b604-4ef6f96738c8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -204,14 +207,17 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="test_level.txt">
-      <Filter>Resource Files\Tile Maps</Filter>
-    </Text>
-    <Text Include="Platforms.txt">
-      <Filter>Resource Files\Tile Maps</Filter>
-    </Text>
     <Text Include="sprites.txt">
       <Filter>Resource Files\Sprite Sheets</Filter>
+    </Text>
+    <Text Include="Platforms.txt">
+      <Filter>Resource Files\Level Building\Level 1</Filter>
+    </Text>
+    <Text Include="test_level.txt">
+      <Filter>Resource Files\Level Building\Level 1</Filter>
+    </Text>
+    <Text Include="Enemies.txt">
+      <Filter>Resource Files\Level Building\Level 1</Filter>
     </Text>
   </ItemGroup>
 </Project>
