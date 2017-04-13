@@ -42,6 +42,7 @@ bool LevelManager::loadMedia()
 	return success;
 }
 
+// Read the enemy file and create enemies in the game
 void LevelManager::spawnEnemies(std::string path)
 {
 	std::ifstream enemyFile(path.c_str());
@@ -84,8 +85,26 @@ TileManager LevelManager::getTileManager()
 	return tileManager;
 }
 
+// TODO: Change collision results based on object type
+// TODO: Quad Trees for per section collision detection
+void LevelManager::checkPlayerCollisions()
+{
+	player.translate(player.getHorizontalVelocity(), player.getVerticalVelocity());
+	for (auto p : *tileManager.getPlatforms())
+	{
+		Collider::CollisionDirection collision = player.getCollider().collision(*p);
+
+		if (collision != Collider::NO_COLLISION)
+		{
+			player.detectPlatformCollision(p, collision);
+		}
+	}
+	player.translate(-player.getHorizontalVelocity(), -player.getVerticalVelocity());
+}
+
 void LevelManager::update(int time)
 {
+	checkPlayerCollisions();
 	player.update(time);
 
 	for (auto it = enemies.begin(); it != enemies.end();)

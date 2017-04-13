@@ -68,6 +68,16 @@ bool GameObject::ShouldBeDeleted()
 	return toDelete;
 }
 
+GLfloat GameObject::getHorizontalVelocity()
+{
+	return horizontalVelocity;
+}
+
+GLfloat GameObject::getVerticalVelocity()
+{
+	return verticalVelocity;
+}
+
 void GameObject::setVerticalVelocity(GLfloat v)
 {
 	verticalVelocity = v;

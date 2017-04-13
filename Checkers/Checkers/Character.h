@@ -23,6 +23,7 @@ public:
 
 	void applyHorizontalMovement(GLfloat directionModifier);
 	void applyVerticalAimDirection(GLfloat directionModifier);
+	void detectPlatformCollision(Collider* c, Collider::CollisionDirection d);
 	void releaseVerticalAimDirection();
 	void reduceHorizontalMovement();
 	void setMoveSpeed(int newSpeed);

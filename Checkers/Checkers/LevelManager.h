@@ -21,6 +21,7 @@ public:
 	void spawnEnemies(std::string path);
 	void setCameraPosition(GLfloat offsetX, GLfloat offsetY);
 	void executeCommand(Command* command);
+	void checkPlayerCollisions();
 	TileManager getTileManager();
 
 	std::vector<Enemy*> getEnemies();

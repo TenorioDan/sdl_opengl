@@ -30,6 +30,8 @@ public:
 
 	GLfloat PositionX();
 	GLfloat PositionY();
+	GLfloat getHorizontalVelocity();
+	GLfloat getVerticalVelocity();
 	void setVerticalVelocity(GLfloat v);
 	void setHorizontalVelocity(GLfloat v);
 	void setPlatforms(std::vector<Collider*>* c);

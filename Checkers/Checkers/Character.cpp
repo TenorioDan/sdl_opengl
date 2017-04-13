@@ -93,8 +93,7 @@ void Character::jump()
 	}
 }
 
-// TODO: Change collision results based on object type
-// TODO: Quad Trees for per section collision detection
+
 void Character::checkCollisions()
 {
 	if (currentPlatform != NULL && collider.collision(*currentPlatform) == Collider::CollisionDirection::NO_COLLISION)
@@ -103,34 +102,32 @@ void Character::checkCollisions()
 		verticalPhysicsState = IN_MOTION;
 		verticalVelocity = 0.f;
 	}
+}
 
-	// check against platforms that 
-	for (auto p : *platforms)
+// Called by the level manager when the player has fallen on a new platform
+void Character::detectPlatformCollision(Collider* platform, Collider::CollisionDirection direction)
+{
+	
+
+	switch (direction)
 	{
-		// Predictive collision detection
-		translate(horizontalVelocity, verticalVelocity);
-
-		switch (collider.collision(*p))
-		{
-		case Collider::CollisionDirection::LEFT:
-			translate(-horizontalVelocity, 0.f);
-			break;
-		case Collider::CollisionDirection::RIGHT:
-			translate(-horizontalVelocity, 0.f);
-			break;
-		case Collider::CollisionDirection::ABOVE:
-			currentPlatform = p;
-			positionY = p->minY - (height / 2.f);
-			verticalPhysicsState = AT_REST;
-			verticalVelocity = 0;
-			break;
-		case Collider::CollisionDirection::BELOW:
-			verticalVelocity = 0;
-			break;
-		}
-
-		translate(-horizontalVelocity, -verticalVelocity);
+	case Collider::CollisionDirection::LEFT:
+		translate(-horizontalVelocity, 0.f);
+		break;
+	case Collider::CollisionDirection::RIGHT:
+		translate(-horizontalVelocity, 0.f);
+		break;
+	case Collider::CollisionDirection::ABOVE:
+		currentPlatform = platform;
+		positionY = platform->minY - (height / 2.f);
+		verticalPhysicsState = AT_REST;
+		verticalVelocity = 0;
+		break;
+	case Collider::CollisionDirection::BELOW:
+		verticalVelocity = 0;
+		break;
 	}
+
 }
 
 
@@ -229,6 +226,7 @@ void Character::setEnemies(std::vector<Enemy*>* e)
 {
 	enemies = e;
 }
+
 
 // Virtual character update that switches between character states
 // applies gravity and swaps animations 
