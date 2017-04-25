@@ -28,3 +28,7 @@
 *.out
 *.app
 Checkers/Checkers.VC.VC.opendb
+
+
+# PyCharm
+LevelEditor(NEW)/.idea/*

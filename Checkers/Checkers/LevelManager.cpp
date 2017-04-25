@@ -102,6 +102,7 @@ void LevelManager::checkPlayerCollisions()
 	player.translate(-player.getHorizontalVelocity(), -player.getVerticalVelocity());
 }
 
+// Update loop. Check collisions and stuff
 void LevelManager::update(int time)
 {
 	checkPlayerCollisions();
