@@ -29,11 +29,12 @@ class SpriteSheet():
 
     # Isolate each image in the spritesheet based on its position coordinates
     def subimage(self, l, t, r, b):
-        print(l,t,r,b)
         dst = tk.PhotoImage()
         dst.tk.call(dst, 'copy', self.image, '-from', l, t, r, b, '-to', 0, 0)
         return dst
 
+# Tile object that gets created when tiles are added to the spaces in the editor.
+# Contains the position of the tile, the type of tile, the image representing the tile object in the editor
 class Tile():
     def __init__(self, x, y):
         self.position_x = x
