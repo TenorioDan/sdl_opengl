@@ -2,10 +2,8 @@ import Tkinter as tk
 from PIL import Image as ImagePIL
 from PIL import ImageTk
 
-
-
 # Spritesheet representation that will be used to draw tiles in the controls for selecting individual tiles
-class SpriteSheet():
+class SpriteSheet(object):
     def __init__(self, file_name, tile_offset, tile_width, tile_height):
         self.image = ImageTk.PhotoImage(ImagePIL.open(file_name))
         self.tile_offset = tile_offset
@@ -33,9 +31,17 @@ class SpriteSheet():
         dst.tk.call(dst, 'copy', self.image, '-from', l, t, r, b, '-to', 0, 0)
         return dst
 
+
 # Tile object that gets created when tiles are added to the spaces in the editor.
 # Contains the position of the tile, the type of tile, the image representing the tile object in the editor
-class Tile():
+class Tile(object):
     def __init__(self, x, y):
-        self.position_x = x
-        self.position_y = y
+        self.tile_type = 0
+        self.canvas_image = None
+        self.x = x
+        self.y = y
+
+
+    # Check if an image has been set to display the tile properties in the controls section
+    def set(self):
+        return self.image == None
