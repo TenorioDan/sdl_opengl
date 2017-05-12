@@ -166,7 +166,6 @@ class TileEditor(tk.Tk):
             return None
 
 
-
     # Take the input entered by the user and generate a grid the correct size
     # Create Tile Label objects on each spot in the grid that can be clicked to
     def generateTiles(self):
