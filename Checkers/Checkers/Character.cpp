@@ -10,7 +10,7 @@ Character::Character()
 	colliderOffset = 30.f;
 
 	health = 100;
-	positionX = 128;
+	positionX = 300;
 	positionY = 0;
 	width = 85.f;
 	height = 87.f;

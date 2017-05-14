@@ -120,17 +120,14 @@ class TileEditor(tk.Tk):
             tile_label.bind("<Button-1>", self.setCurrentTile)
             tile_label.grid(row=int(i / 5), column=(i % 5))
 
-
         self.level_name_entry = tk.Entry(self.control_frame)
         self.level_name_entry.grid(row=4, column=0)
         export_button = tk.Button(self.control_frame, text="Export", command=self.exportLevelXML)
         export_button.grid(row=4, column=1)
 
-
     # Should only be called by a TileLabel to set the current image of the editor for drawing on the tile canvas
     def setCurrentTile(self, event):
         self.editor_current_image = event.widget
-
 
     # takes a mouse click event and adds a tile to the space clicked on
     def addTile(self, event):
@@ -149,7 +146,6 @@ class TileEditor(tk.Tk):
                 current_tile.tile_type = self.editor_current_image.tile_type + 1
                 current_tile.canvas_image = canvas_image
 
-
     def deleteTile(self, event):
         if self.grid_created and self.editor_current_image != None:
             current_tile = self.getTileClicked(event)
@@ -158,19 +154,17 @@ class TileEditor(tk.Tk):
                 self.tile_canvas.delete(current_tile.canvas_image)
                 current_tile.image = None
 
-
     def getTileClicked(self, event):
         canvas = event.widget
 
         # calculate the x/y position of the tile that the sprite will be drawn on.
-        row_index= int(canvas.canvasy(event.y) / (self.spritesheet.tile_height + GRID_LINE_WIDTH))
+        row_index = int(canvas.canvasy(event.y) / (self.spritesheet.tile_height + GRID_LINE_WIDTH))
         column_index = int(canvas.canvasx(event.x) / (self.spritesheet.tile_width + GRID_LINE_WIDTH))
 
         if row_index < self.tiles_row_count and column_index < self.tiles_column_count:
             return self.editor_tiles[row_index][column_index]
         else:
             return None
-
 
     # Take the input entered by the user and generate a grid the correct size
     # Create Tile Label objects on each spot in the grid that can be clicked to
@@ -233,15 +227,17 @@ class TileEditor(tk.Tk):
 
         if self.grid_created:
             level_name = self.level_name_entry.get()
+            level_file = open("../Checkers/Checkers/Levels/{0}.lvl".format(level_name), 'w')
+            #level_file = open("{0}.lvl".format(level_name), 'w')
 
             if level_name not in (None, ""):
-                root = ET.Element(level_name)
-                tiles_element = ET.SubElement(root, "Tiles")
                 colliders = []
+
+                # Insert the tiles and the number of tiles for the game to read and process
+                level_file.write("TILES {} {}\n".format(self.tiles_row_count, self.tiles_column_count))
                 # Loop through the set of tiles and create an ETree element for each row and append elements
                 # for each tile in that row
                 for row in range(self.tiles_row_count):
-                    row_element = ET.SubElement(tiles_element, "row", name="row{}".format(row))
                     current_collider = None
                     last_collider_column = 0
 
@@ -252,8 +248,12 @@ class TileEditor(tk.Tk):
                         # collider
                         if current_tile.tile_type != 0:
                             if current_collider is None or column - last_collider_column > 1:
-                                top_left_x = row * self.spritesheet.tile_width
-                                top_left_y = column * self.spritesheet.tile_height
+
+                                if current_collider is not None:
+                                    colliders.append(current_collider)
+
+                                top_left_x = column * self.spritesheet.tile_width
+                                top_left_y = row * self.spritesheet.tile_height
                                 current_collider = (top_left_x, top_left_y,
                                                     top_left_x + self.spritesheet.tile_width,
                                                     top_left_y + self.spritesheet.tile_height)
@@ -264,21 +264,21 @@ class TileEditor(tk.Tk):
                                                     current_collider[3])
                                 last_collider_column = column
 
-
-                        tile_element = ET.SubElement(row_element, "Tile", name="tile_{0}_{1}".format(row, column))
-                        ET.SubElement(tile_element, "TileType").text = str(current_tile.tile_type)
-                        ET.SubElement(tile_element, "Destructible").text = str(current_tile.is_destructible)
-                        ET.SubElement(tile_element, "FalseTile").text = str(current_tile.is_false_tile)
+                        # Set all the properties in the tile element from the tile object
+                        level_file.write("{} {} {} {} {}\n".format(row, column, str(current_tile.tile_type),
+                                                                   str(current_tile.is_destructible),
+                                                                   str(current_tile.is_false_tile)))
 
                     if current_collider is not None:
                         colliders.append(current_collider)
 
+                level_file.write("COLLIDERS {}\n".format(str(len(colliders))))
+                # Create the collider file
                 for c in colliders:
-                    print c
+                    level_file.write("{0} {1} {2} {3}\n".format(c[0], c[1], c[2], c[3]))
 
-                tree = ET.ElementTree(root)
-                #tree.write("../Checkers/Checkers/Levels/{0}.xml".format(level_name))
-                tree.write("{0}.xml".format(level_name))
+                level_file.write("END")
+                level_file.close()
             else:
                 showerror("You Fucked Up", "Enter a level name")
         else:

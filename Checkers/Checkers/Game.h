@@ -47,7 +47,4 @@ private:
 	InputManager inputManager;
 
 	int previousFrameTime, currentFrameTime;
-	
-	
-
 };

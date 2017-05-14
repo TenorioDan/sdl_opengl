@@ -1,9 +1,11 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <string.h>
+#include <afx.h>
 #include <iterator>
+#include <Windows.h>
 #include "TileManager.h"
-
 
 TileManager::TileManager() 
 {
@@ -51,50 +53,88 @@ bool TileManager::loadMedia()
 		return false;
 	}
 
-	createTileset(40, 40, "test_level.txt");
-	createColliders("Platforms.txt");
+	createTileset(findMostRecentLevelFile());
 
 	return true;
 }
 
 // Called when creating the tilset of a new level.
-void TileManager::createTileset(GLint tilesX, GLint tilesY, std::string path)
+void TileManager::createTileset(std::string path)
 {
-	numTilesX = tilesX;
-	numTilesY = tilesY;
-
 	// dynamically create the number of tiles for this this area
-	tileset = new Tile*[numTilesX * numTilesY];
-
 	// Add all tiles that will be rendered to the screen
 	std::ifstream  tilesetFile(path.c_str());
 	std::string line;
-	int y = 0;
-	int x = 0;
 
 	while (std::getline(tilesetFile, line))
 	{
 		std::istringstream buffer(line);
 		std::istream_iterator<std::string> beg(buffer), end;
 		std::vector<std::string> values(beg, end);
-		x = 0;
+		auto it = values.begin();
 
-		for (auto s : values)
+		if (*it == "TILES")
 		{
-			int val = std::stoi(s);
-			Tile* t = new Tile();
-			t->spriteIndex = val;
-			t->positionX = x * tileWidth;
-			t->positionY = y * tileWidth;
-
-			tileset[x*numTilesY + y] = t;
-			++x;
+			readState = Tiles;
+			numTilesX = std::stoi(*++it);
+			numTilesY = std::stoi(*++it);
+			tileset = new Tile*[numTilesX * numTilesY];
 		}
-		++y;
+		else if (*it == "COLLIDERS")
+		{
+			readState = Colliders;
+		}
+		else if (*it == "END")
+		{
+			// Do nothing, we're done reading the file
+		}
+		else 
+		{
+			switch (readState)
+			{
+				case Tiles: 
+				{
+					int row = std::stoi(*it++);
+					int column = std::stoi(*it++);
+					int tileType = std::stoi(*it);
+					createTile(row, column, tileType);
+					break;
+				}
+				case Colliders:
+				{
+					int minX = std::stoi(*it++);
+					int minY = std::stoi(*it++);
+					int maxX = std::stoi(*it++);
+					int maxY = std::stoi(*it);
+					createCollider(minX, minY, maxX, maxY);
+					break;
+				}
+			}
+		}
 	}
 }
 
 
+void TileManager::createTile(int row, int column, int tileType)
+{
+	Tile* t = new Tile();
+	t->spriteIndex = tileType;
+	t->positionX = column * tileWidth;
+	t->positionY = row * tileHeight;
+
+	tileset[row*numTilesY + column] = t;
+}
+
+
+void TileManager::createCollider(int minX, int minY, int maxX, int maxY)
+{
+	Collider* c = new Collider();
+	c->minX = minX - (tileWidth / 2.f);
+	c->minY = minY - (tileWidth / 2.f);
+	c->maxX = maxX - (tileWidth / 2.f);
+	c->maxY = maxY - (tileWidth / 2.f);
+	platforms.push_back(c);
+}
 // Create the colliders from the provided text file
 void TileManager::createColliders(std::string path)
 {
@@ -152,4 +192,25 @@ void TileManager::clearTiles()
 	delete[] tileset;
 	numTilesX = 0;
 	numTilesY = 0;
+}
+
+std::string TileManager::findMostRecentLevelFile()
+{
+	FILETIME bestDate = { 0, 0 };
+	FILETIME curDate;
+	std::string name;
+	CFileFind finder;
+
+	finder.FindFile("/Levels/*.lvl");
+	while (finder.FindNextFile())
+	{
+		finder.GetCreationTime(&curDate);
+
+		if (CompareFileTime(&curDate, &bestDate) > 0)
+		{
+			bestDate = curDate;
+			name = finder.GetFileName().GetString();
+		}
+	}
+	return name;
 }

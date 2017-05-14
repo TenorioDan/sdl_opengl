@@ -1,1 +1,147 @@
-<test><Tiles><row name="row0"><Tile name="tile_0_0"><TileType>1</TileType><Destructible>False</Destructible><FalseTile>False</FalseTile></Tile><Tile name="tile_0_1"><TileType>1</TileType><Destructible>False</Destructible><FalseTile>False</FalseTile></Tile><Tile name="tile_0_2"><TileType>1</TileType><Destructible>False</Destructible><FalseTile>False</FalseTile></Tile><Tile name="tile_0_3"><TileType>0</TileType><Destructible>False</Destructible><FalseTile>False</FalseTile></Tile><Tile name="tile_0_4"><TileType>0</TileType><Destructible>False</Destructible><FalseTile>False</FalseTile></Tile></row><row name="row1"><Tile name="tile_1_0"><TileType>0</TileType><Destructible>False</Destructible><FalseTile>False</FalseTile></Tile><Tile name="tile_1_1"><TileType>0</TileType><Destructible>False</Destructible><FalseTile>False</FalseTile></Tile><Tile name="tile_1_2"><TileType>0</TileType><Destructible>False</Destructible><FalseTile>False</FalseTile></Tile><Tile name="tile_1_3"><TileType>0</TileType><Destructible>False</Destructible><FalseTile>False</FalseTile></Tile><Tile name="tile_1_4"><TileType>0</TileType><Destructible>False</Destructible><FalseTile>False</FalseTile></Tile></row><row name="row2"><Tile name="tile_2_0"><TileType>0</TileType><Destructible>False</Destructible><FalseTile>False</FalseTile></Tile><Tile name="tile_2_1"><TileType>1</TileType><Destructible>False</Destructible><FalseTile>False</FalseTile></Tile><Tile name="tile_2_2"><TileType>1</TileType><Destructible>False</Destructible><FalseTile>False</FalseTile></Tile><Tile name="tile_2_3"><TileType>1</TileType><Destructible>False</Destructible><FalseTile>False</FalseTile></Tile><Tile name="tile_2_4"><TileType>0</TileType><Destructible>False</Destructible><FalseTile>False</FalseTile></Tile></row><row name="row3"><Tile name="tile_3_0"><TileType>0</TileType><Destructible>False</Destructible><FalseTile>False</FalseTile></Tile><Tile name="tile_3_1"><TileType>0</TileType><Destructible>False</Destructible><FalseTile>False</FalseTile></Tile><Tile name="tile_3_2"><TileType>0</TileType><Destructible>False</Destructible><FalseTile>False</FalseTile></Tile><Tile name="tile_3_3"><TileType>0</TileType><Destructible>False</Destructible><FalseTile>False</FalseTile></Tile><Tile name="tile_3_4"><TileType>0</TileType><Destructible>False</Destructible><FalseTile>False</FalseTile></Tile></row><row name="row4"><Tile name="tile_4_0"><TileType>0</TileType><Destructible>False</Destructible><FalseTile>False</FalseTile></Tile><Tile name="tile_4_1"><TileType>0</TileType><Destructible>False</Destructible><FalseTile>False</FalseTile></Tile><Tile name="tile_4_2"><TileType>1</TileType><Destructible>False</Destructible><FalseTile>False</FalseTile></Tile><Tile name="tile_4_3"><TileType>1</TileType><Destructible>False</Destructible><FalseTile>False</FalseTile></Tile><Tile name="tile_4_4"><TileType>1</TileType><Destructible>False</Destructible><FalseTile>False</FalseTile></Tile></row></Tiles></test>
+<test>
+    <Tiles>
+        <row name="row0">
+            <Tile name="tile_0_0">
+                <TileType>1</TileType>
+                <Destructible>False</Destructible>
+                <FalseTile>False</FalseTile>
+            </Tile>
+            <Tile name="tile_0_1">
+                <TileType>1</TileType>
+                <Destructible>False</Destructible>
+                <FalseTile>False</FalseTile>
+            </Tile>
+            <Tile name="tile_0_2">
+                <TileType>1</TileType>
+                <Destructible>False</Destructible>
+                <FalseTile>False</FalseTile>
+            </Tile>
+            <Tile name="tile_0_3">
+                <TileType>0</TileType>
+                <Destructible>False</Destructible>
+                <FalseTile>False</FalseTile>
+            </Tile>
+            <Tile name="tile_0_4">
+                <TileType>0</TileType>
+                <Destructible>False</Destructible>
+                <FalseTile>False</FalseTile>
+            </Tile>
+        </row>
+        <row name="row1">
+            <Tile name="tile_1_0">
+                <TileType>0</TileType>
+                <Destructible>False</Destructible>
+                <FalseTile>False</FalseTile>
+            </Tile>
+            <Tile name="tile_1_1">
+                <TileType>0</TileType>
+                <Destructible>False</Destructible>
+                <FalseTile>False</FalseTile>
+            </Tile>
+            <Tile name="tile_1_2">
+                <TileType>0</TileType>
+                <Destructible>False</Destructible>
+                <FalseTile>False</FalseTile>
+            </Tile>
+            <Tile name="tile_1_3">
+                <TileType>0</TileType>
+                <Destructible>False</Destructible>
+                <FalseTile>False</FalseTile>
+            </Tile>
+            <Tile name="tile_1_4">
+                <TileType>0</TileType>
+                <Destructible>False</Destructible>
+                <FalseTile>False</FalseTile>
+            </Tile>
+        </row>
+        <row name="row2">
+            <Tile name="tile_2_0">
+                <TileType>0</TileType>
+                <Destructible>False</Destructible>
+                <FalseTile>False</FalseTile>
+            </Tile>
+            <Tile name="tile_2_1">
+                <TileType>1</TileType>
+                <Destructible>False</Destructible>
+                <FalseTile>False</FalseTile>
+            </Tile>
+            <Tile name="tile_2_2">
+                <TileType>1</TileType>
+                <Destructible>False</Destructible>
+                <FalseTile>False</FalseTile>
+            </Tile>
+            <Tile name="tile_2_3">
+                <TileType>1</TileType>
+                <Destructible>False</Destructible>
+                <FalseTile>False</FalseTile>
+            </Tile>
+            <Tile name="tile_2_4">
+                <TileType>0</TileType>
+                <Destructible>False</Destructible>
+                <FalseTile>False</FalseTile>
+            </Tile>
+        </row>
+        <row name="row3">
+            <Tile name="tile_3_0">
+                <TileType>0</TileType>
+                <Destructible>False</Destructible>
+                <FalseTile>False</FalseTile>
+            </Tile>
+            <Tile name="tile_3_1">
+                <TileType>0</TileType>
+                <Destructible>False</Destructible>
+                <FalseTile>False</FalseTile>
+            </Tile>
+            <Tile name="tile_3_2">
+                <TileType>0</TileType>
+                <Destructible>False</Destructible>
+                <FalseTile>False</FalseTile>
+            </Tile>
+            <Tile name="tile_3_3">
+                <TileType>0</TileType>
+                <Destructible>False</Destructible>
+                <FalseTile>False</FalseTile>
+            </Tile>
+            <Tile name="tile_3_4">
+                <TileType>0</TileType>
+                <Destructible>False</Destructible>
+                <FalseTile>False</FalseTile>
+            </Tile>
+        </row>
+        <row name="row4">
+            <Tile name="tile_4_0">
+                <TileType>0</TileType>
+                <Destructible>False</Destructible>
+                <FalseTile>False</FalseTile>
+            </Tile>
+            <Tile name="tile_4_1">
+                <TileType>0</TileType>
+                <Destructible>False</Destructible>
+                <FalseTile>False</FalseTile>
+            </Tile>
+            <Tile name="tile_4_2">
+                <TileType>1</TileType>
+                <Destructible>False</Destructible>
+                <FalseTile>False</FalseTile>
+            </Tile>
+            <Tile name="tile_4_3">
+                <TileType>1</TileType>
+                <Destructible>False</Destructible>
+                <FalseTile>False</FalseTile>
+            </Tile>
+            <Tile name="tile_4_4">
+                <TileType>1</TileType>
+                <Destructible>False</Destructible>
+                <FalseTile>False</FalseTile>
+            </Tile>
+        </row>
+    </Tiles>
+    <Colliders>
+        <Collider>0 0 192 64
+        </Collider>
+        <Collider>128 64 320 128
+        </Collider>
+        <Collider>256 128 448 192
+        </Collider>
+    </Colliders>
+</test>
