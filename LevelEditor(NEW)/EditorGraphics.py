@@ -35,11 +35,13 @@ class SpriteSheet(object):
 # Tile object that gets created when tiles are added to the spaces in the editor.
 # Contains the position of the tile, the type of tile, the image representing the tile object in the editor
 class Tile(object):
-    def __init__(self, x, y):
+    def __init__(self, row, column):
         self.tile_type = 0
+        self.is_destructible = False
+        self.is_false_tile = False
         self.canvas_image = None
-        self.x = x
-        self.y = y
+        self.row = row
+        self.column = column
 
 
     # Check if an image has been set to display the tile properties in the controls section

@@ -1,4 +1,5 @@
 import Tkinter as tk
+import xml.etree.cElementTree as ET
 from tkMessageBox import *
 from EditorGraphics import SpriteSheet, Tile
 
@@ -119,13 +120,16 @@ class TileEditor(tk.Tk):
             tile_label.bind("<Button-1>", self.setCurrentTile)
             tile_label.grid(row=int(i / 5), column=(i % 5))
 
+
+        self.level_name_entry = tk.Entry(self.control_frame)
+        self.level_name_entry.grid(row=4, column=0)
         export_button = tk.Button(self.control_frame, text="Export", command=self.exportLevelXML)
-        export_button.grid(row=4, column=0)
+        export_button.grid(row=4, column=1)
 
 
     # Should only be called by a TileLabel to set the current image of the editor for drawing on the tile canvas
     def setCurrentTile(self, event):
-        self.editor_current_image = event.widget.image
+        self.editor_current_image = event.widget
 
 
     # takes a mouse click event and adds a tile to the space clicked on
@@ -137,10 +141,12 @@ class TileEditor(tk.Tk):
                 if current_tile.canvas_image:
                     self.tile_canvas.delete(current_tile.canvas_image)
 
-                x = (current_tile.x * (self.spritesheet.tile_width + 1)) + 1
-                y = (current_tile.y * (self.spritesheet.tile_height + 1)) + 1
+                y = (current_tile.row * (self.spritesheet.tile_width + 1)) + 1
+                x = (current_tile.column * (self.spritesheet.tile_height + 1)) + 1
 
-                canvas_image = self.tile_canvas.create_image(x, y, image=self.editor_current_image, anchor=tk.NW)
+                canvas_image = self.tile_canvas.create_image(x, y, image=self.editor_current_image.image, anchor=tk.NW)
+                # TODO: Fix offset issue with the tile types
+                current_tile.tile_type = self.editor_current_image.tile_type + 1
                 current_tile.canvas_image = canvas_image
 
 
@@ -157,11 +163,11 @@ class TileEditor(tk.Tk):
         canvas = event.widget
 
         # calculate the x/y position of the tile that the sprite will be drawn on.
-        index_x = int(canvas.canvasx(event.x) / (self.spritesheet.tile_width + GRID_LINE_WIDTH))
-        index_y = int(canvas.canvasy(event.y) / (self.spritesheet.tile_height + GRID_LINE_WIDTH))
+        row_index= int(canvas.canvasy(event.y) / (self.spritesheet.tile_height + GRID_LINE_WIDTH))
+        column_index = int(canvas.canvasx(event.x) / (self.spritesheet.tile_width + GRID_LINE_WIDTH))
 
-        if index_x < len(self.editor_tiles) and index_y < len(self.editor_tiles[0]):
-            return self.editor_tiles[index_x][index_y]
+        if row_index < self.tiles_row_count and column_index < self.tiles_column_count:
+            return self.editor_tiles[row_index][column_index]
         else:
             return None
 
@@ -172,24 +178,26 @@ class TileEditor(tk.Tk):
         self.tile_canvas.delete("all")
 
         try:
-            tilesX = int(self.entry_tiles_x.get())
-            tilesY = int(self.entry_tiles_y.get())
-            self.drawLines(tilesX, tilesY)
+            tiles_rows = int(self.entry_tiles_x.get())
+            tiles_columns = int(self.entry_tiles_y.get())
+            self.drawLines(tiles_rows, tiles_columns)
         except:
             showerror("You Fucked Up", "Tile dimensions are invalid")
         else:
             # Empty the current tileset in the editor and create empty tile objects to be used in rendering and setting
             # tile properties
             self.editor_tiles = []
-            for x in range(tilesX):
+            for r in range(tiles_rows):
                 self.editor_tiles.append([])
-                for y in range(tilesY):
-                    self.editor_tiles[x].append(Tile(x, y))
+                for c in range(tiles_columns):
+                    self.editor_tiles[r].append(Tile(r, c))
 
             self.grid_created = True
 
     # Draw the GRID for the tile editor
     def drawLines(self, tile_x_count, tile_y_count):
+        self.tiles_row_count = tile_x_count
+        self.tiles_column_count = tile_y_count
         self.canvas_width = (self.spritesheet.tile_width + GRID_LINE_WIDTH) * tile_x_count
         self.canvas_height = (self.spritesheet.tile_height + GRID_LINE_WIDTH) * tile_y_count
 
@@ -220,8 +228,61 @@ class TileEditor(tk.Tk):
             for i in range(len(self.spritesheet.tiles_set[row])):
                 self.tiles.append(self.spritesheet.tiles_set[row][i])
 
+    # Use etree to create an xml file for each tile in the
     def exportLevelXML(self):
-        pass
+
+        if self.grid_created:
+            level_name = self.level_name_entry.get()
+
+            if level_name not in (None, ""):
+                root = ET.Element(level_name)
+                tiles_element = ET.SubElement(root, "Tiles")
+                colliders = []
+                # Loop through the set of tiles and create an ETree element for each row and append elements
+                # for each tile in that row
+                for row in range(self.tiles_row_count):
+                    row_element = ET.SubElement(tiles_element, "row", name="row{}".format(row))
+                    current_collider = None
+                    last_collider_column = 0
+
+                    for column in range(self.tiles_column_count):
+                        current_tile = self.editor_tiles[row][column]
+
+                        # If a tile that can be collided with is present, set it and use it as the basis for the next
+                        # collider
+                        if current_tile.tile_type != 0:
+                            if current_collider is None or column - last_collider_column > 1:
+                                top_left_x = row * self.spritesheet.tile_width
+                                top_left_y = column * self.spritesheet.tile_height
+                                current_collider = (top_left_x, top_left_y,
+                                                    top_left_x + self.spritesheet.tile_width,
+                                                    top_left_y + self.spritesheet.tile_height)
+                                last_collider_column = column
+                            else:
+                                current_collider = (current_collider[0], current_collider[1],
+                                                    current_collider[2] + self.spritesheet.tile_width,
+                                                    current_collider[3])
+                                last_collider_column = column
+
+
+                        tile_element = ET.SubElement(row_element, "Tile", name="tile_{0}_{1}".format(row, column))
+                        ET.SubElement(tile_element, "TileType").text = str(current_tile.tile_type)
+                        ET.SubElement(tile_element, "Destructible").text = str(current_tile.is_destructible)
+                        ET.SubElement(tile_element, "FalseTile").text = str(current_tile.is_false_tile)
+
+                    if current_collider is not None:
+                        colliders.append(current_collider)
+
+                for c in colliders:
+                    print c
+
+                tree = ET.ElementTree(root)
+                #tree.write("../Checkers/Checkers/Levels/{0}.xml".format(level_name))
+                tree.write("{0}.xml".format(level_name))
+            else:
+                showerror("You Fucked Up", "Enter a level name")
+        else:
+            showerror("You Fucked up", "Generate a level grid")
 
 
 app = TileEditor()
