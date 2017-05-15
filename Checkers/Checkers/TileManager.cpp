@@ -2,7 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <string.h>
-#include <afx.h>
+//#include <afx.h>
 #include <iterator>
 #include <Windows.h>
 #include "TileManager.h"
@@ -53,7 +53,11 @@ bool TileManager::loadMedia()
 		return false;
 	}
 
-	createTileset(findMostRecentLevelFile());
+#ifdef _DEBUG
+	createTileset("Levels/last_level_created.lvl");
+#else
+	createTileset("Levels/test.lvl");
+#endif
 
 	return true;
 }
@@ -194,23 +198,23 @@ void TileManager::clearTiles()
 	numTilesY = 0;
 }
 
-std::string TileManager::findMostRecentLevelFile()
-{
-	FILETIME bestDate = { 0, 0 };
-	FILETIME curDate;
-	std::string name;
-	CFileFind finder;
-
-	finder.FindFile("/Levels/*.lvl");
-	while (finder.FindNextFile())
-	{
-		finder.GetCreationTime(&curDate);
-
-		if (CompareFileTime(&curDate, &bestDate) > 0)
-		{
-			bestDate = curDate;
-			name = finder.GetFileName().GetString();
-		}
-	}
-	return name;
-}
+//std::string TileManager::findMostRecentLevelFile()
+//{
+//	FILETIME bestDate = { 0, 0 };
+//	FILETIME curDate;
+//	std::string name;
+//	CFileFind finder;
+//
+//	finder.FindFile("/Levels/*.lvl");
+//	while (finder.FindNextFile())
+//	{
+//		finder.GetCreationTime(&curDate);
+//
+//		if (CompareFileTime(&curDate, &bestDate) > 0)
+//		{
+//			bestDate = curDate;
+//			name = finder.GetFileName().GetString();
+//		}
+//	}
+//	return name;
+//}

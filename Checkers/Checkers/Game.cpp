@@ -180,6 +180,7 @@ void Game::update()
 	// Update at 60fps
 	if (time - previousFrameTime >= 1000 / SCREEN_FPS)
 	{
+		//printf("NEW FRAME\n");
 		currentFrameTime = SDL_GetTicks();
 		std::vector<Command*> commandQueue = inputManager.handleInput();
 

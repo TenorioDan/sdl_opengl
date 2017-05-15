@@ -38,7 +38,7 @@ public:
 	GLfloat MoveSpeed();
 
 protected:
-	GLfloat baseJumpSpeed = -48.f; // move upwards which is the negative y direction
+	GLfloat baseJumpSpeed = -24.f; // move upwards which is the negative y direction
 	GLfloat colliderOffset = 30.f;
 	GLfloat aimDirectionX;
 	GLfloat aimDirectionY;

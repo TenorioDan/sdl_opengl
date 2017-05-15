@@ -58,7 +58,7 @@ void LevelManager::spawnEnemies(std::string path)
 
 		Enemy* e = new Enemy();
 		e->setCurrentPlatform(platforms[0]);
-		enemies.push_back(e);
+		//enemies.push_back(e);
 	}
 }
 
@@ -89,17 +89,17 @@ TileManager LevelManager::getTileManager()
 // TODO: Quad Trees for per section collision detection
 void LevelManager::checkPlayerCollisions()
 {
-	player.translate(player.getHorizontalVelocity(), player.getVerticalVelocity());
 	for (auto p : *tileManager.getPlatforms())
 	{
+		player.translate(player.getHorizontalVelocity(), player.getVerticalVelocity());
 		Collider::CollisionDirection collision = player.getCollider().collision(*p);
 
 		if (collision != Collider::NO_COLLISION)
 		{
 			player.detectPlatformCollision(p, collision);
 		}
+		player.translate(-player.getHorizontalVelocity(), -player.getVerticalVelocity());
 	}
-	player.translate(-player.getHorizontalVelocity(), -player.getVerticalVelocity());
 }
 
 // Update loop. Check collisions and stuff

@@ -2,7 +2,7 @@
 
 GameObject::GameObject()
 {
-	gravity = 2.f;
+	gravity = 1.85f;
 	maxVerticleSpeed = 24.f;
 
 	verticalVelocity = 0.f;
@@ -92,7 +92,6 @@ void GameObject::setPlatforms(std::vector<Collider*>* c)
 {
 	platforms = c;
 }
-
 
 void GameObject::update(int time)
 {

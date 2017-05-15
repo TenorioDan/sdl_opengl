@@ -6,7 +6,7 @@ Character::Character()
 	: AnimatedGameObject()
 {
 	// TODO: Clean up magic numbers
-	baseJumpSpeed = -32.f; // move upwards which is the negative y direction
+	baseJumpSpeed = -28.f; // move upwards which is the negative y direction
 	colliderOffset = 30.f;
 
 	health = 100;
@@ -15,7 +15,7 @@ Character::Character()
 	width = 85.f;
 	height = 87.f;
 	spriteIndex = 0;
-	moveSpeed = 10;
+	moveSpeed = 12;
 	previousAnimationTime = 0;
 	currentAnimationTime = 0;
 	animationSpeed = 100;
@@ -107,8 +107,6 @@ void Character::checkCollisions()
 // Called by the level manager when the player has fallen on a new platform
 void Character::detectPlatformCollision(Collider* platform, Collider::CollisionDirection direction)
 {
-	
-
 	switch (direction)
 	{
 	case Collider::CollisionDirection::LEFT:
@@ -127,7 +125,6 @@ void Character::detectPlatformCollision(Collider* platform, Collider::CollisionD
 		verticalVelocity = 0;
 		break;
 	}
-
 }
 
 
