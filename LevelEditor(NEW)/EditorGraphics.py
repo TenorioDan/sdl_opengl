@@ -2,6 +2,7 @@ import Tkinter as tk
 from PIL import Image as ImagePIL
 from PIL import ImageTk
 
+
 # Spritesheet representation that will be used to draw tiles in the controls for selecting individual tiles
 class SpriteSheet(object):
     def __init__(self, file_name, tile_offset, tile_width, tile_height):
@@ -42,8 +43,3 @@ class Tile(object):
         self.canvas_image = None
         self.row = row
         self.column = column
-
-
-    # Check if an image has been set to display the tile properties in the controls section
-    def set(self):
-        return self.image == None
