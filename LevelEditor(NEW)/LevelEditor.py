@@ -130,16 +130,17 @@ class TileEditor(tk.Tk):
             tile_label.bind("<Button-1>", self.set_current_tile)
             tile_label.grid(row=int(i / 5), column=(i % 5))
 
-        self.level_name_entry = tk.Entry(self.control_frame)
+        self.level_name_stringvar = tk.StringVar(self.control_frame, "")
+        self.level_name_entry = tk.Entry(self.control_frame, textvariable=self.level_name_stringvar)
         self.level_name_entry.grid(row=4, column=0)
         export_button = tk.Button(self.control_frame, text="Export", command=self.export_level)
         export_button.grid(row=4, column=1)
 
         # Create the load button for importing previously created levels.
-        self.level_to_load = tk.StringVar(self)
-        self.level_to_load.set("last_level_created.lvl")
+        self.level_to_load_stringvar = tk.StringVar(self.control_frame)
+        self.level_to_load_stringvar.set("last_level_created.lvl")
         available_levels = [f for f in listdir(LEVEL_DIRECTORY) if isfile(join(LEVEL_DIRECTORY, f))]
-        level_options = tk.OptionMenu(self.control_frame, self.level_to_load, *available_levels)
+        level_options = tk.OptionMenu(self.control_frame, self.level_to_load_stringvar, *available_levels)
         level_options.config(width=15)
         level_options.grid(row=5, column=0)
         load_level_button = tk.Button(self.control_frame, text="Import", command=self.load_level)
@@ -314,7 +315,8 @@ class TileEditor(tk.Tk):
             showerror("You Fucked up", "Generate a level grid")
 
     def load_level(self):
-        level = self.level_to_load.get()
+        level = self.level_to_load_stringvar.get()
+        self.level_name_stringvar.set(level)
         self.tile_canvas.delete("all")
 
         with open("{0}/{1}".format(LEVEL_DIRECTORY, level), 'r') as level_file:
