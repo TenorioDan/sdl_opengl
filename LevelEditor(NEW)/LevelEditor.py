@@ -142,7 +142,7 @@ class TileEditor(tk.Tk):
         level_options = tk.OptionMenu(self.control_frame, self.level_to_load, *available_levels)
         level_options.config(width=15)
         level_options.grid(row=5, column=0)
-        load_level_button = tk.Button(self.control_frame, text="Load Level", command=self.load_level)
+        load_level_button = tk.Button(self.control_frame, text="Import", command=self.load_level)
         load_level_button.grid(row=5, column=1)
 
     # Should only be called by a TileLabel to set the current image of the editor for drawing on the tile canvas
@@ -332,11 +332,13 @@ class TileEditor(tk.Tk):
                     mode = "COLLIDERS"
                 else:
                     if mode == "TILES":
-                        tile = self.editor_tiles[int(properties[0])][int(properties[1])]
                         tile_type = int(properties[2])
                         if tile_type > 0:
+                            row = int(properties[0])
+                            column = int(properties[1])
+                            tile = self.editor_tiles[row][column]
+                            self.editor_current_tile_type = tile_type
                             self.editor_current_image = self.tiles[tile_type - 1]
-                            tile.tile_type = tile_type
                             self.add_tile(tile)
 
                     elif mode == "COLLIDERS":
