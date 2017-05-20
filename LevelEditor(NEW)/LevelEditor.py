@@ -2,7 +2,7 @@ from os import listdir
 from os.path import isfile, join
 import Tkinter as tk
 from tkMessageBox import *
-from EditorGraphics import SpriteSheet, Tile
+from EditorGraphics import SpriteSheet, Tile, Collider
 
 GRID_LINE_WIDTH = 1
 LEVEL_DIRECTORY = "../Checkers/Checkers/Levels"
@@ -114,8 +114,14 @@ class TileEditor(tk.Tk):
         label2.grid(row=0, column=2)
         self.entry_tiles_y = tk.Entry(self.control_frame)
         self.entry_tiles_y.grid(row=0, column=3)
-        generate_button = tk.Button(self.control_frame, text="Generate Tiles", command=self.generate_tiles_button_call)
-        generate_button.grid(row=2, column=0)
+        generate_tiles_button = tk.Button(self.control_frame, text="Generate Tiles",
+                                          command=self.generate_tiles_button_call)
+        generate_tiles_button.grid(row=2, column=0)
+        generate_colliders_button = tk.Button(self.control_frame, text="Generate Colliders",
+                                              command=self.generate_colliders)
+        generate_colliders_button.grid(row=2, column=1)
+        delete_colliders_button = tk.Button(self.control_frame, text="Clear Colliders", command=self.clear_collider)
+        delete_colliders_button.grid(row=2, column=3)
 
         # Create the tile selector
         self.tile_select_frame = VerticalScrolledFrame(self.control_frame)
@@ -216,6 +222,79 @@ class TileEditor(tk.Tk):
         else:
             self.generate_tiles(tiles_rows, tiles_columns)
 
+    # Loop through the tiles in the level and generate colliders and represent them visually with green rectangles
+    def generate_colliders(self):
+        # for c in self.colliders:
+        #     for line in c.rect_lines:
+        #         self.tile_canvas.delete(line)
+
+        self.colliders = []
+
+        for row in range(self.tiles_row_count):
+            current_collider = None
+            last_collider_column = 0
+
+            for column in range(self.tiles_column_count):
+                current_tile = self.editor_tiles[row][column]
+
+                # If a tile that can be collided with is present, set it and use it as the basis for the
+                # next collider
+                if current_tile.tile_type != 0:
+                    if current_collider is None or column - last_collider_column > 1:
+                        if current_collider is not None:
+                            self.colliders.append(current_collider)
+
+                        top_left_x = column * self.spritesheet.tile_width
+                        top_left_y = row * self.spritesheet.tile_height
+                        current_collider = Collider(top_left_x, top_left_y,
+                                                    top_left_x + self.spritesheet.tile_width,
+                                                    top_left_y + self.spritesheet.tile_height)
+                        last_collider_column = column
+                    else:
+                        current_collider.max_x += self.spritesheet.tile_width
+                        last_collider_column = column
+
+            if current_collider is not None:
+                self.colliders.append(current_collider)
+
+        self.colliders = sorted(self.colliders, key=lambda col: col.min_x)
+
+        # combine colliders to create larger AABBs instead of having several smaller ones
+        colliders_to_delete = []
+        previous = None
+        for i in range(len(self.colliders)):
+            if i > 0:
+                if previous is None:
+                    previous = self.colliders[i - 1]
+
+                current = self.colliders[i]
+
+                if previous.min_x == current.min_x and previous.max_x == current.max_x \
+                        and previous.max_y == current.min_y:
+                    previous.max_y = current.max_y
+                    colliders_to_delete.append(current)
+                else:
+                    previous = None
+
+        for c in colliders_to_delete:
+            self.colliders.remove(c)
+
+        for i in range(len(self.colliders)):
+            c = self.colliders[i]
+            x_min_offset = (int(c.min_x / self.spritesheet.tile_width))
+            x_max_offset = (int(c.max_x / self.spritesheet.tile_width))
+            y_min_offset = (int(c.min_y / self.spritesheet.tile_height))
+            y_max_offset = (int(c.max_y / self.spritesheet.tile_height))
+            c.rect = self.tile_canvas.create_rectangle(c.min_x + x_min_offset, c.min_y + y_min_offset,
+                                                       c.max_x + x_max_offset,
+                                                       c.max_y + y_max_offset, outline="green")
+
+    def clear_collider(self):
+        for c in self.colliders:
+            self.tile_canvas.delete(c.rect)
+
+        self.colliders = None
+
     # Draw the GRID for the tile editor
     def draw_lines(self, tile_x_count, tile_y_count):
         self.tiles_row_count = tile_x_count
@@ -256,56 +335,28 @@ class TileEditor(tk.Tk):
             level_name = self.level_name_entry.get()
             new_level_file = open("../Checkers/Checkers/Levels/{0}.lvl".format(level_name), 'w')
             last_level_created = open("../Checkers/Checkers/Levels/last_level_created.lvl", 'w')
-            # level_file = open("{0}.lvl".format(level_name), 'w')
             level_files = [new_level_file, last_level_created]
 
             for level_file in level_files:
                 if level_name not in (None, ""):
-
                     # Insert the tiles and the number of tiles for the game to read and process
                     level_file.write("TILES {} {}\n".format(self.tiles_row_count, self.tiles_column_count))
-                    # Loop through the set of tiles and create an ETree element for each row and append elements
-                    # for each tile in that row
-                    self.colliders = []
-                    for row in range(self.tiles_row_count):
-                        current_collider = None
-                        last_collider_column = 0
 
+                    for row in range(self.tiles_row_count):
                         for column in range(self.tiles_column_count):
                             current_tile = self.editor_tiles[row][column]
-
-                            # If a tile that can be collided with is present, set it and use it as the basis for the
-                            # next collider
-                            if current_tile.tile_type != 0:
-                                if current_collider is None or column - last_collider_column > 1:
-
-                                    if current_collider is not None:
-                                        self.colliders.append(current_collider)
-
-                                    top_left_x = column * self.spritesheet.tile_width
-                                    top_left_y = row * self.spritesheet.tile_height
-                                    current_collider = (top_left_x, top_left_y,
-                                                        top_left_x + self.spritesheet.tile_width,
-                                                        top_left_y + self.spritesheet.tile_height)
-                                    last_collider_column = column
-                                else:
-                                    current_collider = (current_collider[0], current_collider[1],
-                                                        current_collider[2] + self.spritesheet.tile_width,
-                                                        current_collider[3])
-                                    last_collider_column = column
 
                             # Set all the properties in the tile element from the tile object
                             level_file.write("{} {} {} {} {}\n".format(row, column, str(current_tile.tile_type),
                                                                        str(current_tile.is_destructible),
                                                                        str(current_tile.is_false_tile)))
 
-                        if current_collider is not None:
-                            self.colliders.append(current_collider)
-
+                    # Generate the colliders and place in the level file
+                    self.generate_colliders()
                     level_file.write("COLLIDERS {}\n".format(str(len(self.colliders))))
                     # Create the collider file
                     for c in self.colliders:
-                        level_file.write("{0} {1} {2} {3}\n".format(c[0], c[1], c[2], c[3]))
+                        level_file.write("{0} {1} {2} {3}\n".format(c.min_x, c.min_y, c.max_x, c.max_y))
 
                     level_file.write("END")
                     level_file.close()
@@ -345,6 +396,7 @@ class TileEditor(tk.Tk):
 
                     elif mode == "COLLIDERS":
                         self.colliders.append(zip(*properties))
+
 
 app = TileEditor()
 app.mainloop()

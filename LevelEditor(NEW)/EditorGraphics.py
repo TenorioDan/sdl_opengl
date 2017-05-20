@@ -43,3 +43,15 @@ class Tile(object):
         self.canvas_image = None
         self.row = row
         self.column = column
+
+
+class Collider(object):
+    def __init__(self, min_x, min_y, max_x, max_y):
+        self.min_x = min_x
+        self.min_y = min_y
+        self.max_x = max_x
+        self.max_y = max_y
+        self.rect = None
+
+    def add_rect(self, rect):
+        self.rect = rect
