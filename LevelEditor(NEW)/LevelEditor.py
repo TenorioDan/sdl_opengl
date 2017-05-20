@@ -120,7 +120,7 @@ class TileEditor(tk.Tk):
         generate_colliders_button = tk.Button(self.control_frame, text="Generate Colliders",
                                               command=self.generate_colliders)
         generate_colliders_button.grid(row=2, column=1)
-        delete_colliders_button = tk.Button(self.control_frame, text="Clear Colliders", command=self.clear_collider)
+        delete_colliders_button = tk.Button(self.control_frame, text="Clear Colliders", command=self.clear_colliders)
         delete_colliders_button.grid(row=2, column=3)
 
         # Create the tile selector
@@ -224,11 +224,7 @@ class TileEditor(tk.Tk):
 
     # Loop through the tiles in the level and generate colliders and represent them visually with green rectangles
     def generate_colliders(self):
-        # for c in self.colliders:
-        #     for line in c.rect_lines:
-        #         self.tile_canvas.delete(line)
-
-        self.colliders = []
+        self.clear_colliders()
 
         for row in range(self.tiles_row_count):
             current_collider = None
@@ -289,11 +285,12 @@ class TileEditor(tk.Tk):
                                                        c.max_x + x_max_offset,
                                                        c.max_y + y_max_offset, outline="green")
 
-    def clear_collider(self):
-        for c in self.colliders:
-            self.tile_canvas.delete(c.rect)
+    def clear_colliders(self):
+        if len(self.colliders) > 0:
+            for c in self.colliders:
+                self.tile_canvas.delete(c.rect)
 
-        self.colliders = None
+            self.colliders = []
 
     # Draw the GRID for the tile editor
     def draw_lines(self, tile_x_count, tile_y_count):
@@ -383,6 +380,8 @@ class TileEditor(tk.Tk):
                     self.generate_tiles(self.tiles_row_count, self.tiles_column_count)
                 elif properties[0] == "COLLIDERS":
                     mode = "COLLIDERS"
+                elif properties[0] == "END":
+                    pass
                 else:
                     if mode == "TILES":
                         tile_type = int(properties[2])
@@ -395,7 +394,7 @@ class TileEditor(tk.Tk):
                             self.add_tile(tile)
 
                     elif mode == "COLLIDERS":
-                        self.colliders.append(zip(*properties))
+                        self.colliders.append(Collider(properties[0], properties[1], properties[2], properties[3]))
 
 
 app = TileEditor()
