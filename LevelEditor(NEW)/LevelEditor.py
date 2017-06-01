@@ -91,6 +91,8 @@ class TileEditor(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
         self.grid_created = False
+        self.show_grid_lines = True
+        self.colliders_on = False
         self.canvas_width = 0
         self.canvas_height = 0
         self.tiles_row_count = 0
@@ -98,6 +100,7 @@ class TileEditor(tk.Tk):
         self.tiles = []
         self.editor_tiles = []
         self.colliders = []
+        self.grid_lines = []
         self.editor_current_image = None
         self.editor_current_tile_type = 0
         self.mode = "TILE_PLACEMENT"
@@ -143,29 +146,49 @@ class TileEditor(tk.Tk):
         file_menu.add_command(label="Save", command=self.export_level)
         file_menu.add_command(label="Save As", command=self.save_as)
         menu_bar.add_cascade(label="File", menu=file_menu)
+
+        tiles_menu = tk.Menu(menu_bar, tearoff=0)
+        tiles_menu.add_command(label="Toggle Colliders", command=self.toggle_colliders)
+        tiles_menu.add_command(label="Toggle Grid Lines", command=self.toggle_grid_lines)
+        menu_bar.add_cascade(label="Tiles", menu=tiles_menu)
         self.config(menu=menu_bar)
+
+    def toggle_colliders(self):
+        if self.colliders_on:
+            self.clear_colliders()
+            self.colliders_on = False
+        else:
+            self.generate_colliders()
+            self.colliders_on = True
+
+    def toggle_grid_lines(self):
+        if self.show_grid_lines:
+            self.show_grid_lines = False
+            for line in self.grid_lines:
+                self.tile_canvas.delete(line)
+        else:
+            self.show_grid_lines = True
+            self.draw_lines(self.tiles_row_count, self.tiles_column_count)
 
     # Creates the GUI for the controls section in the editor
     def create_tile_controls(self):
-        # Create the tile generation inputs and button
-        label = tk.Label(self.control_frame, text="Level Dimensions")
-        label.grid(row=0, column=0)
-        self.entry_tiles_x = tk.Entry(self.control_frame)
-        self.entry_tiles_x.grid(row=0, column=1)
-        label2 = tk.Label(self.control_frame, text=" X ")
-        label2.grid(row=0, column=2)
-        self.entry_tiles_y = tk.Entry(self.control_frame)
-        self.entry_tiles_y.grid(row=0, column=3)
-        generate_tiles_button = tk.Button(self.control_frame, text="Generate Tiles",
-                                          command=self.generate_tiles_button_call)
-        generate_tiles_button.grid(row=2, column=0)
-        generate_colliders_button = tk.Button(self.control_frame, text="Generate Colliders",
-                                              command=self.generate_colliders)
-        generate_colliders_button.grid(row=2, column=1)
-        delete_colliders_button = tk.Button(self.control_frame, text="Clear Colliders", command=self.clear_colliders)
-        delete_colliders_button.grid(row=2, column=3)
-
+        # # Create the tile generation inputs and button
+        # label = tk.Label(self.control_frame, text="Level Dimensions")
+        # label.grid(row=0, column=0)
+        # self.entry_tiles_x = tk.Entry(self.control_frame)
+        # self.entry_tiles_x.grid(row=0, column=1)
+        # label2 = tk.Label(self.control_frame, text=" X ")
+        # label2.grid(row=0, column=2)
+        # self.entry_tiles_y = tk.Entry(self.control_frame)
+        # self.entry_tiles_y.grid(row=0, column=3)
+        # generate_tiles_button = tk.Button(self.control_frame, text="Generate Tiles",
+        #                                   command=self.generate_tiles_button_call)
+        # generate_tiles_button.grid(row=2, column=0)
+        #
         # Create the tile selector
+
+        tile_select_label = tk.Label(self.control_frame, text="Tiles")
+        tile_select_label.grid(row=2, column=0)
         self.tile_select_frame = VerticalScrolledFrame(self.control_frame)
         self.tile_select_frame.grid(row=3, column=0, columnspan=4)
 
@@ -178,7 +201,7 @@ class TileEditor(tk.Tk):
             tile_label.bind("<Button-1>", self.set_current_tile)
             tile_label.grid(row=int(i / 5), column=(i % 5))
 
-        #load_level_button.grid(row=5, column=1)
+            # load_level_button.grid(row=5, column=1)
 
     def create_enemy_controls(self):
         pass
@@ -331,14 +354,16 @@ class TileEditor(tk.Tk):
         self.canvas_height = (self.spritesheet.tile_height + GRID_LINE_WIDTH) * tile_y_count
 
         for i in range(tile_x_count + 1):
-            self.tile_canvas.create_line((self.spritesheet.tile_width + GRID_LINE_WIDTH) * i, 0,
-                                         (self.spritesheet.tile_width + GRID_LINE_WIDTH) * i, self.canvas_height,
-                                         fill="white")
+            self.grid_lines.append(self.tile_canvas.create_line((self.spritesheet.tile_width + GRID_LINE_WIDTH) * i, 0,
+                                                                (self.spritesheet.tile_width + GRID_LINE_WIDTH) * i,
+                                                                self.canvas_height,
+                                                                fill="white"))
 
         for i in range(tile_y_count + 1):
-            self.tile_canvas.create_line(0, (self.spritesheet.tile_height + GRID_LINE_WIDTH) * i,
-                                         self.canvas_width, (self.spritesheet.tile_height + GRID_LINE_WIDTH) * i,
-                                         fill="white")
+            self.grid_lines.append(self.tile_canvas.create_line(0, (self.spritesheet.tile_height + GRID_LINE_WIDTH) * i,
+                                                                self.canvas_width,
+                                                                (self.spritesheet.tile_height + GRID_LINE_WIDTH) * i,
+                                                                fill="white"))
 
         # Now that the grid has been created, the scroll area can be set to accommodate the number of tiles in the
         # editor
