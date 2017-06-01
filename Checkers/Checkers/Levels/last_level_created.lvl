@@ -1,31 +1,31 @@
 TILES 40 40
-0 0 5 False False
-0 1 0 False False
-0 2 0 False False
-0 3 0 False False
-0 4 0 False False
-0 5 0 False False
-0 6 0 False False
-0 7 0 False False
-0 8 0 False False
-0 9 0 False False
-0 10 0 False False
-0 11 0 False False
-0 12 0 False False
-0 13 0 False False
-0 14 0 False False
-0 15 0 False False
-0 16 0 False False
-0 17 0 False False
-0 18 0 False False
-0 19 0 False False
-0 20 0 False False
-0 21 0 False False
-0 22 0 False False
-0 23 0 False False
-0 24 0 False False
-0 25 0 False False
-0 26 0 False False
+0 0 12 False False
+0 1 7 False False
+0 2 7 False False
+0 3 7 False False
+0 4 7 False False
+0 5 7 False False
+0 6 7 False False
+0 7 7 False False
+0 8 7 False False
+0 9 7 False False
+0 10 7 False False
+0 11 7 False False
+0 12 7 False False
+0 13 7 False False
+0 14 7 False False
+0 15 7 False False
+0 16 7 False False
+0 17 7 False False
+0 18 7 False False
+0 19 7 False False
+0 20 7 False False
+0 21 7 False False
+0 22 7 False False
+0 23 7 False False
+0 24 7 False False
+0 25 7 False False
+0 26 7 False False
 0 27 6 False False
 0 28 0 False False
 0 29 0 False False
@@ -1599,8 +1599,9 @@ TILES 40 40
 39 37 0 False False
 39 38 0 False False
 39 39 0 False False
-COLLIDERS 12
-0 0 64 320
+COLLIDERS 13
+0 0 1792 64
+0 64 64 320
 0 320 1088 448
 0 448 64 1024
 0 1024 1792 1088
@@ -1610,6 +1611,6 @@ COLLIDERS 12
 1280 384 1472 448
 1344 704 1472 1024
 1600 512 1792 640
-1728 0 1792 512
+1728 64 1792 512
 1728 640 1792 1024
 END

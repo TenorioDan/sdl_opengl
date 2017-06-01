@@ -6,6 +6,7 @@ from EditorGraphics import SpriteSheet, Tile, Collider
 
 GRID_LINE_WIDTH = 1
 LEVEL_DIRECTORY = "../Checkers/Checkers/Levels"
+MODES = ["TILE_PLACEMENT", "ENEMY_PLACEMENT"]
 
 
 class TileLabel(tk.Label, object):
@@ -13,6 +14,30 @@ class TileLabel(tk.Label, object):
         super(TileLabel, self).__init__(*args, **kwargs)
         self.tile_type = tile_type
         self.image = kwargs.pop('image')
+
+
+class Dialog:
+    def __init__(self, parent, dialog_text, button_text):
+        self.parent = parent
+        top = self.top = tk.Toplevel(parent)
+
+        tk.Label(top, text=dialog_text).pack()
+
+        self.entry = tk.Entry(top)
+        self.entry.pack(padx=5)
+
+        b = tk.Button(top, text=button_text, command=self.save)
+        b.pack(pady=5)
+
+    def save(self):
+        val = self.entry.get()
+
+        if val == "":
+            showerror("You Fucked Up", "Enter a level name")
+        else:
+            self.parent.current_level_name = val
+            self.parent.export_level(val)
+            self.top.destroy()
 
 
 # Taken from http://stackoverflow.com/questions/16188420/python-tkinter-scrollbar-for-frame
@@ -29,8 +54,7 @@ class VerticalScrolledFrame(tk.Frame):
         # create a canvas object and a vertical scrollbar for scrolling it
         vscrollbar = tk.Scrollbar(self, orient=tk.VERTICAL)
         vscrollbar.pack(fill=tk.Y, side=tk.RIGHT, expand=tk.FALSE)
-        canvas = tk.Canvas(self, bd=0, highlightthickness=0,
-                           yscrollcommand=vscrollbar.set)
+        canvas = tk.Canvas(self, bd=0, highlightthickness=0, yscrollcommand=vscrollbar.set)
         canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=tk.TRUE)
         vscrollbar.config(command=canvas.yview)
 
@@ -76,9 +100,21 @@ class TileEditor(tk.Tk):
         self.colliders = []
         self.editor_current_image = None
         self.editor_current_tile_type = 0
-        self.mode = "TilePlacement"
+        self.mode = "TILE_PLACEMENT"
+        self.current_top_level = None
+        self.current_level_name = "last_level_created"
 
-        self.create_controls()
+        # Create the frame that will contain the controls for the all placement types.
+        self.control_frame = tk.Frame(self, width=500, height=500)
+        self.control_frame.pack_propagate(False)
+        self.control_frame.pack(side=tk.RIGHT, expand=0)
+
+        # Create the load level variable to be used with the dropdown
+        self.level_to_load_stringvar = tk.StringVar(self.control_frame)
+        self.level_to_load_stringvar.set(self.current_level_name)
+
+        self.create_misc_controls()
+        self.create_tile_controls()
 
         # Create the canvas that will contain the GUI for the tile placement functionality
         self.tile_frame = tk.Frame(self, width=1200, height=500)
@@ -96,15 +132,21 @@ class TileEditor(tk.Tk):
         self.tile_canvas.pack(side=tk.LEFT)
 
         # Load the most recently created level
-        self.load_level()
+        self.import_level()
+
+    def create_misc_controls(self):
+        menu_bar = tk.Menu(self)
+        file_menu = tk.Menu(menu_bar, tearoff=0)
+        file_menu.add_command(label="New", command=self.load_level)
+        file_menu.add_separator()
+        file_menu.add_command(label="Load", command=self.load_level)
+        file_menu.add_command(label="Save", command=self.export_level)
+        file_menu.add_command(label="Save As", command=self.save_as)
+        menu_bar.add_cascade(label="File", menu=file_menu)
+        self.config(menu=menu_bar)
 
     # Creates the GUI for the controls section in the editor
-    def create_controls(self):
-        # Creates the controls frame
-        self.control_frame = tk.Frame(self, width=500, height=500)
-        self.control_frame.pack_propagate(False)
-        self.control_frame.pack(side=tk.RIGHT, expand=0)
-
+    def create_tile_controls(self):
         # Create the tile generation inputs and button
         label = tk.Label(self.control_frame, text="Level Dimensions")
         label.grid(row=0, column=0)
@@ -136,21 +178,10 @@ class TileEditor(tk.Tk):
             tile_label.bind("<Button-1>", self.set_current_tile)
             tile_label.grid(row=int(i / 5), column=(i % 5))
 
-        self.level_name_stringvar = tk.StringVar(self.control_frame, "")
-        self.level_name_entry = tk.Entry(self.control_frame, textvariable=self.level_name_stringvar)
-        self.level_name_entry.grid(row=4, column=0)
-        export_button = tk.Button(self.control_frame, text="Export", command=self.export_level)
-        export_button.grid(row=4, column=1)
+        #load_level_button.grid(row=5, column=1)
 
-        # Create the load button for importing previously created levels.
-        self.level_to_load_stringvar = tk.StringVar(self.control_frame)
-        self.level_to_load_stringvar.set("last_level_created.lvl")
-        available_levels = [f for f in listdir(LEVEL_DIRECTORY) if isfile(join(LEVEL_DIRECTORY, f))]
-        level_options = tk.OptionMenu(self.control_frame, self.level_to_load_stringvar, *available_levels)
-        level_options.config(width=15)
-        level_options.grid(row=5, column=0)
-        load_level_button = tk.Button(self.control_frame, text="Import", command=self.load_level)
-        load_level_button.grid(row=5, column=1)
+    def create_enemy_controls(self):
+        pass
 
     # Should only be called by a TileLabel to set the current image of the editor for drawing on the tile canvas
     def set_current_tile(self, event):
@@ -212,7 +243,6 @@ class TileEditor(tk.Tk):
     # Take the input entered by the user and generate a grid the correct size
     # Create Tile Label objects on each spot in the grid that can be clicked to
     def generate_tiles_button_call(self):
-        self.tile_canvas.delete("all")
         try:
             tiles_rows = int(self.entry_tiles_x.get())
             tiles_columns = int(self.entry_tiles_y.get())
@@ -220,6 +250,7 @@ class TileEditor(tk.Tk):
         except:
             showerror("You Fucked Up", "Tile dimensions are invalid")
         else:
+            self.tile_canvas.delete("all")
             self.generate_tiles(tiles_rows, tiles_columns)
 
     # Loop through the tiles in the level and generate colliders and represent them visually with green rectangles
@@ -327,9 +358,11 @@ class TileEditor(tk.Tk):
                 self.tiles.append(self.spritesheet.tiles_set[row][i])
 
     # Use etree to create an xml file for each tile in the
-    def export_level(self):
+    def export_level(self, level_name=None):
+        if not level_name:
+            level_name = self.current_level_name
+
         if self.grid_created:
-            level_name = self.level_name_entry.get()
             new_level_file = open("../Checkers/Checkers/Levels/{0}.lvl".format(level_name), 'w')
             last_level_created = open("../Checkers/Checkers/Levels/last_level_created.lvl", 'w')
             level_files = [new_level_file, last_level_created]
@@ -362,12 +395,14 @@ class TileEditor(tk.Tk):
         else:
             showerror("You Fucked up", "Generate a level grid")
 
-    def load_level(self):
+    def import_level(self):
         level = self.level_to_load_stringvar.get()
-        self.level_name_stringvar.set(level)
+        self.current_level_name = level
+        self.title(level)
+        self.level_to_load_stringvar.set(level)
         self.tile_canvas.delete("all")
 
-        with open("{0}/{1}".format(LEVEL_DIRECTORY, level), 'r') as level_file:
+        with open("{0}/{1}.lvl".format(LEVEL_DIRECTORY, level), 'r') as level_file:
             mode = ""
             for line in level_file:
                 properties = line.split(" ")
@@ -395,6 +430,27 @@ class TileEditor(tk.Tk):
 
                     elif mode == "COLLIDERS":
                         self.colliders.append(Collider(properties[0], properties[1], properties[2], properties[3]))
+
+        # Destroy the load level dialog
+        if self.current_top_level:
+            self.current_top_level.destroy()
+
+    def save_as(self):
+        dialog = Dialog(self, "Level Name", "Save")
+        self.wait_window(dialog.top)
+
+    # Create the load level dialog
+    def load_level(self):
+        top = self.current_top_level = tk.Toplevel()
+        top.title("Load Level")
+        tk.Label(top, text="Choose Level").pack()
+
+        available_levels = [f.replace(".lvl", "") for f in listdir(LEVEL_DIRECTORY) if isfile(join(LEVEL_DIRECTORY, f))]
+        level_options = tk.OptionMenu(top, self.level_to_load_stringvar, *available_levels)
+        level_options.config(width=15)
+        level_options.pack()
+        load_level_button = tk.Button(top, text="Import", command=self.import_level)
+        load_level_button.pack(pady=5)
 
 
 app = TileEditor()
