@@ -3,6 +3,7 @@ from os.path import isfile, join
 import Tkinter as tk
 from tkMessageBox import *
 from EditorGraphics import SpriteSheet, Tile, Collider
+from GameObjects import StarMonster
 
 GRID_LINE_WIDTH = 1
 LEVEL_DIRECTORY = "../Checkers/Checkers/Levels"
@@ -101,11 +102,21 @@ class TileEditor(tk.Tk):
         self.editor_tiles = []
         self.colliders = []
         self.grid_lines = []
+        self.enemies = []
+        self.enemy_sprites = []
         self.editor_current_image = None
+        self.current_enemy = None
         self.editor_current_tile_type = 0
-        self.mode = "TILE_PLACEMENT"
         self.current_top_level = None
+        self.tile_spritesheet = None
+        self.enemy_spritesheet = None
+        self.current_properties_frame = None
+        self.tile_properties_frame = None
+        self.enemy_properties_frame = None
         self.current_level_name = "last_level_created"
+
+        self.mode = tk.StringVar()
+        self.mode.trace("w", self.change_mode)
 
         # Create the frame that will contain the controls for the all placement types.
         self.control_frame = tk.Frame(self, width=500, height=500)
@@ -118,12 +129,13 @@ class TileEditor(tk.Tk):
 
         self.create_misc_controls()
         self.create_tile_controls()
+        self.create_enemy_controls()
 
         # Create the canvas that will contain the GUI for the tile placement functionality
         self.tile_frame = tk.Frame(self, width=1200, height=500)
         self.tile_frame.pack(side=tk.LEFT, expand=0)
         self.tile_canvas = tk.Canvas(self.tile_frame, width=1800, height=1080, bg='#000000')
-        self.tile_canvas.bind("<Button-1>", self.add_tile_button_call)
+        self.tile_canvas.bind("<Button-1>", self.add_gameobject_button_call)
         self.tile_canvas.bind("<Shift-Button-1>", self.delete_tile_button_call)
         horizontal_bar = tk.Scrollbar(self.tile_frame, orient=tk.HORIZONTAL)
         horizontal_bar.pack(side=tk.BOTTOM, fill=tk.X)
@@ -134,8 +146,21 @@ class TileEditor(tk.Tk):
         self.tile_canvas.config(xscrollcommand=horizontal_bar.set, yscrollcommand=vertical_bar.set)
         self.tile_canvas.pack(side=tk.LEFT)
 
+        self.mode.set("Tiles")
+
         # Load the most recently created level
         self.import_level()
+
+    def change_mode(self, *args):
+        current_mode = self.mode.get()
+        self.current_properties_frame.grid_forget()
+
+        if current_mode == "Tiles":
+            self.current_properties_frame = self.tile_properties_frame
+        elif current_mode == "Enemies":
+            self.current_properties_frame = self.enemy_properties_frame
+
+        self.current_properties_frame.grid()
 
     def create_misc_controls(self):
         menu_bar = tk.Menu(self)
@@ -152,6 +177,9 @@ class TileEditor(tk.Tk):
         tiles_menu.add_command(label="Toggle Grid Lines", command=self.toggle_grid_lines)
         menu_bar.add_cascade(label="Tiles", menu=tiles_menu)
         self.config(menu=menu_bar)
+
+        # self.mode_dropdown = tk.OptionMenu(self.control_frame, self.mode, "Tiles", "Enemies")
+        # self.mode_dropdown.grid(row=0, column=0)
 
     def toggle_colliders(self):
         if self.colliders_on:
@@ -186,7 +214,6 @@ class TileEditor(tk.Tk):
         # generate_tiles_button.grid(row=2, column=0)
         #
         # Create the tile selector
-
         tile_select_label = tk.Label(self.control_frame, text="Tiles")
         tile_select_label.grid(row=2, column=0)
         self.tile_select_frame = VerticalScrolledFrame(self.control_frame)
@@ -196,6 +223,9 @@ class TileEditor(tk.Tk):
         # Load the tile sprites into the editor for selecting
         self.load_spritesheet("images/tileset_platforms.png")
 
+        self.tile_properties_frame = tk.Frame(self.control_frame, width=500, height=500)
+        self.current_properties_frame = self.tile_properties_frame
+
         for i in range(len(self.tiles)):
             tile_label = TileLabel(i, self.tile_select_frame.interior, image=self.tiles[i])
             tile_label.bind("<Button-1>", self.set_current_tile)
@@ -204,20 +234,60 @@ class TileEditor(tk.Tk):
             # load_level_button.grid(row=5, column=1)
 
     def create_enemy_controls(self):
-        pass
+        enemy_select_label = tk.Label(self.control_frame, text="Enemies")
+        enemy_select_label.grid(row=4, column=0)
+        self.enemy_select_frame = VerticalScrolledFrame(self.control_frame)
+        self.enemy_select_frame.grid(row=5, column=0, columnspan=4)
+        self.load_enemies()
+
+        self.enemy_properties_frame = tk.Frame(self.control_frame, width=500, height=500)
+
+        for i in range(len(self.enemy_sprites)):
+            enemy_label = TileLabel(0, self.enemy_select_frame.interior, image=self.enemy_sprites[i])
+            enemy_label.bind("<Button-1>", self.set_current_enemy)
+            enemy_label.grid(row=int(i / 5), column=(i % 5))
+
+    # Load the images from the sprite sheet into the editor
+    def load_spritesheet(self, file_name):
+        # TODO: Dynamically load the sprites
+        self.tile_spritesheet = SpriteSheet(file_name, 10, 64, 64)
+        self.tile_spritesheet.create_row_images(0, 3)
+        self.tile_spritesheet.create_row_images(1, 9)
+
+        for row in range(self.tile_spritesheet.row_count):
+            for i in range(len(self.tile_spritesheet.image_set[row])):
+                self.tiles.append(self.tile_spritesheet.image_set[row][i])
+
+    def load_enemies(self):
+        # The enemy spritesheet and the corresponding enemies
+        enemy_dict = {
+            "images/star_enemy.png": StarMonster
+        }
+
+        for key, value in enemy_dict.items():
+            spritesheet = SpriteSheet(key, 0, value.width, value.height)
+            spritesheet.create_row_images(0, 1)
+
+            # Only need to add one image from the spritesheet into the enemy images
+            self.enemy_sprites.append(spritesheet.image_set[0][0])
+
+    def set_current_enemy(self, event):
+        self.mode.set('Enemies')
+        self.current_enemy = event.widget.image
 
     # Should only be called by a TileLabel to set the current image of the editor for drawing on the tile canvas
     def set_current_tile(self, event):
+        self.mode.set('Tiles')
         self.editor_current_image = event.widget.image
         self.editor_current_tile_type = event.widget.tile_type + 1
 
     def add_tile(self, tile):
         if tile:
-            if tile.canvas_image:
+            if tile and tile.canvas_image:
                 self.tile_canvas.delete(tile.canvas_image)
 
-            y = (tile.row * (self.spritesheet.tile_width + 1)) + 1
-            x = (tile.column * (self.spritesheet.tile_height + 1)) + 1
+            y = (tile.row * (self.tile_spritesheet.tile_width + 1)) + 1
+            x = (tile.column * (self.tile_spritesheet.tile_height + 1)) + 1
 
             canvas_image = self.tile_canvas.create_image(x, y, image=self.editor_current_image, anchor=tk.NW)
             # TODO: Fix offset issue with the tile types
@@ -225,10 +295,18 @@ class TileEditor(tk.Tk):
             tile.canvas_image = canvas_image
 
     # takes a mouse click event and adds a tile to the space clicked on
-    def add_tile_button_call(self, event):
-        if self.grid_created and self.editor_current_image is not None:
-            current_tile = self.get_tile_clicked(event)
-            self.add_tile(current_tile)
+    def add_gameobject_button_call(self, event):
+        mode = self.mode.get()
+
+        if self.grid_created:
+            if mode == "Tiles" and self.editor_current_image is not None:
+                self.add_tile(self.get_tile_clicked(event))
+            elif mode == "Enemies" and self.current_enemy is not None:
+                enemy = StarMonster(*self.get_position_clicked(event))
+                canvas_image = self.tile_canvas.create_image(enemy.position_x, enemy.position_y,
+                                                             image=self.current_enemy)
+                
+                self.enemies.append(enemy)
 
     def delete_tile_button_call(self, event):
         if self.grid_created and self.editor_current_image is not None:
@@ -243,13 +321,17 @@ class TileEditor(tk.Tk):
         canvas = event.widget
 
         # calculate the x/y position of the tile that the sprite will be drawn on.
-        row_index = int(canvas.canvasy(event.y) / (self.spritesheet.tile_height + GRID_LINE_WIDTH))
-        column_index = int(canvas.canvasx(event.x) / (self.spritesheet.tile_width + GRID_LINE_WIDTH))
+        row_index = int(canvas.canvasy(event.y) / (self.tile_spritesheet.tile_height + GRID_LINE_WIDTH))
+        column_index = int(canvas.canvasx(event.x) / (self.tile_spritesheet.tile_width + GRID_LINE_WIDTH))
 
         if row_index < self.tiles_row_count and column_index < self.tiles_column_count:
             return self.editor_tiles[row_index][column_index]
         else:
             return None
+
+    def get_position_clicked(self, event):
+        canvas = event.widget
+        return canvas.canvasx(event.x), canvas.canvasy(event.y)
 
     # Empty the current tileset in the editor and create empty tile objects to be used in rendering and setting tile
     # properties
@@ -270,6 +352,7 @@ class TileEditor(tk.Tk):
             tiles_rows = int(self.entry_tiles_x.get())
             tiles_columns = int(self.entry_tiles_y.get())
             self.draw_lines(tiles_rows, tiles_columns)
+        # TODO: Add specific exception exception
         except:
             showerror("You Fucked Up", "Tile dimensions are invalid")
         else:
@@ -294,14 +377,14 @@ class TileEditor(tk.Tk):
                         if current_collider is not None:
                             self.colliders.append(current_collider)
 
-                        top_left_x = column * self.spritesheet.tile_width
-                        top_left_y = row * self.spritesheet.tile_height
+                        top_left_x = column * self.tile_spritesheet.tile_width
+                        top_left_y = row * self.tile_spritesheet.tile_height
                         current_collider = Collider(top_left_x, top_left_y,
-                                                    top_left_x + self.spritesheet.tile_width,
-                                                    top_left_y + self.spritesheet.tile_height)
+                                                    top_left_x + self.tile_spritesheet.tile_width,
+                                                    top_left_y + self.tile_spritesheet.tile_height)
                         last_collider_column = column
                     else:
-                        current_collider.max_x += self.spritesheet.tile_width
+                        current_collider.max_x += self.tile_spritesheet.tile_width
                         last_collider_column = column
 
             if current_collider is not None:
@@ -331,10 +414,10 @@ class TileEditor(tk.Tk):
 
         for i in range(len(self.colliders)):
             c = self.colliders[i]
-            x_min_offset = (int(c.min_x / self.spritesheet.tile_width))
-            x_max_offset = (int(c.max_x / self.spritesheet.tile_width))
-            y_min_offset = (int(c.min_y / self.spritesheet.tile_height))
-            y_max_offset = (int(c.max_y / self.spritesheet.tile_height))
+            x_min_offset = (int(c.min_x / self.tile_spritesheet.tile_width))
+            x_max_offset = (int(c.max_x / self.tile_spritesheet.tile_width))
+            y_min_offset = (int(c.min_y / self.tile_spritesheet.tile_height))
+            y_max_offset = (int(c.max_y / self.tile_spritesheet.tile_height))
             c.rect = self.tile_canvas.create_rectangle(c.min_x + x_min_offset, c.min_y + y_min_offset,
                                                        c.max_x + x_max_offset,
                                                        c.max_y + y_max_offset, outline="green")
@@ -350,37 +433,52 @@ class TileEditor(tk.Tk):
     def draw_lines(self, tile_x_count, tile_y_count):
         self.tiles_row_count = tile_x_count
         self.tiles_column_count = tile_y_count
-        self.canvas_width = (self.spritesheet.tile_width + GRID_LINE_WIDTH) * tile_x_count
-        self.canvas_height = (self.spritesheet.tile_height + GRID_LINE_WIDTH) * tile_y_count
+        self.canvas_width = (self.tile_spritesheet.tile_width + GRID_LINE_WIDTH) * tile_x_count
+        self.canvas_height = (self.tile_spritesheet.tile_height + GRID_LINE_WIDTH) * tile_y_count
 
         for i in range(tile_x_count + 1):
-            self.grid_lines.append(self.tile_canvas.create_line((self.spritesheet.tile_width + GRID_LINE_WIDTH) * i, 0,
-                                                                (self.spritesheet.tile_width + GRID_LINE_WIDTH) * i,
-                                                                self.canvas_height,
-                                                                fill="white"))
+            self.grid_lines.append(
+                self.tile_canvas.create_line((self.tile_spritesheet.tile_width + GRID_LINE_WIDTH) * i, 0,
+                                             (self.tile_spritesheet.tile_width + GRID_LINE_WIDTH) * i,
+                                             self.canvas_height,
+                                             fill="white"))
 
         for i in range(tile_y_count + 1):
-            self.grid_lines.append(self.tile_canvas.create_line(0, (self.spritesheet.tile_height + GRID_LINE_WIDTH) * i,
-                                                                self.canvas_width,
-                                                                (self.spritesheet.tile_height + GRID_LINE_WIDTH) * i,
-                                                                fill="white"))
+            self.grid_lines.append(
+                self.tile_canvas.create_line(0, (self.tile_spritesheet.tile_height + GRID_LINE_WIDTH) * i,
+                                             self.canvas_width,
+                                             (self.tile_spritesheet.tile_height + GRID_LINE_WIDTH) * i,
+                                             fill="white"))
 
         # Now that the grid has been created, the scroll area can be set to accommodate the number of tiles in the
         # editor
         self.tile_canvas.config(scrollregion=(
-            0, 0, (self.spritesheet.tile_width + GRID_LINE_WIDTH) * tile_x_count,
-            (self.spritesheet.tile_height + GRID_LINE_WIDTH) * tile_y_count))
+            0, 0, (self.tile_spritesheet.tile_width + GRID_LINE_WIDTH) * tile_x_count,
+            (self.tile_spritesheet.tile_height + GRID_LINE_WIDTH) * tile_y_count))
 
     # Load the images from the sprite sheet into the editor
     def load_spritesheet(self, file_name):
         # TODO: Dynamically load the sprites
-        self.spritesheet = SpriteSheet(file_name, 10, 64, 64)
-        self.spritesheet.CreateRowImages(0, 3)
-        self.spritesheet.CreateRowImages(1, 9)
+        self.tile_spritesheet = SpriteSheet(file_name, 10, 64, 64)
+        self.tile_spritesheet.create_row_images(0, 3)
+        self.tile_spritesheet.create_row_images(1, 9)
 
-        for row in range(self.spritesheet.row_count):
-            for i in range(len(self.spritesheet.tiles_set[row])):
-                self.tiles.append(self.spritesheet.tiles_set[row][i])
+        for row in range(self.tile_spritesheet.row_count):
+            for i in range(len(self.tile_spritesheet.image_set[row])):
+                self.tiles.append(self.tile_spritesheet.image_set[row][i])
+
+    def load_enemies(self):
+        # The enemy spritesheet and the corresponding enemies
+        enemy_dict = {
+            "images/star_enemy.png": StarMonster
+        }
+
+        for key, value in enemy_dict.items():
+            spritesheet = SpriteSheet(key, 0, value.width, value.height)
+            spritesheet.create_row_images(0, 1)
+
+            # Only need to add one image from the spritesheet into the enemy images
+            self.enemy_sprites.append(spritesheet.image_set[0][0])
 
     # Use etree to create an xml file for each tile in the
     def export_level(self, level_name=None):

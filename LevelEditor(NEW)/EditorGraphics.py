@@ -10,19 +10,19 @@ class SpriteSheet(object):
         self.tile_offset = tile_offset
         self.tile_width = tile_width
         self.tile_height = tile_height
-        self.tiles_set = {}
+        self.image_set = {}
         self.row_count = 0
 
     # Each row will contain a specific number of images in the tileset
-    def CreateRowImages(self, row, image_count):
-        self.tiles_set[row] = []
+    def create_row_images(self, row, image_count):
+        self.image_set[row] = []
 
         for i in range(image_count):
             l = self.tile_width * i + (self.tile_offset * i)
-            t = self.tile_height * row + (self.tile_offset  * row)
+            t = self.tile_height * row + (self.tile_offset * row)
             r = l + self.tile_width
             b = t + self.tile_height
-            self.tiles_set[row].append(self.subimage(l, t, r, b))
+            self.image_set[row].append(self.subimage(l, t, r, b))
 
         self.row_count += 1
 

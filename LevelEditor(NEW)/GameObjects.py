@@ -7,8 +7,17 @@ class GameObject(object):
 
 
 class Enemy(GameObject):
-    def __init__(self):
+    width = 50
+    height = 50
+
+    def __init__(self, position_x, position_y):
         super(Enemy, self).__init__()
+        self.position_x = position_x
+        self.position_y = position_y
+
+    @staticmethod
+    def load_properties():
+        pass
 
     # Place the enemy on the specified tile/location? This should probably be a drag and drop type since enemies
     # and other character aren't going to be tile based
@@ -17,5 +26,6 @@ class Enemy(GameObject):
 
 
 class StarMonster(Enemy):
-    def __init__(self):
-        super(Enemy, self).__init__()
+    def __init__(self, position_x, position_y):
+        super(StarMonster, self).__init__(position_x, position_y)
+
