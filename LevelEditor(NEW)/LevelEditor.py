@@ -93,7 +93,7 @@ class TileEditor(tk.Tk):
         tk.Tk.__init__(self)
         self.grid_created = False
         self.show_grid_lines = True
-        self.colliders_on = False
+        self.colliders_on = True
         self.canvas_width = 0
         self.canvas_height = 0
         self.tiles_row_count = 0
@@ -293,6 +293,7 @@ class TileEditor(tk.Tk):
             # TODO: Fix offset issue with the tile types
             tile.tile_type = self.editor_current_tile_type
             tile.canvas_image = canvas_image
+            self.generate_colliders()
 
     # takes a mouse click event and adds a tile to the space clicked on
     def add_gameobject_button_call(self, event):
@@ -305,7 +306,7 @@ class TileEditor(tk.Tk):
                 enemy = StarMonster(*self.get_position_clicked(event))
                 canvas_image = self.tile_canvas.create_image(enemy.position_x, enemy.position_y,
                                                              image=self.current_enemy)
-                
+
                 self.enemies.append(enemy)
 
     def delete_tile_button_call(self, event):
@@ -316,6 +317,7 @@ class TileEditor(tk.Tk):
                 self.tile_canvas.delete(current_tile.canvas_image)
                 current_tile.tile_type = 0
                 current_tile.image = None
+                self.generate_colliders()
 
     def get_tile_clicked(self, event):
         canvas = event.widget
@@ -362,6 +364,7 @@ class TileEditor(tk.Tk):
     # Loop through the tiles in the level and generate colliders and represent them visually with green rectangles
     def generate_colliders(self):
         self.clear_colliders()
+        self.colliders = []
 
         for row in range(self.tiles_row_count):
             current_collider = None
@@ -427,7 +430,7 @@ class TileEditor(tk.Tk):
             for c in self.colliders:
                 self.tile_canvas.delete(c.rect)
 
-            self.colliders = []
+            # self.colliders = []
 
     # Draw the GRID for the tile editor
     def draw_lines(self, tile_x_count, tile_y_count):
