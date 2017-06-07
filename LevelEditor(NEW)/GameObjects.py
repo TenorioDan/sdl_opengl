@@ -28,8 +28,9 @@ class Enemy(GameObject):
 
 # These must always be attached to a platform collider.
 class StarMonster(Enemy):
-    def __init__(self, position_x, position_y, canvas_image):
+    def __init__(self, position_x, position_y, canvas_image, collider):
         super(StarMonster, self).__init__(position_x, position_y, canvas_image)
+        self.collider = collider
 
     def place(self):
         pass

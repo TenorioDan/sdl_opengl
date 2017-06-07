@@ -29,7 +29,11 @@ bool LevelManager::loadMedia()
 
 	if (success)
 	{
+#ifdef _DEBUG
+		spawnEnemies("Levels/last_level_created.lvl");
+#else
 		spawnEnemies("Enemies.txt");
+#endif
 		for (auto enemy : enemies)
 		{
 			enemy->loadMedia();
@@ -48,6 +52,7 @@ void LevelManager::spawnEnemies(std::string path)
 	std::ifstream enemyFile(path.c_str());
 	std::string line;
 	std::vector<Collider*> platforms = *tileManager.getPlatforms();
+	bool beginSpawn = false;
 
 	while (std::getline(enemyFile, line))
 	{
@@ -56,9 +61,25 @@ void LevelManager::spawnEnemies(std::string path)
 		std::vector<std::string> values(beg, end);
 		auto it = values.begin();
 
-		Enemy* e = new Enemy();
-		e->setCurrentPlatform(platforms[0]);
-		//enemies.push_back(e);
+		std::string val = *it;
+
+		if (val == "ENEMIES")
+		{
+			beginSpawn = true;
+		}
+		else if (val == "TILES" || val == "COLLIDERS" || val == "END")
+		{
+			beginSpawn = false;
+		}
+		else
+		{
+			if (beginSpawn)
+			{
+				Enemy* e = new Enemy();
+				e->setCurrentPlatform(platforms[std::stoi(*++it)]);
+				enemies.push_back(e);
+			}
+		}
 	}
 }
 

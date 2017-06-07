@@ -46,6 +46,4 @@ private:
 	void createColliders(std::string path);
 	void createTile(int row, int column, int tileType);
 	void createCollider(int minX, int minY, int maxX, int maxY);
-	std::string findMostRecentLevelFile();
-	
 };

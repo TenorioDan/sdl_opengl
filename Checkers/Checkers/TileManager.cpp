@@ -88,6 +88,10 @@ void TileManager::createTileset(std::string path)
 		{
 			readState = Colliders;
 		}
+		else if (*it == "ENEMIES")
+		{
+			readState = Enemies;
+		}
 		else if (*it == "END")
 		{
 			// Do nothing, we're done reading the file
@@ -112,6 +116,10 @@ void TileManager::createTileset(std::string path)
 					int maxY = std::stoi(*it);
 					createCollider(minX, minY, maxX, maxY);
 					break;
+				}
+				case Enemies:
+				{
+
 				}
 			}
 		}
@@ -197,24 +205,3 @@ void TileManager::clearTiles()
 	numTilesX = 0;
 	numTilesY = 0;
 }
-
-//std::string TileManager::findMostRecentLevelFile()
-//{
-//	FILETIME bestDate = { 0, 0 };
-//	FILETIME curDate;
-//	std::string name;
-//	CFileFind finder;
-//
-//	finder.FindFile("/Levels/*.lvl");
-//	while (finder.FindNextFile())
-//	{
-//		finder.GetCreationTime(&curDate);
-//
-//		if (CompareFileTime(&curDate, &bestDate) > 0)
-//		{
-//			bestDate = curDate;
-//			name = finder.GetFileName().GetString();
-//		}
-//	}
-//	return name;
-//}

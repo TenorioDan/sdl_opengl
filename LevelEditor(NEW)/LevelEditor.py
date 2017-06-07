@@ -285,17 +285,18 @@ class TileEditor(tk.Tk):
     def add_enemy(self, position_x, position_y):
         closest_collider = self.colliders[0]
         closest_distance = float("inf")
-        min_dx = 0
-        min_dy = 0
+        collider_index = 0
+        closest_collider_index = 0
 
         for c in self.colliders:
             dx, dy, distance = c.distance(position_x, position_y)
 
             if distance < closest_distance:
                 closest_distance = distance
-                min_dx = dx
-                min_dy = dy
                 closest_collider = c
+                closest_collider_index = collider_index
+
+            collider_index += 1
 
         between_x = closest_collider.min_x < position_x < closest_collider.max_x
         between_y = closest_collider.min_y < position_y < closest_collider.max_y
@@ -316,7 +317,8 @@ class TileEditor(tk.Tk):
 
         if not (between_x and between_y):
             enemy = StarMonster(position_x, position_y,
-                                self.tile_canvas.create_image(position_x, position_y, image=self.current_enemy))
+                                self.tile_canvas.create_image(position_x, position_y, image=self.current_enemy),
+                                closest_collider_index)
             self.enemies.append(enemy)
 
     def get_offset(self, x, y):
@@ -536,6 +538,11 @@ class TileEditor(tk.Tk):
                     for c in self.colliders:
                         level_file.write("{0} {1} {2} {3}\n".format(c.min_x, c.min_y, c.max_x, c.max_y))
 
+                    level_file.write("ENEMIES {}\n".format(str(len(self.enemies))))
+
+                    for e in self.enemies:
+                        level_file.write("{0} {1}\n".format("1", e.collider))
+
                     level_file.write("END")
                     level_file.close()
                 else:
@@ -563,6 +570,8 @@ class TileEditor(tk.Tk):
                     self.generate_tiles(self.tiles_row_count, self.tiles_column_count)
                 elif properties[0] == "COLLIDERS":
                     mode = "COLLIDERS"
+                elif properties[0] == "ENEMIES":
+                    mode = "ENEMIES"
                 elif properties[0] == "END":
                     pass
                 else:
@@ -579,6 +588,8 @@ class TileEditor(tk.Tk):
                     elif mode == "COLLIDERS":
                         self.colliders.append(
                             Collider(int(properties[0]), int(properties[1]), int(properties[2]), int(properties[3])))
+                    elif mode == "ENEMIES":
+                        pass
 
         # Destroy the load level dialog
         if self.current_top_level:
