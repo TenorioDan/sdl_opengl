@@ -10,10 +10,11 @@ class Enemy(GameObject):
     width = 50
     height = 50
 
-    def __init__(self, position_x, position_y):
+    def __init__(self, position_x, position_y, canvas_image):
         super(Enemy, self).__init__()
         self.position_x = position_x
         self.position_y = position_y
+        self.canvas_image = canvas_image
 
     @staticmethod
     def load_properties():
@@ -25,7 +26,10 @@ class Enemy(GameObject):
         pass
 
 
+# These must always be attached to a platform collider.
 class StarMonster(Enemy):
-    def __init__(self, position_x, position_y):
-        super(StarMonster, self).__init__(position_x, position_y)
+    def __init__(self, position_x, position_y, canvas_image):
+        super(StarMonster, self).__init__(position_x, position_y, canvas_image)
 
+    def place(self):
+        pass

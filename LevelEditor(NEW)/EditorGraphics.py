@@ -1,4 +1,5 @@
 import Tkinter as tk
+from math import sqrt
 from PIL import Image as ImagePIL
 from PIL import ImageTk
 
@@ -55,3 +56,9 @@ class Collider(object):
 
     def add_rect(self, rect):
         self.rect = rect
+
+    # find the distance between the point and the nearest point on the AABB
+    def distance(self, point_x, point_y):
+        dx = max(self.min_x - point_x, 0, point_x - self.max_x)
+        dy = max(self.min_y - point_y, 0, point_y - self.max_y)
+        return dx, dy, sqrt(dx*dx + dy*dy)

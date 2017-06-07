@@ -200,19 +200,6 @@ class TileEditor(tk.Tk):
 
     # Creates the GUI for the controls section in the editor
     def create_tile_controls(self):
-        # # Create the tile generation inputs and button
-        # label = tk.Label(self.control_frame, text="Level Dimensions")
-        # label.grid(row=0, column=0)
-        # self.entry_tiles_x = tk.Entry(self.control_frame)
-        # self.entry_tiles_x.grid(row=0, column=1)
-        # label2 = tk.Label(self.control_frame, text=" X ")
-        # label2.grid(row=0, column=2)
-        # self.entry_tiles_y = tk.Entry(self.control_frame)
-        # self.entry_tiles_y.grid(row=0, column=3)
-        # generate_tiles_button = tk.Button(self.control_frame, text="Generate Tiles",
-        #                                   command=self.generate_tiles_button_call)
-        # generate_tiles_button.grid(row=2, column=0)
-        #
         # Create the tile selector
         tile_select_label = tk.Label(self.control_frame, text="Tiles")
         tile_select_label.grid(row=2, column=0)
@@ -295,19 +282,54 @@ class TileEditor(tk.Tk):
             tile.canvas_image = canvas_image
             self.generate_colliders()
 
+    def add_enemy(self, position_x, position_y):
+        closest_collider = self.colliders[0]
+        closest_distance = float("inf")
+        min_dx = 0
+        min_dy = 0
+
+        for c in self.colliders:
+            dx, dy, distance = c.distance(position_x, position_y)
+
+            if distance < closest_distance:
+                closest_distance = distance
+                min_dx = dx
+                min_dy = dy
+                closest_collider = c
+
+        between_x = closest_collider.min_x < position_x < closest_collider.max_x
+        between_y = closest_collider.min_y < position_y < closest_collider.max_y
+        offset_x, offset_y = self.get_offset(position_x, position_y)
+
+        # set the position according to the distances between the x and y components
+        if not between_x:
+            if position_x < closest_collider.min_x:
+                position_x = closest_collider.min_x - (StarMonster.width / 2) + offset_x
+            else:
+                position_x = closest_collider.max_x + (StarMonster.width / 2) + offset_x
+
+        if not between_y:
+            if position_y < closest_collider.min_y:
+                position_y = closest_collider.min_y - (StarMonster.height / 2) + offset_y
+            else:
+                position_y = closest_collider.max_y + (StarMonster.height / 2) + offset_y
+
+        if not (between_x and between_y):
+            enemy = StarMonster(position_x, position_y,
+                                self.tile_canvas.create_image(position_x, position_y, image=self.current_enemy))
+            self.enemies.append(enemy)
+
+    def get_offset(self, x, y):
+        return int(x / self.tile_spritesheet.tile_width) + 1, int(y / self.tile_spritesheet.tile_height) + 1
+
     # takes a mouse click event and adds a tile to the space clicked on
     def add_gameobject_button_call(self, event):
         mode = self.mode.get()
-
         if self.grid_created:
             if mode == "Tiles" and self.editor_current_image is not None:
                 self.add_tile(self.get_tile_clicked(event))
             elif mode == "Enemies" and self.current_enemy is not None:
-                enemy = StarMonster(*self.get_position_clicked(event))
-                canvas_image = self.tile_canvas.create_image(enemy.position_x, enemy.position_y,
-                                                             image=self.current_enemy)
-
-                self.enemies.append(enemy)
+                self.add_enemy(*self.get_position_clicked(event))
 
     def delete_tile_button_call(self, event):
         if self.grid_created and self.editor_current_image is not None:
@@ -354,7 +376,7 @@ class TileEditor(tk.Tk):
             tiles_rows = int(self.entry_tiles_x.get())
             tiles_columns = int(self.entry_tiles_y.get())
             self.draw_lines(tiles_rows, tiles_columns)
-        # TODO: Add specific exception exception
+        # TODO: Add specific exception
         except:
             showerror("You Fucked Up", "Tile dimensions are invalid")
         else:
@@ -430,7 +452,7 @@ class TileEditor(tk.Tk):
             for c in self.colliders:
                 self.tile_canvas.delete(c.rect)
 
-            # self.colliders = []
+                # self.colliders = []
 
     # Draw the GRID for the tile editor
     def draw_lines(self, tile_x_count, tile_y_count):
@@ -555,7 +577,8 @@ class TileEditor(tk.Tk):
                             self.add_tile(tile)
 
                     elif mode == "COLLIDERS":
-                        self.colliders.append(Collider(properties[0], properties[1], properties[2], properties[3]))
+                        self.colliders.append(
+                            Collider(int(properties[0]), int(properties[1]), int(properties[2]), int(properties[3])))
 
         # Destroy the load level dialog
         if self.current_top_level:
