@@ -88,6 +88,12 @@ void GameObject::setHorizontalVelocity(GLfloat v)
 	horizontalVelocity = v;
 }
 
+void GameObject::setPosition(GLfloat x, GLfloat y)
+{
+	positionX = x;
+	positionY = y;
+}
+
 void GameObject::setPlatforms(std::vector<Collider*>* c)
 {
 	platforms = c;

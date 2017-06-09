@@ -77,6 +77,9 @@ void LevelManager::spawnEnemies(std::string path)
 			{
 				Enemy* e = new Enemy();
 				e->setCurrentPlatform(platforms[std::stoi(*++it)]);
+				e->setPosition(std::stoi(*++it), std::stoi(*++it));
+				e->setHorizontalVelocity(std::stoi(*++it));
+				e->setVerticalVelocity(std::stoi(*++it));
 				enemies.push_back(e);
 			}
 		}

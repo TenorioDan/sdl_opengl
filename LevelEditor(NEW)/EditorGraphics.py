@@ -46,6 +46,7 @@ class Tile(object):
         self.column = column
 
 
+# Simple AABB that will be output as a collider AABB in the game
 class Collider(object):
     def __init__(self, min_x, min_y, max_x, max_y):
         self.min_x = min_x

@@ -10,8 +10,8 @@ Character::Character()
 	colliderOffset = 30.f;
 
 	health = 100;
-	positionX = 300;
-	positionY = 0;
+	positionX = 650;
+	positionY = 720;
 	width = 85.f;
 	height = 87.f;
 	spriteIndex = 0;

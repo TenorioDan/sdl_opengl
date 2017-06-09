@@ -10,10 +10,12 @@ class Enemy(GameObject):
     width = 50
     height = 50
 
-    def __init__(self, position_x, position_y, canvas_image):
+    def __init__(self, position_x, position_y, velocity_x, velocity_y, canvas_image):
         super(Enemy, self).__init__()
         self.position_x = position_x
         self.position_y = position_y
+        self.velocity_x = velocity_x
+        self.velocity_y = velocity_y
         self.canvas_image = canvas_image
 
     @staticmethod
@@ -28,8 +30,8 @@ class Enemy(GameObject):
 
 # These must always be attached to a platform collider.
 class StarMonster(Enemy):
-    def __init__(self, position_x, position_y, canvas_image, collider):
-        super(StarMonster, self).__init__(position_x, position_y, canvas_image)
+    def __init__(self, position_x, position_y, velocity_x, velocity_y, canvas_image, collider):
+        super(StarMonster, self).__init__(position_x, position_y, velocity_x, velocity_y, canvas_image)
         self.collider = collider
 
     def place(self):

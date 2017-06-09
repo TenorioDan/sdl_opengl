@@ -287,6 +287,8 @@ class TileEditor(tk.Tk):
         closest_distance = float("inf")
         collider_index = 0
         closest_collider_index = 0
+        velocity_x = 0
+        velocity_y = 0
 
         for c in self.colliders:
             dx, dy, distance = c.distance(position_x, position_y)
@@ -306,17 +308,21 @@ class TileEditor(tk.Tk):
         if not between_x:
             if position_x < closest_collider.min_x:
                 position_x = closest_collider.min_x - (StarMonster.width / 2) + offset_x
+                velocity_y = -2
             else:
                 position_x = closest_collider.max_x + (StarMonster.width / 2) + offset_x
+                velocity_y = 2
 
         if not between_y:
             if position_y < closest_collider.min_y:
                 position_y = closest_collider.min_y - (StarMonster.height / 2) + offset_y
+                velocity_x = 2
             else:
                 position_y = closest_collider.max_y + (StarMonster.height / 2) + offset_y
+                velocity_x = -2
 
         if not (between_x and between_y):
-            enemy = StarMonster(position_x, position_y,
+            enemy = StarMonster(position_x, position_y, velocity_x, velocity_y,
                                 self.tile_canvas.create_image(position_x, position_y, image=self.current_enemy),
                                 closest_collider_index)
             self.enemies.append(enemy)
@@ -541,7 +547,8 @@ class TileEditor(tk.Tk):
                     level_file.write("ENEMIES {}\n".format(str(len(self.enemies))))
 
                     for e in self.enemies:
-                        level_file.write("{0} {1}\n".format("1", e.collider))
+                        level_file.write(
+                            "{0} {1} {2} {3} {4} {5}\n".format("1", e.collider, e.position_x, e.position_y  , e.velocity_x, e.velocity_y))
 
                     level_file.write("END")
                     level_file.close()

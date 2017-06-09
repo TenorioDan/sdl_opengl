@@ -34,6 +34,7 @@ public:
 	GLfloat getVerticalVelocity();
 	void setVerticalVelocity(GLfloat v);
 	void setHorizontalVelocity(GLfloat v);
+	void setPosition(GLfloat x, GLfloat y);
 	void setPlatforms(std::vector<Collider*>* c);
 	bool ShouldBeDeleted();
 
