@@ -48,7 +48,14 @@ void GameObject::applyGravity()
 {
 	if (useGravity && verticalPhysicsState == IN_MOTION && verticalVelocity < maxVerticleSpeed)
 	{
-		verticalVelocity += gravity;
+		if (verticalVelocity > 0)
+		{
+			verticalVelocity += gravity;
+		}
+		else
+		{
+			verticalVelocity += gravity;
+		}
 	}
 }
 
@@ -101,6 +108,8 @@ void GameObject::setPlatforms(std::vector<Collider*>* c)
 
 void GameObject::update(int time)
 {
+	previousTime = currentTime;
+	currentTime = time;
 	applyGravity();
 	checkCollisions();
 	translate(horizontalVelocity, verticalVelocity);

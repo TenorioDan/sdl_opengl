@@ -159,23 +159,23 @@ TILES 40 40
 3 37 0 False False
 3 38 0 False False
 3 39 0 False False
-4 0 5 False False
-4 1 0 False False
-4 2 0 False False
-4 3 0 False False
-4 4 0 False False
-4 5 0 False False
-4 6 0 False False
-4 7 0 False False
-4 8 0 False False
-4 9 0 False False
-4 10 0 False False
-4 11 0 False False
-4 12 0 False False
-4 13 0 False False
-4 14 0 False False
-4 15 0 False False
-4 16 0 False False
+4 0 12 False False
+4 1 4 False False
+4 2 4 False False
+4 3 4 False False
+4 4 4 False False
+4 5 4 False False
+4 6 4 False False
+4 7 4 False False
+4 8 4 False False
+4 9 4 False False
+4 10 4 False False
+4 11 4 False False
+4 12 4 False False
+4 13 4 False False
+4 14 4 False False
+4 15 4 False False
+4 16 8 False False
 4 17 0 False False
 4 18 0 False False
 4 19 0 False False
@@ -200,28 +200,28 @@ TILES 40 40
 4 38 0 False False
 4 39 0 False False
 5 0 12 False False
-5 1 4 False False
-5 2 4 False False
-5 3 4 False False
-5 4 4 False False
-5 5 4 False False
-5 6 4 False False
-5 7 4 False False
-5 8 4 False False
-5 9 4 False False
-5 10 4 False False
-5 11 4 False False
-5 12 4 False False
-5 13 4 False False
-5 14 4 False False
-5 15 4 False False
-5 16 8 False False
+5 1 7 False False
+5 2 12 False False
+5 3 7 False False
+5 4 7 False False
+5 5 7 False False
+5 6 7 False False
+5 7 7 False False
+5 8 7 False False
+5 9 7 False False
+5 10 7 False False
+5 11 7 False False
+5 12 7 False False
+5 13 7 False False
+5 14 7 False False
+5 15 7 False False
+5 16 10 False False
 5 17 0 False False
 5 18 0 False False
 5 19 0 False False
-5 20 0 False False
-5 21 0 False False
-5 22 0 False False
+5 20 1 False False
+5 21 2 False False
+5 22 3 False False
 5 23 0 False False
 5 24 0 False False
 5 25 0 False False
@@ -239,29 +239,29 @@ TILES 40 40
 5 37 0 False False
 5 38 0 False False
 5 39 0 False False
-6 0 12 False False
-6 1 7 False False
-6 2 7 False False
-6 3 7 False False
-6 4 7 False False
-6 5 7 False False
-6 6 7 False False
-6 7 7 False False
-6 8 7 False False
-6 9 7 False False
-6 10 7 False False
-6 11 7 False False
-6 12 7 False False
-6 13 7 False False
-6 14 7 False False
-6 15 7 False False
-6 16 10 False False
+6 0 5 False False
+6 1 0 False False
+6 2 0 False False
+6 3 0 False False
+6 4 0 False False
+6 5 0 False False
+6 6 0 False False
+6 7 0 False False
+6 8 0 False False
+6 9 0 False False
+6 10 0 False False
+6 11 0 False False
+6 12 0 False False
+6 13 0 False False
+6 14 0 False False
+6 15 0 False False
+6 16 0 False False
 6 17 0 False False
 6 18 0 False False
 6 19 0 False False
-6 20 1 False False
-6 21 2 False False
-6 22 3 False False
+6 20 0 False False
+6 21 0 False False
+6 22 0 False False
 6 23 0 False False
 6 24 0 False False
 6 25 0 False False
@@ -1601,21 +1601,17 @@ TILES 40 40
 39 39 0 False False
 COLLIDERS 13
 0 0 1792 64
-0 64 64 320
-0 320 1088 448
-0 448 64 1024
+0 64 64 256
+0 256 1088 384
+0 384 64 1024
 0 1024 1792 1088
 256 832 448 896
 576 704 768 768
 960 704 1152 768
-1280 384 1472 448
+1280 320 1472 384
 1344 704 1472 1024
 1600 512 1792 640
 1728 64 1792 512
 1728 640 1792 1024
-ENEMIES 4
-1 7 1082.0 806 -2 0
-1 6 676.0 690 2 0
-1 5 235 870.0 0 -2
-1 8 1521 431.0 0 2
+ENEMIES 0
 END

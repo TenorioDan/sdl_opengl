@@ -548,7 +548,8 @@ class TileEditor(tk.Tk):
 
                     for e in self.enemies:
                         level_file.write(
-                            "{0} {1} {2} {3} {4} {5}\n".format("1", e.collider, e.position_x, e.position_y  , e.velocity_x, e.velocity_y))
+                            "{0} {1} {2} {3} {4} {5}\n".format("1", e.collider, e.position_x, e.position_y,
+                                                               e.velocity_x, e.velocity_y))
 
                     level_file.write("END")
                     level_file.close()

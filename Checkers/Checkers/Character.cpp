@@ -6,7 +6,7 @@ Character::Character()
 	: AnimatedGameObject()
 {
 	// TODO: Clean up magic numbers
-	baseJumpSpeed = -28.f; // move upwards which is the negative y direction
+	baseJumpSpeed = -24.f; // move upwards which is the negative y direction
 	colliderOffset = 30.f;
 
 	health = 100;
@@ -22,9 +22,10 @@ Character::Character()
 	jumpAnimationSpeed = 50;
 	currentState = IDLE;
 	verticalVelocity = 0;
+	currentJumpFrameCount = maxJumpFrameCount = 1;
 
 	useGravity = true;
-	canJump = true;
+	isJumping = false;
 	aiming = false;
 
 	direction = RIGHT;
@@ -84,15 +85,39 @@ void Character::attack()
 
 void Character::jump()
 {
-	if (verticalPhysicsState == AT_REST && canJump && canMoveVertical && !aiming)
+	if (verticalPhysicsState != IN_MOTION)
 	{
-		verticalPhysicsState = IN_MOTION;
-		verticalVelocity = baseJumpSpeed;
-		currentPlatform = NULL;
-		canJump = false;
+		isJumping = true;
 	}
 }
 
+void Character::resetJump()
+{
+	isJumping = false;
+}
+
+void Character::jumpUpdate()
+{
+	if (isJumping && !aiming && verticalVelocity > baseJumpSpeed)
+	{
+		if (currentJumpFrameCount >= maxJumpFrameCount)
+		{
+			currentJumpFrameCount = 0;
+			verticalPhysicsState = IN_MOTION;
+			verticalVelocity -= 8;
+			currentPlatform = NULL;
+		}
+		else
+		{
+			++currentJumpFrameCount;
+		}
+	}
+	else
+	{
+		currentJumpFrameCount = maxJumpFrameCount;
+		isJumping = false;
+	}
+}
 
 void Character::checkCollisions()
 {
@@ -123,15 +148,11 @@ void Character::detectPlatformCollision(Collider* platform, Collider::CollisionD
 		break;
 	case Collider::CollisionDirection::BELOW:
 		verticalVelocity = 0;
+		isJumping = false;
 		break;
 	}
 }
 
-
-void Character::resetJump()
-{
-	canJump = true;
-}
 
 void Character::applyHorizontalMovement(GLfloat directionModifier)
 {
@@ -230,6 +251,7 @@ void Character::setEnemies(std::vector<Enemy*>* e)
 void Character::update(int time)
 {
 	AnimatedGameObject::update(time);
+	jumpUpdate();
 	weapon.update(time);
 }
 

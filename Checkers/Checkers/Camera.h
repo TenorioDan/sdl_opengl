@@ -9,8 +9,8 @@ struct Camera
 	GLfloat positionY = 0;
 	GLfloat offsetX = 0;
 	GLfloat offsetY = 0;
-	GLfloat minX = 0;
-	GLfloat minY = 0;
+	GLfloat minBoundaryX = 0;
+	GLfloat minBoundaryY = 0;
 	GameObject* objectToFollow;
 
 	void render()
@@ -20,15 +20,11 @@ struct Camera
 		GLfloat objectPositionX = objectToFollow->PositionX();
 		GLfloat objectPositionY = objectToFollow->PositionY();
 
-		if (objectPositionX > minX + offsetX)
-		{
-			glTranslatef(-objectToFollow->PositionX() + offsetX, 0.f, 0.f);
-		}
+		glTranslatef((-objectPositionX + offsetX) * (objectPositionX > (offsetX)), 
+					 (-objectPositionY + offsetY) * (objectPositionY > (offsetY)),
+					 0.f);
 		
-		if (objectPositionY > minY + offsetY)
-		{
-			glTranslatef(0.f, -objectToFollow->PositionY() + offsetY, 0.f);
-		}
+		// glTranslatef(0.f, -objectToFollow->PositionY() + offsetY, 0.f);
 
 	}
 };

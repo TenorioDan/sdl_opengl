@@ -39,6 +39,8 @@ public:
 	bool ShouldBeDeleted();
 
 protected:
+	int currentTime = 0;
+	int previousTime = 0;
 	bool useGravity;
 	bool canMoveHorizontal;
 	bool canMoveVertical;

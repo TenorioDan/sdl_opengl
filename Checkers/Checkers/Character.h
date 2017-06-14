@@ -46,7 +46,9 @@ protected:
 
 	// Protected primitives
 	int jumpAnimationSpeed;
-	bool canJump;
+	int currentJumpFrameCount;
+	int maxJumpFrameCount;
+	bool isJumping;
 	bool aiming;
 
 	GLfloat moveSpeed;
@@ -58,4 +60,5 @@ protected:
 	std::vector<Enemy*>* enemies;
 
 	void checkCollisions();
+	void jumpUpdate();
 };
