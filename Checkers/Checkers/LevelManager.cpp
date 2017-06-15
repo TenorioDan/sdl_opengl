@@ -4,8 +4,18 @@
 #include <iterator>
 #include "LevelManager.h"
 
-LevelManager::LevelManager() 
+LevelManager::LevelManager() { }
+
+LevelManager* LevelManager::instance;
+
+LevelManager* LevelManager::getInstance()
 {
+	if (instance == NULL)
+	{
+		instance = new LevelManager();
+	}
+
+	return instance;
 }
 
 // Destroy all enemies
@@ -18,7 +28,6 @@ LevelManager::~LevelManager()
 
 	clearTiles();
 }
-
 
 // Load media for every object in this level
 // TODO: Add path for loading individual levels
@@ -69,10 +78,6 @@ bool LevelManager::loadMedia()
 
 	if (success)
 	{
-		for (auto enemy : enemies)
-		{
-			enemy->loadMedia();
-		}
 
 #ifdef _DEBUG
 		buildWorld("Levels/last_level_created.lvl");
@@ -80,11 +85,21 @@ bool LevelManager::loadMedia()
 		buildWorld("Levels/test.lvl");
 #endif
 
+		for (auto enemy : enemies)
+		{
+			enemy->loadMedia();
+		}
+
 		player.setEnemies(&enemies);
 		player.setPlatforms(&platforms);
 	}
 
 	return success;
+}
+
+std::vector<Collider*>* LevelManager::getPlatforms()
+{
+	return &platforms;
 }
 
 
@@ -203,27 +218,10 @@ std::vector<Enemy*> LevelManager::getEnemies()
 	return enemies;
 }
 
-// TODO: Change collision results based on object type
-// TODO: Quad Trees for per section collision detection
-void LevelManager::checkPlayerCollisions()
-{
-	for (auto p : platforms)
-	{
-		//player.translate(player.getHorizontalVelocity(), player.getVerticalVelocity());
-		Collider::CollisionDirection collision = player.getCollider().collision(*p);
-
-		if (collision != Collider::NO_COLLISION)
-		{
-			player.detectPlatformCollision(p, collision);
-		}
-		//player.translate(-player.getHorizontalVelocity(), -player.getVerticalVelocity());
-	}
-}
-
 // Update loop. Check collisions and stuff
 void LevelManager::update(int time)
 {
-	checkPlayerCollisions();
+	//checkPlayerCollisions();
 	player.update(time);
 
 	for (auto it = enemies.begin(); it != enemies.end();)

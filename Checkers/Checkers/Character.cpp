@@ -23,6 +23,7 @@ Character::Character()
 	currentState = IDLE;
 	verticalVelocity = 0;
 	currentJumpFrameCount = maxJumpFrameCount = 1;
+	colliderOffset = 30.f;
 
 	useGravity = true;
 	isJumping = false;
@@ -36,21 +37,6 @@ Character::~Character()
 	spriteSheet->freeSheet();
 }
 
-void Character::translate(GLfloat x, GLfloat y)
-{
-	positionX += x;
-	positionY += y;
-
-	collider.prevMaxX = collider.maxX;
-	collider.prevMaxY = collider.maxY;
-	collider.prevMinX = collider.minX;
-	collider.prevMinY = collider.minY;
-
-	collider.maxX = positionX + (width / 2) - colliderOffset;
-	collider.maxY = positionY + (height / 2);
-	collider.minX = positionX - (width / 2) + colliderOffset;
-	collider.minY = positionY - (height / 2);
-}
 
 bool Character::loadMedia()
 {
@@ -80,7 +66,7 @@ bool Character::loadMedia()
 
 void Character::attack()
 {
-	weapon.fireWeapon(positionX, positionY, direction, aimDirectionX, aimDirectionY, platforms, enemies);
+	weapon.fireWeapon(positionX, positionY, direction, aimDirectionX, aimDirectionY, enemies);
 }
 
 void Character::jump()
@@ -127,6 +113,18 @@ void Character::checkCollisions()
 		verticalPhysicsState = IN_MOTION;
 		verticalVelocity = 0.f;
 	}
+
+	LevelManager* levelManager = LevelManager::getInstance();
+
+	for (auto p : *levelManager->getPlatforms())
+	{
+		Collider::CollisionDirection collision = collider.collision(*p);
+
+		if (collision != Collider::NO_COLLISION)
+		{
+			detectPlatformCollision(p, collision);
+		}
+	}
 }
 
 // Called by the level manager when the player has fallen on a new platform
@@ -135,10 +133,10 @@ void Character::detectPlatformCollision(Collider* platform, Collider::CollisionD
 	switch (direction)
 	{
 	case Collider::CollisionDirection::LEFT:
-		translate(-horizontalVelocity, 0.f);
+		positionX -= horizontalVelocity;
 		break;
 	case Collider::CollisionDirection::RIGHT:
-		translate(-horizontalVelocity, 0.f);
+		positionX -= horizontalVelocity;
 		break;
 	case Collider::CollisionDirection::ABOVE:
 		currentPlatform = platform;
@@ -236,8 +234,8 @@ void Character::stopAiming()
 // For debugging
 void Character::resetPosition()
 {
-	positionX = 128;
-	positionY = 0;
+	positionX = 650;
+	positionY = 720;
 }
 
 void Character::setEnemies(std::vector<Enemy*>* e)

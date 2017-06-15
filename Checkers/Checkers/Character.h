@@ -19,7 +19,7 @@ public:
 	
 	virtual void update(int time);
 	virtual void render();
-	virtual void translate(GLfloat x, GLfloat y) override;
+	void checkCollisions();
 
 	void applyHorizontalMovement(GLfloat directionModifier);
 	void applyVerticalAimDirection(GLfloat directionModifier);
@@ -39,7 +39,6 @@ public:
 
 protected:
 	GLfloat baseJumpSpeed = -24.f; // move upwards which is the negative y direction
-	GLfloat colliderOffset = 30.f;
 	GLfloat aimDirectionX;
 	GLfloat aimDirectionY;
 	GLfloat health;
@@ -59,6 +58,5 @@ protected:
 	ChracterState currentState;
 	std::vector<Enemy*>* enemies;
 
-	void checkCollisions();
 	void jumpUpdate();
 };

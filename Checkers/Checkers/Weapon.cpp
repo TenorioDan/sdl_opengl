@@ -33,11 +33,10 @@ bool Weapon::loadMedia()
 }
 
 // Spawn a new projectile into the world and set it's position according to the object that owns it
-void Weapon::fireWeapon(GLfloat positionX, GLfloat positionY, GameObject::Direction direction, GLfloat aimDirectionX, GLfloat aimDirectionY, 
-						std::vector<Collider*>* platforms, std::vector<Enemy*>* enemies)
+void Weapon::fireWeapon(GLfloat positionX, GLfloat positionY, GameObject::Direction direction, GLfloat aimDirectionX, GLfloat aimDirectionY,
+						std::vector<Enemy*>* enemies)
 {
 	Projectile* p = new Projectile(projectileSpriteSheet, positionX, positionY, direction, aimDirectionX, aimDirectionY, damage);
-	p->setPlatforms(platforms);
 	p->setEnemies(enemies);
 	projectiles.push_back(p);
 }

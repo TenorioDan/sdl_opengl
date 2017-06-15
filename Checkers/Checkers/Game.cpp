@@ -6,6 +6,7 @@ Game::Game()
 	previousFrameTime = 0;
 	currentFrameTime = 0;
 	quit = false;
+	levelManager = LevelManager::getInstance();
 }
 
 bool Game::initGL()
@@ -66,7 +67,6 @@ bool Game::initGL()
 		printf("Error initializing DevIL! %s\n", iluErrorString(ilError));
 		return false;
 	}
-
 
 	return success;
 }
@@ -146,11 +146,11 @@ bool Game::loadMedia() {
 	// Loading success flag
 	bool success = true;
 
-	success = levelManager.loadMedia();
+	success = levelManager->loadMedia();
 
 	if (success)
 	{
-		levelManager.setCameraPosition(SCREEN_WIDTH, SCREEN_HEIGHT);
+		levelManager->setCameraPosition(SCREEN_WIDTH, SCREEN_HEIGHT);
 	}
 
 	return success;
@@ -184,13 +184,11 @@ void Game::update()
 		currentFrameTime = SDL_GetTicks();
 		std::vector<Command*> commandQueue = inputManager.handleInput();
 
-		levelManager.update(time);
-
 		for (auto command : commandQueue)
 		{
 			if (inputManager.CurrentState() == InputManager::GAME)
 			{
-				levelManager.executeCommand(command);
+				levelManager->executeCommand(command);
 			}
 			else
 			{
@@ -198,6 +196,7 @@ void Game::update()
 			}
 		}
 		
+		levelManager->update(time);
 		previousFrameTime = currentFrameTime;
 	}
 }
@@ -207,7 +206,7 @@ void Game::render()
 	// Clear color buffer
 	glClear(GL_COLOR_BUFFER_BIT);
 	glLoadIdentity();
-	levelManager.render();
+	levelManager->render();
 
 	SDL_GL_SwapWindow(gWindow);
 }

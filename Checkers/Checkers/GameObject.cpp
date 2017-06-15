@@ -33,14 +33,23 @@ void GameObject::translate(GLfloat x, GLfloat y)
 	if (canMoveVertical)
 		positionY += y;
 
+	// Adjust the positions of the colliders after translating and if collision occur
+	// then adjust again
+	adjustCollider();
+	checkCollisions();
+	adjustCollider();
+}
+
+void GameObject::adjustCollider()
+{
 	collider.prevMaxX = collider.maxX;
 	collider.prevMaxY = collider.maxY;
 	collider.prevMinX = collider.minX;
 	collider.prevMinY = collider.minY;
 
-	collider.maxX = positionX + (width / 2);
+	collider.maxX = (positionX + (width / 2)) - colliderOffset;
 	collider.maxY = positionY + (height / 2);
-	collider.minX = positionX - (width / 2);
+	collider.minX = (positionX - (width / 2)) + colliderOffset;
 	collider.minY = positionY - (height / 2);
 }
 
@@ -58,7 +67,6 @@ void GameObject::applyGravity()
 		}
 	}
 }
-
 
 GLfloat GameObject::PositionX()
 {
@@ -99,11 +107,12 @@ void GameObject::setPosition(GLfloat x, GLfloat y)
 {
 	positionX = x;
 	positionY = y;
+	adjustCollider();
 }
 
 void GameObject::setPlatforms(std::vector<Collider*>* c)
 {
-	platforms = c;
+	//platforms = c;
 }
 
 void GameObject::update(int time)
@@ -111,7 +120,7 @@ void GameObject::update(int time)
 	previousTime = currentTime;
 	currentTime = time;
 	applyGravity();
-	checkCollisions();
+	//checkCollisions();
 	translate(horizontalVelocity, verticalVelocity);
 }
 

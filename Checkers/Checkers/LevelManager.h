@@ -10,7 +10,8 @@
 class LevelManager
 {
 public:
-	LevelManager();
+
+	static LevelManager* getInstance();
 	~LevelManager();
 
 	void render();
@@ -24,6 +25,10 @@ public:
 	std::vector<Collider*>* getPlatforms();
 
 private:
+	// Singleton privates
+	static LevelManager* instance;
+	LevelManager();
+
 	Camera camera;
 	Character player;
 	std::vector<Enemy*> enemies;

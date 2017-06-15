@@ -22,6 +22,7 @@ public:
 
 	virtual void update(int time);
 	virtual void render();
+	virtual void checkCollisions() = 0;
 
 	virtual void translate(GLfloat x, GLfloat y);
 	
@@ -53,6 +54,7 @@ protected:
 	GLfloat height;
 	GLfloat verticalVelocity;
 	GLfloat horizontalVelocity;
+	GLfloat colliderOffset = 0.f;
 
 	GLfloat gravity;
 	GLfloat maxVerticleSpeed; // TODO figure out what max positive verticle velocity should be
@@ -61,13 +63,12 @@ protected:
 	Collider* currentPlatform;
 
 	// Protected methods
-	virtual void checkCollisions() = 0;
 	void applyGravity();
+	void adjustCollider();
 
 	// Enums
 	PhysicsState horizontalPhysicsState;
 	PhysicsState verticalPhysicsState;
 	Direction direction;
-
-	std::vector<Collider*>* platforms;
+	//std::vector<Collider*>* platforms;
 };

@@ -77,7 +77,7 @@ bool Projectile::loadMedia()
 void Projectile::checkCollisions()
 {
 	// check against platforms that 
-	for (auto p : *platforms)
+	for (auto p : *LevelManager::getInstance()->getPlatforms())
 	{
 		if (collider.collision(*p) != Collider::NO_COLLISION)
 		{

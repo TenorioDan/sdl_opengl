@@ -43,7 +43,7 @@ private:
 	// OpenGL Context
 	SDL_GLContext gContext = NULL;
 	
-	LevelManager levelManager;
+	LevelManager* levelManager;
 	InputManager inputManager;
 
 	int previousFrameTime, currentFrameTime;
