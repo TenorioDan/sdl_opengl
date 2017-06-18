@@ -17,11 +17,10 @@ public:
 	void render();
 	void update(int time);
 	
-	bool loadMedia();
 	void setCameraPosition(GLfloat offsetX, GLfloat offsetY);
 	void executeCommand(Command* command);
-	void checkPlayerCollisions();
-	std::vector<Enemy*> getEnemies();
+	void buildWorld(std::string path);
+	std::vector<Enemy*>* getEnemies();
 	std::vector<Collider*>* getPlatforms();
 
 private:
@@ -56,12 +55,11 @@ private:
 	GLfloat tileSpriteOffeset = 10;
 	ReadState readState;
 
-	SpriteSheet tileSheet;
+	SpriteSheet* tileSheet;
 	Tile** tileset;
 	std::vector<Collider*> platforms;
 
 	void clearTiles();
-	void buildWorld(std::string path);
 	//void createColliders(std::string path);
 	void createTile(int row, int column, int tileType);
 	void createCollider(int minX, int minY, int maxX, int maxY);

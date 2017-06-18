@@ -36,8 +36,7 @@ bool Weapon::loadMedia()
 void Weapon::fireWeapon(GLfloat positionX, GLfloat positionY, GameObject::Direction direction, GLfloat aimDirectionX, GLfloat aimDirectionY,
 						std::vector<Enemy*>* enemies)
 {
-	Projectile* p = new Projectile(projectileSpriteSheet, positionX, positionY, direction, aimDirectionX, aimDirectionY, damage);
-	p->setEnemies(enemies);
+	Projectile* p = new Projectile(positionX, positionY, direction, aimDirectionX, aimDirectionY, damage);
 	projectiles.push_back(p);
 }
 

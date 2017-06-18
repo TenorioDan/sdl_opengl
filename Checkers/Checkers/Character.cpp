@@ -1,12 +1,13 @@
 #include "Character.h"
 #include "LevelManager.h"
+#include "MediaManager.h"
 #include <cmath>
 
 Character::Character()
 	: AnimatedGameObject()
 {
 	// TODO: Clean up magic numbers
-	baseJumpSpeed = -24.f; // move upwards which is the negative y direction
+	baseJumpSpeed = -28.f; // move upwards which is the negative y direction
 	colliderOffset = 30.f;
 
 	health = 100;
@@ -22,14 +23,15 @@ Character::Character()
 	jumpAnimationSpeed = 50;
 	currentState = IDLE;
 	verticalVelocity = 0;
-	currentJumpFrameCount = maxJumpFrameCount = 1;
+	currentJumpFrameCount = maxJumpFrameCount = 2;
 	colliderOffset = 30.f;
 
 	useGravity = true;
-	isJumping = false;
+	canJump = true;
 	aiming = false;
 
 	direction = RIGHT;
+	spriteSheet = MediaManager::getInstance()->getSpriteSheet("MAIN_CHARACTER");
 }
 
 Character::~Character()
@@ -38,32 +40,6 @@ Character::~Character()
 }
 
 
-bool Character::loadMedia()
-{
-	spriteSheet = new SpriteSheet();
-	if (!spriteSheet->loadTextureFromFileWithColorKey("shovel_knight_original.png", 255, 255, 255))
-	{
-		printf("Unable to load sprite sheet!\n");
-		return false;
-	}
-
-	spriteSheet->createAnimations(width, height, 5.f, 266.f, 10.f, 4);
-
-	if (!spriteSheet->generateDataBuffer())
-	{
-		printf("Unable to clip sprite sheet!\n");
-		return false;
-	}
-
-	if (!weapon.loadMedia())
-	{
-		printf("Unable to load weapon media!\n");
-		return false;
-	}
-
-	return true;
-}
-
 void Character::attack()
 {
 	weapon.fireWeapon(positionX, positionY, direction, aimDirectionX, aimDirectionY, enemies);
@@ -71,26 +47,35 @@ void Character::attack()
 
 void Character::jump()
 {
-	if (verticalPhysicsState != IN_MOTION)
+	if (verticalPhysicsState == AT_REST && canJump && canMoveVertical && !aiming)
 	{
-		isJumping = true;
+		verticalPhysicsState = IN_MOTION;
+		verticalVelocity = baseJumpSpeed;
+		currentPlatform = NULL;
+		canJump = false;
 	}
+
 }
 
 void Character::resetJump()
 {
-	isJumping = false;
+	canJump = true;
+
+	if (verticalVelocity < 0)
+	{
+		verticalVelocity /= 2;
+	}
 }
 
 void Character::jumpUpdate()
-{
+{/*
 	if (isJumping && !aiming && verticalVelocity > baseJumpSpeed)
 	{
 		if (currentJumpFrameCount >= maxJumpFrameCount)
 		{
 			currentJumpFrameCount = 0;
 			verticalPhysicsState = IN_MOTION;
-			verticalVelocity -= 8;
+			verticalVelocity -=12;
 			currentPlatform = NULL;
 		}
 		else
@@ -102,7 +87,7 @@ void Character::jumpUpdate()
 	{
 		currentJumpFrameCount = maxJumpFrameCount;
 		isJumping = false;
-	}
+	}*/
 }
 
 void Character::checkCollisions()
@@ -146,7 +131,7 @@ void Character::detectPlatformCollision(Collider* platform, Collider::CollisionD
 		break;
 	case Collider::CollisionDirection::BELOW:
 		verticalVelocity = 0;
-		isJumping = false;
+		canJump = true;
 		break;
 	}
 }

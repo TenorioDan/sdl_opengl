@@ -15,7 +15,6 @@ public:
 
 	Character();
 	~Character();
-	bool loadMedia();
 	
 	virtual void update(int time);
 	virtual void render();
@@ -47,7 +46,7 @@ protected:
 	int jumpAnimationSpeed;
 	int currentJumpFrameCount;
 	int maxJumpFrameCount;
-	bool isJumping;
+	bool canJump;
 	bool aiming;
 
 	GLfloat moveSpeed;

@@ -3,6 +3,7 @@
 #include <sstream>
 #include <iterator>
 #include "LevelManager.h"
+#include "MediaManager.h"
 
 LevelManager::LevelManager() { }
 
@@ -29,82 +30,9 @@ LevelManager::~LevelManager()
 	clearTiles();
 }
 
-// Load media for every object in this level
-// TODO: Add path for loading individual levels
-bool LevelManager::loadMedia()
-{
-	bool success = true;
-
-	if (!tileSheet.loadTextureFromFileWithColorKey("tileset_platforms.png", 255, 0, 255))
-	{
-		printf("Unable to load tile sheet!\n");
-		success = false;
-	}
-
-	// set clips
-	LFRect clip = { 0.f, 0.f, 64.f, 64.f };
-
-	// Top left
-	clip.x = 0.f;
-	clip.y = 0.f;
-	tileSheet.addClipSprite(clip);
-
-	// Top right
-	clip.x = 64.f + tileSpriteOffeset;
-	clip.y = 0.f;
-	tileSheet.addClipSprite(clip);
-
-	// Bottom left
-	clip.x = 128.f + (tileSpriteOffeset * 2);
-	clip.y = 0.f;
-	tileSheet.addClipSprite(clip);
-
-	// TODO: Fix sprite sheet tile index allocations
-	for (int i = 0; i < 9; ++i)
-	{
-		clip.x = (i * tileWidth) + (tileSpriteOffeset * i);
-		clip.y = 74.f;
-		tileSheet.addClipSprite(clip);
-	}
-
-	if (!tileSheet.generateDataBuffer())
-	{
-		printf("Unable to clip tile sheet!\n");
-		success = false;
-	}
-
-	// success = tileManager.loadMedia();
-	success = player.loadMedia();
-
-	if (success)
-	{
-
-#ifdef _DEBUG
-		buildWorld("Levels/last_level_created.lvl");
-#else
-		buildWorld("Levels/test.lvl");
-#endif
-
-		for (auto enemy : enemies)
-		{
-			enemy->loadMedia();
-		}
-
-		player.setEnemies(&enemies);
-		player.setPlatforms(&platforms);
-	}
-
-	return success;
-}
-
-std::vector<Collider*>* LevelManager::getPlatforms()
-{
-	return &platforms;
-}
-
-
 void LevelManager::buildWorld(std::string path)
 {
+	tileSheet = MediaManager::getInstance()->getSpriteSheet("TILE_SHEET");
 	// dynamically create the number of tiles for this this area
 	// Add all tiles that will be rendered to the screen
 	std::ifstream  tilesetFile(path.c_str());
@@ -213,9 +141,14 @@ void LevelManager::executeCommand(Command* command)
 	command->execute(player);
 }
 
-std::vector<Enemy*> LevelManager::getEnemies()
+std::vector<Collider*>* LevelManager::getPlatforms()
 {
-	return enemies;
+	return &platforms;
+}
+
+std::vector<Enemy*>* LevelManager::getEnemies()
+{
+	return &enemies;
 }
 
 // Update loop. Check collisions and stuff
@@ -256,7 +189,7 @@ void LevelManager::renderTileset()
 				// Move to the spot to render and then move back to render the next texture 
 				// in the correct spot
 				glTranslatef(t.positionX, t.positionY, 0.f);
-				tileSheet.renderSprite(t.spriteIndex - 1);
+				tileSheet->renderSprite(t.spriteIndex - 1);
 				glTranslatef(-t.positionX, -t.positionY, 0.f);
 			}
 		}

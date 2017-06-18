@@ -6,6 +6,7 @@
 #include <IL/ilu.h>
 #include "InputManager.h"
 #include "LevelManager.h"
+#include "MediaManager.h"
 
 class Game 
 {
@@ -44,6 +45,7 @@ private:
 	SDL_GLContext gContext = NULL;
 	
 	LevelManager* levelManager;
+	MediaManager* mediaManager;
 	InputManager inputManager;
 
 	int previousFrameTime, currentFrameTime;

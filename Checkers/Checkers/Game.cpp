@@ -6,7 +6,6 @@ Game::Game()
 	previousFrameTime = 0;
 	currentFrameTime = 0;
 	quit = false;
-	levelManager = LevelManager::getInstance();
 }
 
 bool Game::initGL()
@@ -145,11 +144,19 @@ bool Game::init()
 bool Game::loadMedia() {
 	// Loading success flag
 	bool success = true;
+	mediaManager = MediaManager::getInstance();
 
-	success = levelManager->loadMedia();
+	// TODO: Change level string passed into media manager's loadMedia method
+	success = mediaManager->loadMedia("First Level");
 
 	if (success)
 	{
+		levelManager = LevelManager::getInstance();
+#ifdef _DEBUG
+		levelManager->buildWorld("Levels/last_level_created.lvl");
+#else
+		levelManager->buildWorld("Levels/test.lvl");
+#endif
 		levelManager->setCameraPosition(SCREEN_WIDTH, SCREEN_HEIGHT);
 	}
 

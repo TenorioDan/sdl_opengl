@@ -1,5 +1,6 @@
 #include "Enemy.h"
 #include "LevelManager.h"
+#include "MediaManager.h"
 
 Enemy::Enemy()
 	: AnimatedGameObject()
@@ -12,6 +13,7 @@ Enemy::Enemy()
 	horizontalVelocity = 2.f;
 	verticalVelocity = 0.f;
 	useGravity = false;
+	spriteSheet = MediaManager::getInstance()->getSpriteSheet("STAR_MONSTER");
 }
 
 Enemy::~Enemy()
@@ -24,24 +26,6 @@ void Enemy::setCurrentPlatform(Collider* c)
 	currentPlatform = c;
 	positionX = currentPlatform->maxX + (width / 2.f);;
 	positionY = currentPlatform->minY - (height / 2.f);
-}
-
-bool Enemy::loadMedia()
-{
-	spriteSheet = new SpriteSheet();
-	if (!spriteSheet->loadTextureFromFileWithColorKey("star_enemy.png", 255, 0, 255))
-	{
-		printf("Unable to load sprite sheet!\n");
-		return false;
-	}
-
-	spriteSheet->createAnimations(width, height, 0.f, 0.f, 0.f, 1);
-
-	if (!spriteSheet->generateDataBuffer())
-	{
-		printf("Unable to clip sprite sheet!\n");
-		return false;
-	}
 }
 
 void Enemy::attackRoutine()

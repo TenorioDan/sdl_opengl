@@ -9,7 +9,6 @@ public:
 	AnimatedGameObject();
 	virtual void update(int time);
 	virtual void render();
-	virtual bool loadMedia() = 0;
 
 protected:
 	int previousAnimationTime;

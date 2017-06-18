@@ -12,7 +12,6 @@ public:
 
 	void update(int time);
 	void render();
-	bool loadMedia();
 	void setCurrentPlatform(Collider* c);
 	void takeDamage(GLfloat damage);
 

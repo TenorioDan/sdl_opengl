@@ -31,31 +31,19 @@ public:
 		if ((minX <= c.maxX && maxX >= c.minX) &&
 			(minY <= c.maxY && maxY >= c.minY))
 		{
-			if (c.minX == 160 && c.maxX == 1760 && c.minY == 992 && c.maxY == 1056)
-			{
-				// printf("colling with lower platform\n");
-
-				if ( maxY >= c.minY)
-				{	
-					printf("******\n");
-					printf("%f %f\n", prevMaxY, c.minY);
-					printf("****\n");
-				}
-			}
-
 			if (prevMaxX < c.minX && maxX >= c.minX)
 			{
-				printf("left\n");
+				//printf("left\n");
 				return LEFT;
 			}	
 			else if (prevMinX >= c.maxX && minX < c.maxX)
 			{
-				printf("right\n");
+				//printf("right\n");
 				return RIGHT;
 			}	
 			else if (prevMaxY < c.minY && maxY >= c.minY)
 			{
-				printf("above\n");
+				//printf("above\n");
 				return ABOVE;
 			}	
 			else if (prevMinY >= c.maxY && minY < c.maxY)

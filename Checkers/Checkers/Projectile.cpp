@@ -1,13 +1,14 @@
 #include "Projectile.h"
 #include "LevelManager.h"
+#include "MediaManager.h"
 
-Projectile::Projectile(SpriteSheet& ssheet, GLfloat x, GLfloat y,  Direction d, GLfloat aimDirectionX, GLfloat aimDirectionY, GLfloat dmg)
+Projectile::Projectile(GLfloat x, GLfloat y,  Direction d, GLfloat aimDirectionX, GLfloat aimDirectionY, GLfloat dmg)
 	: AnimatedGameObject()
 {
 	// TODO: Clean up magic numbers
 	useGravity = false;
 	toDelete = false;
-	spriteSheet = &ssheet;
+	spriteSheet = MediaManager::getInstance()->getSpriteSheet("BASIC_PROJECTILE");
 	positionX = x;
 	positionY = y;
 	direction = d;
@@ -66,18 +67,11 @@ Projectile::~Projectile()
 
 }
 
-bool Projectile::loadMedia()
-{
-	// TODO: Flyweight pattern ensures that media is only loaded once
-	// in the weapon class so this virtual method does nothing. Seems 
-	// like bad design if this method has to exist.
-	return true;
-}
-
 void Projectile::checkCollisions()
 {
+	LevelManager* levelManager = LevelManager::getInstance();
 	// check against platforms that 
-	for (auto p : *LevelManager::getInstance()->getPlatforms())
+	for (auto p : *levelManager->getPlatforms())
 	{
 		if (collider.collision(*p) != Collider::NO_COLLISION)
 		{
@@ -85,7 +79,7 @@ void Projectile::checkCollisions()
 		}
 	}
 
-	for (auto e : *enemies)
+	for (auto e : *levelManager->getEnemies())
 	{
 		if (collider.collision(e->getCollider()) != Collider::NO_COLLISION)
 		{
@@ -93,11 +87,6 @@ void Projectile::checkCollisions()
 			e->takeDamage(damage);
 		}
 	}
-}
-
-void Projectile::setEnemies(std::vector<Enemy*>* e)
-{
-	enemies = e;
 }
 
 // Similar 
