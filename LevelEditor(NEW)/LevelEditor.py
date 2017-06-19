@@ -3,11 +3,15 @@ from os.path import isfile, join
 import Tkinter as tk
 from tkMessageBox import *
 from EditorGraphics import SpriteSheet, Tile, Collider
-from GameObjects import StarMonster
+from GameObjects import StarMonster, TransitionTile
 
 GRID_LINE_WIDTH = 1
 LEVEL_DIRECTORY = "../Checkers/Checkers/Levels"
 MODES = ["TILE_PLACEMENT", "ENEMY_PLACEMENT"]
+
+
+def get_available_levels():
+    return [f.replace(".lvl", "") for f in listdir(LEVEL_DIRECTORY) if isfile(join(LEVEL_DIRECTORY, f))]
 
 
 class TileLabel(tk.Label, object):
@@ -104,6 +108,7 @@ class TileEditor(tk.Tk):
         self.grid_lines = []
         self.enemies = []
         self.enemy_sprites = []
+        self.transition_tiles = []
         self.editor_current_image = None
         self.current_enemy = None
         self.editor_current_tile_type = 0
@@ -113,6 +118,8 @@ class TileEditor(tk.Tk):
         self.current_properties_frame = None
         self.tile_properties_frame = None
         self.enemy_properties_frame = None
+        self.transition_tile_properties_frame = None
+        self.current_object_to_modify_properties = None
         self.current_level_name = "last_level_created"
 
         self.mode = tk.StringVar()
@@ -126,10 +133,14 @@ class TileEditor(tk.Tk):
         # Create the load level variable to be used with the dropdown
         self.level_to_load_stringvar = tk.StringVar(self.control_frame)
         self.level_to_load_stringvar.set(self.current_level_name)
+        self.transition_level_stringvar = tk.StringVar(self.control_frame)
+        self.transition_level_stringvar.trace("w", self.get_level_transition_tiles)
+        self.transition_tile_stringvar = tk.StringVar(self.control_frame)
 
         self.create_misc_controls()
         self.create_tile_controls()
         self.create_enemy_controls()
+        self.create_transition_controls()
 
         # Create the canvas that will contain the GUI for the tile placement functionality
         self.tile_frame = tk.Frame(self, width=1200, height=500)
@@ -137,6 +148,7 @@ class TileEditor(tk.Tk):
         self.tile_canvas = tk.Canvas(self.tile_frame, width=1800, height=1080, bg='#000000')
         self.tile_canvas.bind("<Button-1>", self.add_gameobject_button_call)
         self.tile_canvas.bind("<Shift-Button-1>", self.delete_tile_button_call)
+        self.tile_canvas.bind("<Control-Button-1>", self.view_object_properties_callback)
         horizontal_bar = tk.Scrollbar(self.tile_frame, orient=tk.HORIZONTAL)
         horizontal_bar.pack(side=tk.BOTTOM, fill=tk.X)
         horizontal_bar.config(command=self.tile_canvas.xview)
@@ -159,8 +171,26 @@ class TileEditor(tk.Tk):
             self.current_properties_frame = self.tile_properties_frame
         elif current_mode == "Enemies":
             self.current_properties_frame = self.enemy_properties_frame
+        elif current_mode == "Transition Tile":
+            self.current_properties_frame = self.transition_tile_properties_frame
 
         self.current_properties_frame.grid()
+
+    def get_level_transition_tiles(self, *args):
+        transition_level = self.transition_level_stringvar.get()
+
+        with open("{0}/{1}.lvl".format(LEVEL_DIRECTORY, transition_level), 'r') as level_file:
+            begin_reading = False
+            transition_tiles = []
+
+            for line in level_file:
+                if "TRANSITIONS" in line:
+                    begin_reading = True
+                elif begin_reading:
+                    transition_tiles.append(line[0])
+
+        self.transition_tile_options = tk.OptionMenu(self.control_frame, self.transition_tile_stringvar,
+                                                     transition_tiles)
 
     def create_misc_controls(self):
         menu_bar = tk.Menu(self)
@@ -204,7 +234,7 @@ class TileEditor(tk.Tk):
         tile_select_label = tk.Label(self.control_frame, text="Tiles")
         tile_select_label.grid(row=2, column=0)
         self.tile_select_frame = VerticalScrolledFrame(self.control_frame)
-        self.tile_select_frame.grid(row=3, column=0, columnspan=4)
+        self.tile_select_frame.grid(row=3, column=0)
 
         # TODO: Load all sprite sheets uploaded
         # Load the tile sprites into the editor for selecting
@@ -221,10 +251,9 @@ class TileEditor(tk.Tk):
             # load_level_button.grid(row=5, column=1)
 
     def create_enemy_controls(self):
-        enemy_select_label = tk.Label(self.control_frame, text="Enemies")
-        enemy_select_label.grid(row=4, column=0)
+        tk.Label(self.control_frame, text="Enemies").grid(row=4, column=0)
         self.enemy_select_frame = VerticalScrolledFrame(self.control_frame)
-        self.enemy_select_frame.grid(row=5, column=0, columnspan=4)
+        self.enemy_select_frame.grid(row=4, column=0)
         self.load_enemies()
 
         self.enemy_properties_frame = tk.Frame(self.control_frame, width=500, height=500)
@@ -233,6 +262,17 @@ class TileEditor(tk.Tk):
             enemy_label = TileLabel(0, self.enemy_select_frame.interior, image=self.enemy_sprites[i])
             enemy_label.bind("<Button-1>", self.set_current_enemy)
             enemy_label.grid(row=int(i / 5), column=(i % 5))
+
+    def create_transition_controls(self):
+        tk.Label(self.control_frame, text="Transition Tile").grid(row=5, column=0)
+        level_options = tk.OptionMenu(self.control_frame, self.transition_level_stringvar, *get_available_levels())
+        level_options.grid(row=5, column=1)
+        self.transition_tile_options = tk.OptionMenu(self.control_frame, self.transition_tile_stringvar, [])
+        self.transition_tile_options.grid(row=5, column=2)
+
+    # Properties window adjuster
+    def set_properties(self, object_type, obj):
+        pass
 
     # Load the images from the sprite sheet into the editor
     def load_spritesheet(self, file_name):
@@ -270,7 +310,7 @@ class TileEditor(tk.Tk):
 
     def add_tile(self, tile):
         if tile:
-            if tile and tile.canvas_image:
+            if tile.canvas_image:
                 self.tile_canvas.delete(tile.canvas_image)
 
             y = (tile.row * (self.tile_spritesheet.tile_width + 1)) + 1
@@ -327,8 +367,13 @@ class TileEditor(tk.Tk):
                                 closest_collider_index)
             self.enemies.append(enemy)
 
-    def get_offset(self, x, y):
-        return int(x / self.tile_spritesheet.tile_width) + 1, int(y / self.tile_spritesheet.tile_height) + 1
+    def add_transition_tile(self, tile):
+        if tile:
+            y = (tile.row * (self.tile_spritesheet.tile_width + 1)) + 1
+            x = (tile.column * (self.tile_spritesheet.tile_height + 1)) + 1
+            transition = TransitionTile(x, y, self.tile_canvas.create_rectangle(x, y, x + TransitionTile.width,
+                                                                                y + TransitionTile.height, fill='blue'))
+            self.transition_tiles.append(transition)
 
     # takes a mouse click event and adds a tile to the space clicked on
     def add_gameobject_button_call(self, event):
@@ -338,6 +383,8 @@ class TileEditor(tk.Tk):
                 self.add_tile(self.get_tile_clicked(event))
             elif mode == "Enemies" and self.current_enemy is not None:
                 self.add_enemy(*self.get_position_clicked(event))
+            elif mode == "Transition":
+                self.add_transition_tile(self.get_tile_clicked(event))
 
     def delete_tile_button_call(self, event):
         if self.grid_created and self.editor_current_image is not None:
@@ -348,6 +395,18 @@ class TileEditor(tk.Tk):
                 current_tile.tile_type = 0
                 current_tile.image = None
                 self.generate_colliders()
+
+    # Set the properties view to the first object found at the point clicked
+    def view_object_properties_callback(self, event):
+        for e in self.enemies:
+            e_min_x = e.position_x - (e.width / 2)
+            e_min_y = e.position_y - (e.height / 2)
+            e_max_x = e.position_x + (e.width / 2)
+            e_max_y = e.position_y + (e.height / 2)
+            x, y = self.get_position_clicked(event)
+
+            if (e_min_x < x < e_max_x) and (e_min_y < y < e_max_y):
+                self.set_properties("ENEMY", e)
 
     def get_tile_clicked(self, event):
         canvas = event.widget
@@ -360,6 +419,9 @@ class TileEditor(tk.Tk):
             return self.editor_tiles[row_index][column_index]
         else:
             return None
+
+    def get_offset(self, x, y):
+        return int(x / self.tile_spritesheet.tile_width) + 1, int(y / self.tile_spritesheet.tile_height) + 1
 
     def get_position_clicked(self, event):
         canvas = event.widget
@@ -551,6 +613,14 @@ class TileEditor(tk.Tk):
                             "{0} {1} {2} {3} {4} {5}\n".format("1", e.collider, e.position_x, e.position_y,
                                                                e.velocity_x, e.velocity_y))
 
+                    level_file.write("TRANSITIONS {}\n".format(str(len(self.transition_tiles))))
+
+                    for t in self.transition_tiles:
+                        level_file.write(
+                            "{0} {1} [2} {3} {4}".format(t.name, t.level_to_transition_to, t.transition_tile_name,
+                                                         t.position_x,
+                                                         t.position_y))
+
                     level_file.write("END")
                     level_file.close()
                 else:
@@ -613,7 +683,7 @@ class TileEditor(tk.Tk):
         top.title("Load Level")
         tk.Label(top, text="Choose Level").pack()
 
-        available_levels = [f.replace(".lvl", "") for f in listdir(LEVEL_DIRECTORY) if isfile(join(LEVEL_DIRECTORY, f))]
+        available_levels = get_available_levels()
         level_options = tk.OptionMenu(top, self.level_to_load_stringvar, *available_levels)
         level_options.config(width=15)
         level_options.pack()
