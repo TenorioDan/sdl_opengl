@@ -153,9 +153,9 @@ bool Game::loadMedia() {
 	{
 		levelManager = LevelManager::getInstance();
 #ifdef _DEBUG
-		levelManager->buildWorld("Levels/last_level_created.lvl");
+		levelManager->buildLevel("Levels/last_level_created.lvl");
 #else
-		levelManager->buildWorld("Levels/test.lvl");
+		levelManager->buildLevel("Levels/test.lvl");
 #endif
 		levelManager->setCameraPosition(SCREEN_WIDTH, SCREEN_HEIGHT);
 	}

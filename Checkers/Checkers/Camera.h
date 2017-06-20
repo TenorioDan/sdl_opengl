@@ -20,8 +20,8 @@ struct Camera
 		GLfloat objectPositionX = objectToFollow->PositionX();
 		GLfloat objectPositionY = objectToFollow->PositionY();
 
-		glTranslatef((-objectPositionX + offsetX) * (objectPositionX > (offsetX)), 
-					 (-objectPositionY + offsetY) * (objectPositionY > (offsetY)),
+		glTranslatef((-objectPositionX + offsetX), // * (objectPositionX > (offsetX)), 
+					 (-objectPositionY + offsetY), // * (objectPositionY > (offsetY)),
 					 0.f);
 		
 		// glTranslatef(0.f, -objectToFollow->PositionY() + offsetY, 0.f);

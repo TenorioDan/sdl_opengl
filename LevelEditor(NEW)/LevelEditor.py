@@ -178,6 +178,7 @@ class TileEditor(tk.Tk):
 
     def get_level_transition_tiles(self, *args):
         transition_level = self.transition_level_stringvar.get()
+        self.mode.set("Transition")
 
         with open("{0}/{1}.lvl".format(LEVEL_DIRECTORY, transition_level), 'r') as level_file:
             begin_reading = False
@@ -186,11 +187,17 @@ class TileEditor(tk.Tk):
             for line in level_file:
                 if "TRANSITIONS" in line:
                     begin_reading = True
+                elif line == "END":
+                    begin_reading = False
                 elif begin_reading:
-                    transition_tiles.append(line[0])
+                    transition_properties = line.split(' ')
+                    transition_tiles.append(transition_properties[0])
 
-        self.transition_tile_options = tk.OptionMenu(self.control_frame, self.transition_tile_stringvar,
-                                                     transition_tiles)
+        menu = self.transition_tile_options["menu"]
+        menu.delete(0, "end")
+
+        for o in transition_tiles:
+            menu.add_command(label=o, command=lambda value=o: self.transition_tile_stringvar.set(value))
 
     def create_misc_controls(self):
         menu_bar = tk.Menu(self)
@@ -264,11 +271,14 @@ class TileEditor(tk.Tk):
             enemy_label.grid(row=int(i / 5), column=(i % 5))
 
     def create_transition_controls(self):
-        tk.Label(self.control_frame, text="Transition Tile").grid(row=5, column=0)
-        level_options = tk.OptionMenu(self.control_frame, self.transition_level_stringvar, *get_available_levels())
-        level_options.grid(row=5, column=1)
-        self.transition_tile_options = tk.OptionMenu(self.control_frame, self.transition_tile_stringvar, [])
-        self.transition_tile_options.grid(row=5, column=2)
+        self.transition_frame = tk.Frame(self.control_frame)
+        self.transition_frame.grid(row=5, column=0)
+        tk.Label(self.transition_frame, text="Transition Tile").pack(side=tk.LEFT)
+
+        level_options = tk.OptionMenu(self.transition_frame, self.transition_level_stringvar, *get_available_levels())
+        level_options.pack(side=tk.LEFT)
+        self.transition_tile_options = tk.OptionMenu(self.transition_frame, self.transition_tile_stringvar, [])
+        self.transition_tile_options.pack(side=tk.LEFT)
 
     # Properties window adjuster
     def set_properties(self, object_type, obj):
@@ -371,8 +381,10 @@ class TileEditor(tk.Tk):
         if tile:
             y = (tile.row * (self.tile_spritesheet.tile_width + 1)) + 1
             x = (tile.column * (self.tile_spritesheet.tile_height + 1)) + 1
-            transition = TransitionTile(x, y, self.tile_canvas.create_rectangle(x, y, x + TransitionTile.width,
-                                                                                y + TransitionTile.height, fill='blue'))
+            transition = TransitionTile(tile.column * 64, tile.row * 64,
+                                        self.tile_canvas.create_rectangle(x, y, x + TransitionTile.width,
+                                                                          y + TransitionTile.height, fill='blue'))
+            transition.level_to_transition_to = self.transition_level_stringvar.get()
             self.transition_tiles.append(transition)
 
     # takes a mouse click event and adds a tile to the space clicked on
@@ -617,9 +629,9 @@ class TileEditor(tk.Tk):
 
                     for t in self.transition_tiles:
                         level_file.write(
-                            "{0} {1} [2} {3} {4}".format(t.name, t.level_to_transition_to, t.transition_tile_name,
-                                                         t.position_x,
-                                                         t.position_y))
+                            "{0} {1} {2} {3} {4}\n".format(t.name, t.level_to_transition_to, t.transition_tile_name,
+                                                           t.position_x,
+                                                           t.position_y))
 
                     level_file.write("END")
                     level_file.close()
@@ -633,6 +645,7 @@ class TileEditor(tk.Tk):
         self.current_level_name = level
         self.title(level)
         self.level_to_load_stringvar.set(level)
+        self.transition_tiles = []
         self.tile_canvas.delete("all")
 
         with open("{0}/{1}.lvl".format(LEVEL_DIRECTORY, level), 'r') as level_file:
@@ -652,6 +665,8 @@ class TileEditor(tk.Tk):
                     mode = "ENEMIES"
                 elif properties[0] == "END":
                     pass
+                elif mode[0] == "TRANSITIONS":
+                    mode = "TRANSITIONS"
                 else:
                     if mode == "TILES":
                         tile_type = int(properties[2])
@@ -667,6 +682,8 @@ class TileEditor(tk.Tk):
                         self.colliders.append(
                             Collider(int(properties[0]), int(properties[1]), int(properties[2]), int(properties[3])))
                     elif mode == "ENEMIES":
+                        pass
+                    elif mode == "TRANSITIONS":
                         pass
 
         # Destroy the load level dialog

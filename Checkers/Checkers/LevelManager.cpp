@@ -28,10 +28,14 @@ LevelManager::~LevelManager()
 	}
 
 	clearTiles();
+	clearEnemies();
 }
 
-void LevelManager::buildWorld(std::string path)
+void LevelManager::buildLevel(std::string path)
 {
+	clearTiles();
+	clearEnemies();
+	transitions.clear();
 	tileSheet = MediaManager::getInstance()->getSpriteSheet("TILE_SHEET");
 	// dynamically create the number of tiles for this this area
 	// Add all tiles that will be rendered to the screen
@@ -60,6 +64,10 @@ void LevelManager::buildWorld(std::string path)
 		{
 			readState = Enemies;
 		}
+		else if (*it == "TRANSITIONS")
+		{
+			readState = Transitions;
+		}
 		else if (*it == "END")
 		{
 			// Do nothing, we're done reading the file
@@ -86,12 +94,27 @@ void LevelManager::buildWorld(std::string path)
 					break;
 				}
 				case Enemies:
-				{
 					spawnEnemy(it);
-				}
+				case Transitions:
+					createTransition(it);
 			}
 		}
 	}
+}
+
+void LevelManager::createTransition(std::vector<std::string>::iterator it)
+{
+	Transition t;
+	std::string name = *it++;
+	t.transitionLevelName = *it++;
+	t.transitionTileName = *it++;
+	int xVal = std::stoi(*it++);
+	int yVal = std::stoi(*it);
+	t.collider.minX = xVal - 32;
+	t.collider.minY = yVal - 32;
+	t.collider.maxX = xVal + 32;
+	t.collider.maxY = yVal + 32;
+	transitions.insert(std::pair<std::string, Transition>(name, t));
 }
 
 // Build the tile based and add it to the list of current tiles
@@ -136,27 +159,28 @@ void LevelManager::setCameraPosition(GLfloat offsetX, GLfloat offsetY)
 	camera.offsetY = offsetY / 1.75f;
 }
 
-void LevelManager::executeCommand(Command* command)
+
+void LevelManager::transitionToLevel(std::string transitionLevelName, std::string transitionTileName, Collider::CollisionDirection direction, GLfloat previousY)
 {
-	command->execute(player);
+	buildLevel("Levels/" + transitionLevelName + ".lvl");
+	Transition t = transitions.at(transitionTileName);
+	GLfloat newYPosition = t.collider.minY + (player.PositionY() - previousY);
+	
+	if (direction == Collider::LEFT)
+	{
+		printf("LEFT\n");
+		player.setPosition(t.collider.maxX + 40, newYPosition);
+	}
+	else
+	{
+		printf("RIGHT\n");
+		player.setPosition(t.collider.minX - 40, newYPosition);
+	}
+
 }
 
-std::vector<Collider*>* LevelManager::getPlatforms()
+void LevelManager::updateEnemies(int time)
 {
-	return &platforms;
-}
-
-std::vector<Enemy*>* LevelManager::getEnemies()
-{
-	return &enemies;
-}
-
-// Update loop. Check collisions and stuff
-void LevelManager::update(int time)
-{
-	//checkPlayerCollisions();
-	player.update(time);
-
 	for (auto it = enemies.begin(); it != enemies.end();)
 	{
 		Enemy* e = *it;
@@ -174,6 +198,45 @@ void LevelManager::update(int time)
 
 	}
 }
+
+// Check if the player has collided with any of the transitions, if so transition them to that new 
+// level/room
+void LevelManager::checkTransitions()
+{
+	std::string transitionLevelName = "";
+	std::string transitionTileName = "";
+	Collider::CollisionDirection direction = Collider::CollisionDirection::NO_COLLISION;
+	bool beginTransition = false;
+	int previousY = 0;
+
+	for (auto it = transitions.begin(); it != transitions.end(); it++)
+	{
+		Collider::CollisionDirection currentDirection = player.getCollider().collision(it->second.collider);
+		if (currentDirection != Collider::NO_COLLISION)
+		{
+			beginTransition = true;
+			direction = currentDirection;
+			previousY = it->second.collider.minY;
+			transitionLevelName = it->second.transitionLevelName;
+			transitionTileName = it->second.transitionTileName;
+		}
+	}
+
+	if (beginTransition)
+	{
+		transitionToLevel(transitionLevelName, transitionTileName, direction, previousY);
+	}
+}
+
+// Update loop. Check collisions and stuff
+void LevelManager::update(int time)
+{
+	//checkPlayerCollisions();
+	player.update(time);
+	updateEnemies(time);
+	// updateTransitions(time);
+}
+
 
 // Render all the tiles in the tileset
 void LevelManager::renderTileset()
@@ -196,7 +259,6 @@ void LevelManager::renderTileset()
 	}
 }
 
-
 void LevelManager::render()
 {
 	camera.render();
@@ -210,10 +272,42 @@ void LevelManager::render()
 	renderTileset();
 }
 
+void LevelManager::executeCommand(Command* command)
+{
+	command->execute(player);
+}
+
+std::vector<Collider*>* LevelManager::getPlatforms()
+{
+	return &platforms;
+}
+
+std::vector<Enemy*>* LevelManager::getEnemies()
+{
+	return &enemies;
+}
+
 // Clear the tileset to give room for loading different levels
 void LevelManager::clearTiles()
 {
 	delete[] tileset;
 	numTilesX = 0;
 	numTilesY = 0;
+
+	for (auto it = platforms.begin(); it != platforms.end(); ++it)
+	{
+		delete (*it);
+	}
+
+	platforms.clear();
+}
+
+void LevelManager::clearEnemies()
+{
+	for (auto it = enemies.begin(); it != enemies.end(); ++it)
+	{
+		delete(*it);
+	}
+
+	enemies.clear();
 }

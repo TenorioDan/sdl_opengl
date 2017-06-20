@@ -100,6 +100,7 @@ void Character::checkCollisions()
 	}
 
 	LevelManager* levelManager = LevelManager::getInstance();
+	levelManager->checkTransitions();
 
 	for (auto p : *levelManager->getPlatforms())
 	{
@@ -214,6 +215,14 @@ void Character::stopAiming()
 {
 	aiming = false;
 	canMoveHorizontal = true;
+}
+
+void Character::setPosition(int x, int y)
+{
+	positionX = x;
+	positionY = y;
+	adjustCollider();
+	adjustCollider();
 }
 
 // For debugging

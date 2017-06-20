@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include "Enemy.h"
 #include "Camera.h"
 #include "Character.h"
@@ -16,10 +17,12 @@ public:
 
 	void render();
 	void update(int time);
-	
+	void checkTransitions();
+
 	void setCameraPosition(GLfloat offsetX, GLfloat offsetY);
 	void executeCommand(Command* command);
-	void buildWorld(std::string path);
+	void buildLevel(std::string path);
+	void transitionToLevel(std::string transitionLevelName, std::string transitionTileName, Collider::CollisionDirection direction, GLfloat previousY);
 	std::vector<Enemy*>* getEnemies();
 	std::vector<Collider*>* getPlatforms();
 
@@ -38,6 +41,7 @@ private:
 		Tiles
 		, Colliders
 		, Enemies
+		, Transitions
 	};
 
 	struct Tile
@@ -45,6 +49,13 @@ private:
 		unsigned int spriteIndex;
 		GLfloat positionX;
 		GLfloat positionY;
+	};
+
+	struct Transition
+	{
+		std::string transitionLevelName;
+		std::string transitionTileName;
+		Collider collider;
 	};
 
 	const GLfloat tileWidth = 64.f;
@@ -58,12 +69,19 @@ private:
 	SpriteSheet* tileSheet;
 	Tile** tileset;
 	std::vector<Collider*> platforms;
+	std::map<std::string, Transition> transitions;
+
+	// Private updates
+	void updateEnemies(int time);
+	
 
 	void clearTiles();
+	void clearEnemies();
 	//void createColliders(std::string path);
 	void createTile(int row, int column, int tileType);
 	void createCollider(int minX, int minY, int maxX, int maxY);
 	void spawnEnemy(std::vector<std::string>::iterator it);
+	void createTransition(std::vector<std::string>::iterator it);
 	void renderTileset();
 	
 };

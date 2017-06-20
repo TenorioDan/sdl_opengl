@@ -26,6 +26,7 @@ public:
 	void releaseVerticalAimDirection();
 	void reduceHorizontalMovement();
 	void setMoveSpeed(int newSpeed);
+	void setPosition(int x, int y);
 	void resetPosition();
 	void jump();
 	void resetJump();
