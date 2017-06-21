@@ -121,7 +121,10 @@ class TileEditor(tk.Tk):
         self.enemy_properties_frame = None
         self.transition_tile_properties_frame = None
         self.current_object_to_modify_properties = None
-        self.current_level_name = max(iglob('{}/*.lvl'.format(LEVEL_DIRECTORY)), key=getmtime).replace(LEVEL_DIRECTORY, '').replace('lvl', '')
+        # TODO: fix up this fucked up string building
+        self.current_level_name = max(iglob('{}/*.lvl'.format(LEVEL_DIRECTORY)), key=getmtime).replace(LEVEL_DIRECTORY,
+                                                                                                       '').replace(
+            '.lvl', '').replace('\\', '')
         print(self.current_level_name)
 
         self.mode = tk.StringVar()
