@@ -53,8 +53,8 @@ class TransitionTile(GameObject):
         self.position_x = position_x
         self.position_y = position_y
         self.canvas_rect = canvas_rect
-        self.level_to_transition_to = ""
         self.name = "CHANGE_NAME"
-        self.transition_tile_name = "CHANGE_NAME"
+        self.transition_level = ""
+        self.transition_tile = ""
         self._editable_properties = ["name", "level_to_transition_to", "transition_to_name"]
         self._editable_properties = {"name": str, "level_to_transition_to": str}

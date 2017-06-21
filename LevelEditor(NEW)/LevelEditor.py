@@ -1,5 +1,6 @@
 from os import listdir
-from os.path import isfile, join
+from glob import iglob
+from os.path import isfile, join, getmtime
 import Tkinter as tk
 from tkMessageBox import *
 from EditorGraphics import SpriteSheet, Tile, Collider
@@ -120,7 +121,8 @@ class TileEditor(tk.Tk):
         self.enemy_properties_frame = None
         self.transition_tile_properties_frame = None
         self.current_object_to_modify_properties = None
-        self.current_level_name = "last_level_created"
+        self.current_level_name = max(iglob('{}/*.lvl'.format(LEVEL_DIRECTORY)), key=getmtime).replace(LEVEL_DIRECTORY, '').replace('lvl', '')
+        print(self.current_level_name)
 
         self.mode = tk.StringVar()
         self.mode.trace("w", self.change_mode)
@@ -384,7 +386,8 @@ class TileEditor(tk.Tk):
             transition = TransitionTile(tile.column * 64, tile.row * 64,
                                         self.tile_canvas.create_rectangle(x, y, x + TransitionTile.width,
                                                                           y + TransitionTile.height, fill='blue'))
-            transition.level_to_transition_to = self.transition_level_stringvar.get()
+            transition.transition_level = self.transition_level_stringvar.get()
+            transition.transition_tile = self.transition_tile_stringvar.get()
             self.transition_tiles.append(transition)
 
     # takes a mouse click event and adds a tile to the space clicked on
@@ -424,8 +427,8 @@ class TileEditor(tk.Tk):
         canvas = event.widget
 
         # calculate the x/y position of the tile that the sprite will be drawn on.
-        row_index = int(canvas.canvasy(event.y) / (self.tile_spritesheet.tile_height + GRID_LINE_WIDTH))
-        column_index = int(canvas.canvasx(event.x) / (self.tile_spritesheet.tile_width + GRID_LINE_WIDTH))
+        row_index = int(canvas.canvasy(event.y) // (self.tile_spritesheet.tile_height + GRID_LINE_WIDTH))
+        column_index = int(canvas.canvasx(event.x) // (self.tile_spritesheet.tile_width + GRID_LINE_WIDTH))
 
         if row_index < self.tiles_row_count and column_index < self.tiles_column_count:
             return self.editor_tiles[row_index][column_index]
@@ -595,7 +598,7 @@ class TileEditor(tk.Tk):
         if self.grid_created:
             new_level_file = open("../Checkers/Checkers/Levels/{0}.lvl".format(level_name), 'w')
             last_level_created = open("../Checkers/Checkers/Levels/last_level_created.lvl", 'w')
-            level_files = [new_level_file, last_level_created]
+            level_files = [last_level_created, new_level_file]
 
             for level_file in level_files:
                 if level_name not in (None, ""):
@@ -629,8 +632,7 @@ class TileEditor(tk.Tk):
 
                     for t in self.transition_tiles:
                         level_file.write(
-                            "{0} {1} {2} {3} {4}\n".format(t.name, t.level_to_transition_to, t.transition_tile_name,
-                                                           t.position_x,
+                            "{0} {1} {2} {3} {4}\n".format(t.name, t.transition_level, t.transition_tile, t.position_x,
                                                            t.position_y))
 
                     level_file.write("END")
@@ -641,11 +643,13 @@ class TileEditor(tk.Tk):
             showerror("You Fucked up", "Generate a level grid")
 
     def import_level(self):
+
         level = self.level_to_load_stringvar.get()
         self.current_level_name = level
         self.title(level)
         self.level_to_load_stringvar.set(level)
         self.transition_tiles = []
+        self.enemies = []
         self.tile_canvas.delete("all")
 
         with open("{0}/{1}.lvl".format(LEVEL_DIRECTORY, level), 'r') as level_file:
@@ -665,7 +669,7 @@ class TileEditor(tk.Tk):
                     mode = "ENEMIES"
                 elif properties[0] == "END":
                     pass
-                elif mode[0] == "TRANSITIONS":
+                elif properties[0] == "TRANSITIONS":
                     mode = "TRANSITIONS"
                 else:
                     if mode == "TILES":
@@ -677,18 +681,48 @@ class TileEditor(tk.Tk):
                             self.editor_current_tile_type = tile_type
                             self.editor_current_image = self.tiles[tile_type - 1]
                             self.add_tile(tile)
-
                     elif mode == "COLLIDERS":
                         self.colliders.append(
                             Collider(int(properties[0]), int(properties[1]), int(properties[2]), int(properties[3])))
                     elif mode == "ENEMIES":
-                        pass
-                    elif mode == "TRANSITIONS":
-                        pass
+                        enemy_type = int(properties[0])
 
-        # Destroy the load level dialog
-        if self.current_top_level:
-            self.current_top_level.destroy()
+                        if enemy_type == 1:
+                            collider_index = int(properties[1])
+                            position_x = int(properties[2])
+                            position_y = int(properties[3])
+                            velocity_x = int(properties[4])
+                            velocity_y = int(properties[5])
+
+                            self.enemies.append(StarMonster(position_x, position_y, velocity_x, velocity_y,
+                                                            self.tile_canvas.create_image(position_x,
+                                                                                          position_y,
+                                                                                          image=self.enemy_sprites[
+                                                                                              enemy_type - 1],
+                                                                                          anchor=tk.CENTER),
+                                                            collider_index))
+
+                    elif mode == "TRANSITIONS":
+                        transition_level = properties[1]
+                        transition_tile = properties[2]
+                        self.transition_tile_stringvar.set(properties[2])
+                        position_x = int(properties[3])
+                        position_y = int(properties[4])
+                        offset_x = position_x / self.tile_spritesheet.tile_width
+                        offset_y = position_y / self.tile_spritesheet.tile_height
+                        transition = TransitionTile(position_x, position_y,
+                                                    self.tile_canvas.create_rectangle(position_x + offset_x,
+                                                                                      position_y + offset_y,
+                                                                                      position_x + TransitionTile.width + offset_x,
+                                                                                      position_y + TransitionTile.height + offset_y,
+                                                                                      fill="blue"))
+                        transition.transition_level = transition_level
+                        transition.transition_tile = transition_tile
+                        self.transition_tiles.append(transition)
+
+                    # Destroy the load level dialog
+                    if self.current_top_level:
+                        self.current_top_level.destroy()
 
     def save_as(self):
         dialog = Dialog(self, "Level Name", "Save")
