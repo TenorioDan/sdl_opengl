@@ -52,9 +52,8 @@ void LevelManager::buildLevel(std::string path)
 		if (*it == "TILES")
 		{
 			readState = Tiles;
-			numTilesX = std::stoi(*++it);
-			numTilesY = std::stoi(*++it);
-			tileset = new Tile*[numTilesX * numTilesY];
+			tileCount = std::stoi(*++it);
+			tileset = new Tile*[tileCount];
 		}
 		else if (*it == "COLLIDERS")
 		{
@@ -118,14 +117,13 @@ void LevelManager::createTransition(std::vector<std::string>::iterator it)
 }
 
 // Build the tile based and add it to the list of current tiles
-void LevelManager::createTile(int row, int column, int tileType)
+void LevelManager::createTile(int positionX, int positionY, int tileType)
 {
 	Tile* t = new Tile();
-	t->spriteIndex = tileType;
-	t->positionX = column * tileWidth;
-	t->positionY = row * tileHeight;
-
-	tileset[row*numTilesY + column] = t;
+	t->spriteIndex = tileType - 1;
+	t->positionX = positionX;
+	t->positionY = positionY;
+	tileset[currentTile++] = t;
 }
 
 
@@ -241,20 +239,17 @@ void LevelManager::update(int time)
 // Render all the tiles in the tileset
 void LevelManager::renderTileset()
 {
-	for (int y = 0; y < numTilesY; ++y)
+	for (int i = 0; i < tileCount; ++i)
 	{
-		for (int x = 0; x < numTilesX; ++x)
-		{
-			Tile t = *tileset[x * numTilesY + y];
+		Tile t = *tileset[i];
 
-			if (t.spriteIndex > 0)
-			{
-				// Move to the spot to render and then move back to render the next texture 
-				// in the correct spot
-				glTranslatef(t.positionX, t.positionY, 0.f);
-				tileSheet->renderSprite(t.spriteIndex - 1);
-				glTranslatef(-t.positionX, -t.positionY, 0.f);
-			}
+		if (t.spriteIndex > 0)
+		{
+			// Move to the spot to render and then move back to render the next texture 
+			// in the correct spot
+			glTranslatef(t.positionY, t.positionX, 0.f);
+			tileSheet->renderSprite(t.spriteIndex);
+			glTranslatef(-t.positionY, -t.positionX, 0.f);
 		}
 	}
 }
@@ -291,8 +286,8 @@ std::vector<Enemy*>* LevelManager::getEnemies()
 void LevelManager::clearTiles()
 {
 	delete[] tileset;
-	numTilesX = 0;
-	numTilesY = 0;
+	tileCount = 0;
+	currentTile = 0;
 
 	for (auto it = platforms.begin(); it != platforms.end(); ++it)
 	{

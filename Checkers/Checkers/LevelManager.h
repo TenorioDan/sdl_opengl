@@ -61,8 +61,8 @@ private:
 	const GLfloat tileWidth = 64.f;
 	const GLfloat tileHeight = 64.f;
 
-	GLint numTilesX;
-	GLint numTilesY;
+	GLint tileCount;
+	GLint currentTile = 0;
 	GLfloat tileSpriteOffeset = 10;
 	ReadState readState;
 

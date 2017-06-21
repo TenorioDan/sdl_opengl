@@ -125,7 +125,6 @@ class TileEditor(tk.Tk):
         self.current_level_name = max(iglob('{}/*.lvl'.format(LEVEL_DIRECTORY)), key=getmtime).replace(LEVEL_DIRECTORY,
                                                                                                        '').replace(
             '.lvl', '').replace('\\', '')
-        print(self.current_level_name)
 
         self.mode = tk.StringVar()
         self.mode.trace("w", self.change_mode)
@@ -605,17 +604,25 @@ class TileEditor(tk.Tk):
 
             for level_file in level_files:
                 if level_name not in (None, ""):
+                    tile_count = 0
+                    for row in range(self.tiles_row_count):
+                        for column in range(self.tiles_column_count):
+                            current_tile = self.editor_tiles[row][column]
+                            if current_tile.tile_type <> 0:
+                                tile_count += 1
                     # Insert the tiles and the number of tiles for the game to read and process
-                    level_file.write("TILES {} {}\n".format(self.tiles_row_count, self.tiles_column_count))
+                    level_file.write("TILES {}\n".format(tile_count))
 
                     for row in range(self.tiles_row_count):
                         for column in range(self.tiles_column_count):
                             current_tile = self.editor_tiles[row][column]
-
-                            # Set all the properties in the tile element from the tile object
-                            level_file.write("{} {} {} {} {}\n".format(row, column, str(current_tile.tile_type),
-                                                                       str(current_tile.is_destructible),
-                                                                       str(current_tile.is_false_tile)))
+                            if current_tile.tile_type <> 0:
+                                # Set all the properties in the tile element from the tile object
+                                level_file.write("{} {} {} {} {}\n".format(row * self.tile_spritesheet.tile_width,
+                                                                           column * self.tile_spritesheet.tile_height,
+                                                                           str(current_tile.tile_type),
+                                                                           str(current_tile.is_destructible),
+                                                                           str(current_tile.is_false_tile)))
 
                     # Generate the colliders and place in the level file
                     self.generate_colliders()
@@ -646,7 +653,6 @@ class TileEditor(tk.Tk):
             showerror("You Fucked up", "Generate a level grid")
 
     def import_level(self):
-
         level = self.level_to_load_stringvar.get()
         self.current_level_name = level
         self.title(level)
@@ -662,8 +668,8 @@ class TileEditor(tk.Tk):
 
                 if properties[0] == "TILES":
                     mode = "TILES"
-                    self.tiles_row_count = int(properties[1])
-                    self.tiles_column_count = int(properties[2])
+                    self.tiles_row_count = int(properties[2])
+                    self.tiles_column_count = int(properties[3])
                     self.draw_lines(self.tiles_row_count, self.tiles_column_count)
                     self.generate_tiles(self.tiles_row_count, self.tiles_column_count)
                 elif properties[0] == "COLLIDERS":
@@ -678,8 +684,8 @@ class TileEditor(tk.Tk):
                     if mode == "TILES":
                         tile_type = int(properties[2])
                         if tile_type > 0:
-                            row = int(properties[0])
-                            column = int(properties[1])
+                            row = int(properties[0]) // self.tile_spritesheet.tile_width
+                            column = int(properties[1]) // self.tile_spritesheet.tile_height
                             tile = self.editor_tiles[row][column]
                             self.editor_current_tile_type = tile_type
                             self.editor_current_image = self.tiles[tile_type - 1]
