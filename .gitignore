@@ -26,6 +26,9 @@
 *.lib
 
 !SDL2-devel-2.0.5-VC/SDL2-2.0.5/lib/x86/*
+!SDL2_image-devel-2.0.1-VC/SDL2_image-2.0.1/lib/x86/*
+!glew-2.0.0/lib/Release/Win32/*
+!DevIL\ Windows\ SDK/lib/x86/Release/*
 
 # Executables
 *.exe
