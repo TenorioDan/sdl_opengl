@@ -5,7 +5,10 @@
 #include "LevelManager.h"
 #include "MediaManager.h"
 
-LevelManager::LevelManager() { }
+LevelManager::LevelManager() 
+{ 
+	transitionOffset = 40;
+}
 
 LevelManager* LevelManager::instance;
 
@@ -76,22 +79,11 @@ void LevelManager::buildLevel(std::string path)
 			switch (readState)
 			{
 				case Tiles:
-				{
-					int row = std::stoi(*it++);
-					int column = std::stoi(*it++);
-					int tileType = std::stoi(*it);
-					createTile(row, column, tileType);
+					createTile(it);
 					break;
-				}
 				case Colliders:
-				{
-					int minX = std::stoi(*it++);
-					int minY = std::stoi(*it++);
-					int maxX = std::stoi(*it++);
-					int maxY = std::stoi(*it);
-					createCollider(minX, minY, maxX, maxY);
+					createCollider(it);
 					break;
-				}
 				case Enemies:
 					spawnEnemy(it);
 				case Transitions:
@@ -109,31 +101,32 @@ void LevelManager::createTransition(std::vector<std::string>::iterator it)
 	t.transitionTileName = *it++;
 	int xVal = std::stoi(*it++);
 	int yVal = std::stoi(*it);
-	t.collider.minX = xVal - 32;
-	t.collider.minY = yVal - 32;
-	t.collider.maxX = xVal + 32;
-	t.collider.maxY = yVal + 32;
+	t.collider.minX = xVal - tileWidth / 2;
+	t.collider.minY = yVal - tileHeight / 2;
+	t.collider.maxX = xVal + tileWidth / 2;
+	t.collider.maxY = yVal + tileHeight / 2;
 	transitions.insert(std::pair<std::string, Transition>(name, t));
 }
 
 // Build the tile based and add it to the list of current tiles
-void LevelManager::createTile(int positionX, int positionY, int tileType)
+void LevelManager::createTile(std::vector<std::string>::iterator it)
 {
 	Tile* t = new Tile();
-	t->spriteIndex = tileType - 1;
-	t->positionX = positionX;
-	t->positionY = positionY;
+	
+	t->positionX = std::stoi(*it++);
+	t->positionY = std::stoi(*it++);
+	t->spriteIndex = std::stoi(*it++) - 1;
 	tileset[currentTile++] = t;
 }
 
 
-void LevelManager::createCollider(int minX, int minY, int maxX, int maxY)
+void LevelManager::createCollider(std::vector<std::string>::iterator it)
 {
 	Collider* c = new Collider();
-	c->minX = minX - (tileWidth / 2.f);
-	c->minY = minY - (tileWidth / 2.f);
-	c->maxX = maxX - (tileWidth / 2.f);
-	c->maxY = maxY - (tileWidth / 2.f);
+	c->minX = std::stoi(*it++) - (tileWidth / 2.f);
+	c->minY = std::stoi(*it++) - (tileWidth / 2.f);
+	c->maxX = std::stoi(*it++) - (tileWidth / 2.f);
+	c->maxY = std::stoi(*it++) - (tileWidth / 2.f);
 	platforms.push_back(c);
 }
 
@@ -167,12 +160,12 @@ void LevelManager::transitionToLevel(std::string transitionLevelName, std::strin
 	if (direction == Collider::LEFT)
 	{
 		printf("LEFT\n");
-		player.setPosition(t.collider.maxX + 40, newYPosition);
+		player.setPosition(t.collider.maxX + transitionOffset, newYPosition);
 	}
 	else
 	{
 		printf("RIGHT\n");
-		player.setPosition(t.collider.minX - 40, newYPosition);
+		player.setPosition(t.collider.minX - transitionOffset, newYPosition);
 	}
 
 }
@@ -241,16 +234,12 @@ void LevelManager::renderTileset()
 {
 	for (int i = 0; i < tileCount; ++i)
 	{
+		// Move to the spot to render and then move back to render the next texture 
+		// in the correct spot 
 		Tile t = *tileset[i];
-
-		if (t.spriteIndex > 0)
-		{
-			// Move to the spot to render and then move back to render the next texture 
-			// in the correct spot
-			glTranslatef(t.positionY, t.positionX, 0.f);
-			tileSheet->renderSprite(t.spriteIndex);
-			glTranslatef(-t.positionY, -t.positionX, 0.f);
-		}
+		glTranslatef(t.positionY, t.positionX, 0.f);
+		tileSheet->renderSprite(t.spriteIndex);
+		glTranslatef(-t.positionY, -t.positionX, 0.f);
 	}
 }
 

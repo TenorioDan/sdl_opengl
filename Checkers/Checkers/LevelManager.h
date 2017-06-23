@@ -63,6 +63,7 @@ private:
 
 	GLint tileCount;
 	GLint currentTile = 0;
+	GLfloat transitionOffset;
 	GLfloat tileSpriteOffeset = 10;
 	ReadState readState;
 
@@ -78,8 +79,8 @@ private:
 	void clearTiles();
 	void clearEnemies();
 	//void createColliders(std::string path);
-	void createTile(int row, int column, int tileType);
-	void createCollider(int minX, int minY, int maxX, int maxY);
+	void createTile(std::vector<std::string>::iterator it);
+	void createCollider(std::vector<std::string>::iterator it);
 	void spawnEnemy(std::vector<std::string>::iterator it);
 	void createTransition(std::vector<std::string>::iterator it);
 	void renderTileset();
