@@ -27,7 +27,7 @@ bool Game::initGL()
 	}
 
 	// Set the viewport
-	glViewport(0.f, 0.f, SCREEN_WIDTH, SCREEN_HEIGHT);
+	glViewport(0.f, 0.f, WINDOW_WIDTH, WINDOW_HEIGHT);
 
 	// Initalize projection matrix and check for errors
 	glMatrixMode(GL_PROJECTION);
@@ -103,7 +103,7 @@ bool Game::init()
 		}
 
 		// Create window
-		gWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+		gWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 
 		if (gWindow == NULL)
 		{

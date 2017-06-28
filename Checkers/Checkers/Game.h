@@ -37,6 +37,8 @@ private:
 	//Screen dimension constants
 	int SCREEN_WIDTH = 1280;
 	int SCREEN_HEIGHT = 720;
+	int WINDOW_WIDTH = 2560;
+	int WINDOW_HEIGHT = 1440;
 	int SCREEN_FPS = 60;
 	//The window we'll be rendering to
 	SDL_Window* gWindow = NULL;

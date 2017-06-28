@@ -327,8 +327,8 @@ class TileEditor(tk.Tk):
             if tile.canvas_image:
                 self.tile_canvas.delete(tile.canvas_image)
 
-            y = (tile.row * (self.tile_spritesheet.tile_width + 1)) + 1
-            x = (tile.column * (self.tile_spritesheet.tile_height + 1)) + 1
+            y = (tile.row * (self.tile_spritesheet.tile_width + GRID_LINE_WIDTH)) + GRID_LINE_WIDTH
+            x = (tile.column * (self.tile_spritesheet.tile_height + GRID_LINE_WIDTH)) + GRID_LINE_WIDTH
 
             canvas_image = self.tile_canvas.create_image(x, y, image=self.editor_current_image, anchor=tk.NW)
             # TODO: Fix offset issue with the tile types
@@ -383,8 +383,8 @@ class TileEditor(tk.Tk):
 
     def add_transition_tile(self, tile):
         if tile:
-            y = (tile.row * (self.tile_spritesheet.tile_width + 1)) + 1
-            x = (tile.column * (self.tile_spritesheet.tile_height + 1)) + 1
+            y = (tile.row * (self.tile_spritesheet.tile_width + GRID_LINE_WIDTH)) + GRID_LINE_WIDTH
+            x = (tile.column * (self.tile_spritesheet.tile_height + GRID_LINE_WIDTH)) + GRID_LINE_WIDTH
             transition = TransitionTile(tile.column * 64, tile.row * 64,
                                         self.tile_canvas.create_rectangle(x, y, x + TransitionTile.width,
                                                                           y + TransitionTile.height, fill='blue'))
@@ -438,7 +438,7 @@ class TileEditor(tk.Tk):
             return None
 
     def get_offset(self, x, y):
-        return int(x / self.tile_spritesheet.tile_width) + 1, int(y / self.tile_spritesheet.tile_height) + 1
+        return int(x / self.tile_spritesheet.tile_width) + GRID_LINE_WIDTH, int(y / self.tile_spritesheet.tile_height) + GRID_LINE_WIDTH
 
     def get_position_clicked(self, event):
         canvas = event.widget
@@ -611,7 +611,7 @@ class TileEditor(tk.Tk):
                             if current_tile.tile_type <> 0:
                                 tile_count += 1
                     # Insert the tiles and the number of tiles for the game to read and process
-                    level_file.write("TILES {}\n".format(tile_count))
+                    level_file.write("TILES {} {} {}\n".format(tile_count, self.tiles_row_count, self.tiles_column_count))
 
                     for row in range(self.tiles_row_count):
                         for column in range(self.tiles_column_count):

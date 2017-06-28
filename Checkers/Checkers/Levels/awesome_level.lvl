@@ -1,4 +1,4 @@
-TILES 202
+TILES 202 40 40
 384 576 12 False False
 384 640 12 False False
 384 704 12 False False
@@ -141,7 +141,7 @@ TILES 202
 1344 768 12 False False
 1344 832 5 False False
 1344 1152 9 False False
-1344 1216 6 False False
+1344 1216 12 False False
 1344 1280 12 False False
 1344 1344 5 False False
 1344 2304 12 False False
@@ -154,7 +154,7 @@ TILES 202
 1408 960 4 False False
 1408 1024 4 False False
 1408 1088 4 False False
-1408 1152 4 False False
+1408 1152 12 False False
 1408 1216 12 False False
 1408 1280 12 False False
 1408 1344 12 False False

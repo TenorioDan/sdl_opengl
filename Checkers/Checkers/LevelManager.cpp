@@ -222,10 +222,8 @@ void LevelManager::checkTransitions()
 // Update loop. Check collisions and stuff
 void LevelManager::update(int time)
 {
-	//checkPlayerCollisions();
 	player.update(time);
 	updateEnemies(time);
-	// updateTransitions(time);
 }
 
 
