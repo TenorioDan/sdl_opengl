@@ -1,49 +1,13 @@
-from os import listdir
 from glob import iglob
-from os.path import isfile, join, getmtime
+from os.path import getmtime
 import Tkinter as tk
 from tkMessageBox import *
 from EditorGraphics import SpriteSheet, Tile, Collider
 from GameObjects import StarMonster, TransitionTile
+from EditorHelpers import LEVEL_DIRECTORY, get_available_levels, TileLabel, Dialog, TILE_WIDTH, TILE_HEIGHT, \
+    GRID_LINE_WIDTH
 
-GRID_LINE_WIDTH = 1
-LEVEL_DIRECTORY = "../Checkers/Checkers/Levels"
 MODES = ["TILE_PLACEMENT", "ENEMY_PLACEMENT"]
-
-
-def get_available_levels():
-    return [f.replace(".lvl", "") for f in listdir(LEVEL_DIRECTORY) if isfile(join(LEVEL_DIRECTORY, f))]
-
-
-class TileLabel(tk.Label, object):
-    def __init__(self, tile_type, *args, **kwargs):
-        super(TileLabel, self).__init__(*args, **kwargs)
-        self.tile_type = tile_type
-        self.image = kwargs.pop('image')
-
-
-class Dialog:
-    def __init__(self, parent, dialog_text, button_text):
-        self.parent = parent
-        top = self.top = tk.Toplevel(parent)
-
-        tk.Label(top, text=dialog_text).pack()
-
-        self.entry = tk.Entry(top)
-        self.entry.pack(padx=5)
-
-        b = tk.Button(top, text=button_text, command=self.save)
-        b.pack(pady=5)
-
-    def save(self):
-        val = self.entry.get()
-
-        if val == "":
-            showerror("You Fucked Up", "Enter a level name")
-        else:
-            self.parent.current_level_name = val
-            self.parent.export_level(val)
-            self.top.destroy()
 
 
 # Taken from http://stackoverflow.com/questions/16188420/python-tkinter-scrollbar-for-frame
@@ -327,8 +291,8 @@ class TileEditor(tk.Tk):
             if tile.canvas_image:
                 self.tile_canvas.delete(tile.canvas_image)
 
-            y = (tile.row * (self.tile_spritesheet.tile_width + GRID_LINE_WIDTH)) + GRID_LINE_WIDTH
-            x = (tile.column * (self.tile_spritesheet.tile_height + GRID_LINE_WIDTH)) + GRID_LINE_WIDTH
+            y = (tile.row * (TILE_WIDTH + GRID_LINE_WIDTH)) + GRID_LINE_WIDTH
+            x = (tile.column * (TILE_HEIGHT + GRID_LINE_WIDTH)) + GRID_LINE_WIDTH
 
             canvas_image = self.tile_canvas.create_image(x, y, image=self.editor_current_image, anchor=tk.NW)
             # TODO: Fix offset issue with the tile types
@@ -383,8 +347,8 @@ class TileEditor(tk.Tk):
 
     def add_transition_tile(self, tile):
         if tile:
-            y = (tile.row * (self.tile_spritesheet.tile_width + GRID_LINE_WIDTH)) + GRID_LINE_WIDTH
-            x = (tile.column * (self.tile_spritesheet.tile_height + GRID_LINE_WIDTH)) + GRID_LINE_WIDTH
+            y = (tile.row * (TILE_WIDTH + GRID_LINE_WIDTH)) + GRID_LINE_WIDTH
+            x = (tile.column * (TILE_HEIGHT + GRID_LINE_WIDTH)) + GRID_LINE_WIDTH
             transition = TransitionTile(tile.column * 64, tile.row * 64,
                                         self.tile_canvas.create_rectangle(x, y, x + TransitionTile.width,
                                                                           y + TransitionTile.height, fill='blue'))
@@ -415,22 +379,33 @@ class TileEditor(tk.Tk):
 
     # Set the properties view to the first object found at the point clicked
     def view_object_properties_callback(self, event):
+        object_type, canvas_object = self.get_object_clicked(event)
+
+        if canvas_object is None:
+            return
+
+
+
+    def get_object_clicked(self, event):
+        x, y = self.get_position_clicked(event)
+
         for e in self.enemies:
             e_min_x = e.position_x - (e.width / 2)
             e_min_y = e.position_y - (e.height / 2)
             e_max_x = e.position_x + (e.width / 2)
             e_max_y = e.position_y + (e.height / 2)
-            x, y = self.get_position_clicked(event)
 
             if (e_min_x < x < e_max_x) and (e_min_y < y < e_max_y):
-                self.set_properties("ENEMY", e)
+                return "ENEMY", e
+
+        return "TILE", self.get_tile_clicked(event)
 
     def get_tile_clicked(self, event):
         canvas = event.widget
 
         # calculate the x/y position of the tile that the sprite will be drawn on.
-        row_index = int(canvas.canvasy(event.y) // (self.tile_spritesheet.tile_height + GRID_LINE_WIDTH))
-        column_index = int(canvas.canvasx(event.x) // (self.tile_spritesheet.tile_width + GRID_LINE_WIDTH))
+        row_index = int(canvas.canvasy(event.y) // (TILE_HEIGHT + GRID_LINE_WIDTH))
+        column_index = int(canvas.canvasx(event.x) // (TILE_WIDTH + GRID_LINE_WIDTH))
 
         if row_index < self.tiles_row_count and column_index < self.tiles_column_count:
             return self.editor_tiles[row_index][column_index]
@@ -438,7 +413,7 @@ class TileEditor(tk.Tk):
             return None
 
     def get_offset(self, x, y):
-        return int(x / self.tile_spritesheet.tile_width) + GRID_LINE_WIDTH, int(y / self.tile_spritesheet.tile_height) + GRID_LINE_WIDTH
+        return int(x / TILE_WIDTH) + GRID_LINE_WIDTH, int(y / TILE_HEIGHT) + GRID_LINE_WIDTH
 
     def get_position_clicked(self, event):
         canvas = event.widget
@@ -489,14 +464,14 @@ class TileEditor(tk.Tk):
                         if current_collider is not None:
                             self.colliders.append(current_collider)
 
-                        top_left_x = column * self.tile_spritesheet.tile_width
-                        top_left_y = row * self.tile_spritesheet.tile_height
+                        top_left_x = column * TILE_WIDTH
+                        top_left_y = row * TILE_HEIGHT
                         current_collider = Collider(top_left_x, top_left_y,
-                                                    top_left_x + self.tile_spritesheet.tile_width,
-                                                    top_left_y + self.tile_spritesheet.tile_height)
+                                                    top_left_x + TILE_WIDTH,
+                                                    top_left_y + TILE_HEIGHT)
                         last_collider_column = column
                     else:
-                        current_collider.max_x += self.tile_spritesheet.tile_width
+                        current_collider.max_x += TILE_WIDTH
                         last_collider_column = column
 
             if current_collider is not None:
@@ -526,10 +501,10 @@ class TileEditor(tk.Tk):
 
         for i in range(len(self.colliders)):
             c = self.colliders[i]
-            x_min_offset = (int(c.min_x / self.tile_spritesheet.tile_width))
-            x_max_offset = (int(c.max_x / self.tile_spritesheet.tile_width))
-            y_min_offset = (int(c.min_y / self.tile_spritesheet.tile_height))
-            y_max_offset = (int(c.max_y / self.tile_spritesheet.tile_height))
+            x_min_offset = (int(c.min_x / TILE_WIDTH))
+            x_max_offset = (int(c.max_x / TILE_WIDTH))
+            y_min_offset = (int(c.min_y / TILE_HEIGHT))
+            y_max_offset = (int(c.max_y / TILE_HEIGHT))
             c.rect = self.tile_canvas.create_rectangle(c.min_x + x_min_offset, c.min_y + y_min_offset,
                                                        c.max_x + x_max_offset,
                                                        c.max_y + y_max_offset, outline="green")
@@ -545,28 +520,28 @@ class TileEditor(tk.Tk):
     def draw_lines(self, tile_x_count, tile_y_count):
         self.tiles_row_count = tile_x_count
         self.tiles_column_count = tile_y_count
-        self.canvas_width = (self.tile_spritesheet.tile_width + GRID_LINE_WIDTH) * tile_x_count
-        self.canvas_height = (self.tile_spritesheet.tile_height + GRID_LINE_WIDTH) * tile_y_count
+        self.canvas_width = (TILE_WIDTH + GRID_LINE_WIDTH) * tile_x_count
+        self.canvas_height = (TILE_HEIGHT + GRID_LINE_WIDTH) * tile_y_count
 
         for i in range(tile_x_count + 1):
             self.grid_lines.append(
-                self.tile_canvas.create_line((self.tile_spritesheet.tile_width + GRID_LINE_WIDTH) * i, 0,
-                                             (self.tile_spritesheet.tile_width + GRID_LINE_WIDTH) * i,
+                self.tile_canvas.create_line((TILE_WIDTH + GRID_LINE_WIDTH) * i, 0,
+                                             (TILE_WIDTH + GRID_LINE_WIDTH) * i,
                                              self.canvas_height,
                                              fill="white"))
 
         for i in range(tile_y_count + 1):
             self.grid_lines.append(
-                self.tile_canvas.create_line(0, (self.tile_spritesheet.tile_height + GRID_LINE_WIDTH) * i,
+                self.tile_canvas.create_line(0, (TILE_HEIGHT + GRID_LINE_WIDTH) * i,
                                              self.canvas_width,
-                                             (self.tile_spritesheet.tile_height + GRID_LINE_WIDTH) * i,
+                                             (TILE_HEIGHT + GRID_LINE_WIDTH) * i,
                                              fill="white"))
 
         # Now that the grid has been created, the scroll area can be set to accommodate the number of tiles in the
         # editor
         self.tile_canvas.config(scrollregion=(
-            0, 0, (self.tile_spritesheet.tile_width + GRID_LINE_WIDTH) * tile_x_count,
-            (self.tile_spritesheet.tile_height + GRID_LINE_WIDTH) * tile_y_count))
+            0, 0, (TILE_WIDTH + GRID_LINE_WIDTH) * tile_x_count,
+            (TILE_HEIGHT + GRID_LINE_WIDTH) * tile_y_count))
 
     # Load the images from the sprite sheet into the editor
     def load_spritesheet(self, file_name):
@@ -611,15 +586,16 @@ class TileEditor(tk.Tk):
                             if current_tile.tile_type <> 0:
                                 tile_count += 1
                     # Insert the tiles and the number of tiles for the game to read and process
-                    level_file.write("TILES {} {} {}\n".format(tile_count, self.tiles_row_count, self.tiles_column_count))
+                    level_file.write(
+                        "TILES {} {} {}\n".format(tile_count, self.tiles_row_count, self.tiles_column_count))
 
                     for row in range(self.tiles_row_count):
                         for column in range(self.tiles_column_count):
                             current_tile = self.editor_tiles[row][column]
                             if current_tile.tile_type <> 0:
                                 # Set all the properties in the tile element from the tile object
-                                level_file.write("{} {} {} {} {}\n".format(row * self.tile_spritesheet.tile_width,
-                                                                           column * self.tile_spritesheet.tile_height,
+                                level_file.write("{} {} {} {} {}\n".format(row * TILE_WIDTH,
+                                                                           column * TILE_HEIGHT,
                                                                            str(current_tile.tile_type),
                                                                            str(current_tile.is_destructible),
                                                                            str(current_tile.is_false_tile)))
@@ -684,8 +660,8 @@ class TileEditor(tk.Tk):
                     if mode == "TILES":
                         tile_type = int(properties[2])
                         if tile_type > 0:
-                            row = int(properties[0]) // self.tile_spritesheet.tile_width
-                            column = int(properties[1]) // self.tile_spritesheet.tile_height
+                            row = int(properties[0]) // TILE_WIDTH
+                            column = int(properties[1]) // TILE_HEIGHT
                             tile = self.editor_tiles[row][column]
                             self.editor_current_tile_type = tile_type
                             self.editor_current_image = self.tiles[tile_type - 1]
@@ -717,8 +693,8 @@ class TileEditor(tk.Tk):
                         self.transition_tile_stringvar.set(properties[2])
                         position_x = int(properties[3])
                         position_y = int(properties[4])
-                        offset_x = position_x / self.tile_spritesheet.tile_width
-                        offset_y = position_y / self.tile_spritesheet.tile_height
+                        offset_x = position_x / TILE_WIDTH
+                        offset_y = position_y / TILE_HEIGHT
                         transition = TransitionTile(position_x, position_y,
                                                     self.tile_canvas.create_rectangle(position_x + offset_x,
                                                                                       position_y + offset_y,
