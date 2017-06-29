@@ -32,7 +32,7 @@ bool Game::initGL()
 	// Initalize projection matrix and check for errors
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0.f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.f, 1.f, -1.f);
+	glOrtho(0.f, RESOLUTION_WIDTH, RESOLUTION_HEIGHT, 0.f, 1.f, -1.f);
 	checkGL_Error(glGetError(), success);
 
 	// Initialize Modelview Matrix and check for errors
@@ -103,36 +103,51 @@ bool Game::init()
 		}
 
 		// Create window
-		gWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+		SDL_DisplayMode current;
 
-		if (gWindow == NULL)
+		int getDisplay = SDL_GetCurrentDisplayMode(0, &current);
+
+		if (getDisplay != 0)
 		{
-			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
-			success = false;
+			printf("Could not get display mode: %s\n", SDL_GetError());
 		}
 		else
 		{
-			// Create Context
-			gContext = SDL_GL_CreateContext(gWindow);
+			WINDOW_WIDTH = current.w;
+			WINDOW_HEIGHT = current.h;
+			printf("%d %d\n", current.w, current.h);
 
-			if (gContext == NULL)
+			gWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 2560, 1440, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+
+			if (gWindow == NULL)
 			{
-				printf("OpenGl context could not be created! SDL Error: %s\n", SDL_GetError());
+				printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
 				success = false;
 			}
 			else
 			{
-				// Use vysnc
-				if (SDL_GL_SetSwapInterval(1) < 0)
-				{
-					printf("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
-				}
+				// Create Context
+				gContext = SDL_GL_CreateContext(gWindow);
 
-				// Initialize OpenGL
-				if (!initGL())
+				if (gContext == NULL)
 				{
-					printf("Unable to initialize OpenGL!\n");
+					printf("OpenGl context could not be created! SDL Error: %s\n", SDL_GetError());
 					success = false;
+				}
+				else
+				{
+					// Use vysnc
+					if (SDL_GL_SetSwapInterval(1) < 0)
+					{
+						printf("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
+					}
+
+					// Initialize OpenGL
+					if (!initGL())
+					{
+						printf("Unable to initialize OpenGL!\n");
+						success = false;
+					}
 				}
 			}
 		}
@@ -157,7 +172,7 @@ bool Game::loadMedia() {
 #else
 		levelManager->buildLevel("Levels/test.lvl");
 #endif
-		levelManager->setCameraPosition(SCREEN_WIDTH, SCREEN_HEIGHT);
+		levelManager->setCameraPosition(RESOLUTION_WIDTH, RESOLUTION_HEIGHT);
 	}
 
 	return success;
