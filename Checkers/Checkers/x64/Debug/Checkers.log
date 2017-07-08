@@ -1,0 +1,33 @@
+﻿  main.cpp
+c:\users\gary\documents\toke studios\sdl_opengl\checkers\checkers\gl_helpers.h(6): fatal error C1083: Cannot open include file: 'stdio.h': No such file or directory
+  Weapon.cpp
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.10.25017\include\crtdefs.h(10): fatal error C1083: Cannot open include file: 'corecrt.h': No such file or directory
+  TileManager.cpp
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.10.25017\include\crtdefs.h(10): fatal error C1083: Cannot open include file: 'corecrt.h': No such file or directory
+  Texture.cpp
+c:\users\gary\documents\toke studios\sdl_opengl\checkers\checkers\gl_helpers.h(6): fatal error C1083: Cannot open include file: 'stdio.h': No such file or directory
+  SpriteSheet.cpp
+c:\users\gary\documents\toke studios\sdl_opengl\checkers\checkers\gl_helpers.h(6): fatal error C1083: Cannot open include file: 'stdio.h': No such file or directory
+  Projectile.cpp
+c:\users\gary\documents\toke studios\sdl_opengl\checkers\checkers\gl_helpers.h(6): fatal error C1083: Cannot open include file: 'stdio.h': No such file or directory
+  Platform.cpp
+c:\users\gary\documents\toke studios\sdl_opengl\checkers\checkers\gl_helpers.h(6): fatal error C1083: Cannot open include file: 'stdio.h': No such file or directory
+  MediaManager.cpp
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.10.25017\include\crtdefs.h(10): fatal error C1083: Cannot open include file: 'corecrt.h': No such file or directory
+  LevelManager.cpp
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.10.25017\include\crtdefs.h(10): fatal error C1083: Cannot open include file: 'corecrt.h': No such file or directory
+  InputManager.cpp
+c:\users\gary\documents\toke studios\sdl_opengl\checkers\checkers\gl_helpers.h(6): fatal error C1083: Cannot open include file: 'stdio.h': No such file or directory
+  GameObject.cpp
+c:\users\gary\documents\toke studios\sdl_opengl\checkers\checkers\gl_helpers.h(6): fatal error C1083: Cannot open include file: 'stdio.h': No such file or directory
+  Game.cpp
+c:\users\gary\documents\toke studios\sdl_opengl\checkers\checkers\gl_helpers.h(6): fatal error C1083: Cannot open include file: 'stdio.h': No such file or directory
+  GL_helpers.cpp
+c:\users\gary\documents\toke studios\sdl_opengl\checkers\checkers\gl_helpers.h(6): fatal error C1083: Cannot open include file: 'stdio.h': No such file or directory
+  Enemy.cpp
+c:\users\gary\documents\toke studios\sdl_opengl\checkers\checkers\gl_helpers.h(6): fatal error C1083: Cannot open include file: 'stdio.h': No such file or directory
+  Character.cpp
+c:\users\gary\documents\toke studios\sdl_opengl\checkers\checkers\gl_helpers.h(6): fatal error C1083: Cannot open include file: 'stdio.h': No such file or directory
+  AnimatedGameObject.cpp
+c:\users\gary\documents\toke studios\sdl_opengl\checkers\checkers\gl_helpers.h(6): fatal error C1083: Cannot open include file: 'stdio.h': No such file or directory
+  Generating Code...

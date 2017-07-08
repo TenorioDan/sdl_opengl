@@ -1,7 +1,6 @@
 #pragma once
 
 #include "GL_helpers.h"
-#include "World.h"
 #include <IL/il.h>
 #include <IL/ilu.h>
 #include "InputManager.h"

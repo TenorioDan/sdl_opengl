@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -34,20 +34,20 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -70,8 +70,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\DT\Documents\sdl_opengl\Box2D;C:\Users\DT\Documents\sdl_opengl\DevIL Windows SDK\include;C:\Users\DT\Documents\sdl_opengl\SDL2_image-devel-2.0.1-VC\SDL2_image-2.0.1\include;C:\Users\DT\Documents\sdl_opengl\SDL2-devel-2.0.5-VC\SDL2-2.0.5\include;C:\Users\DT\Documents\sdl_opengl\glew-2.0.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\DT\Documents\sdl_opengl\DevIL Windows SDK\lib\x86\Release;C:\Users\DT\Documents\sdl_opengl\SDL2_image-devel-2.0.1-VC\SDL2_image-2.0.1\lib\x86;C:\Users\DT\Documents\sdl_opengl\SDL2-devel-2.0.5-VC\SDL2-2.0.5\lib\x86;C:\Users\DT\Documents\sdl_opengl\glew-2.0.0\lib\Release\Win32;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\Gary\Documents\Toke Studios\sdl_opengl\SDL2-devel-2.0.5-VC\SDL2-2.0.5\include;C:\Users\Gary\Documents\Toke Studios\sdl_opengl\SDL2_image-devel-2.0.1-VC\SDL2_image-2.0.1\include;C:\Users\Gary\Documents\Toke Studios\sdl_opengl\glew-2.0.0\include;C:\Users\Gary\Documents\Toke Studios\sdl_opengl\DevIL Windows SDK\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Gary\Documents\Toke Studios\sdl_opengl\SDL2-devel-2.0.5-VC\SDL2-2.0.5\lib\x86;C:\Users\Gary\Documents\Toke Studios\sdl_opengl\SDL2_image-devel-2.0.1-VC\SDL2_image-2.0.1\lib\x86;C:\Users\Gary\Documents\Toke Studios\sdl_opengl\glew-2.0.0\lib\Release\Win32;C:\Users\Gary\Documents\Toke Studios\sdl_opengl\DevIL Windows SDK\lib\x86\Release;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>C:\Users\Gary\Documents\Toke Studios\sdl_opengl\DevIL Windows SDK\include\IL;C:\Users\Gary\Documents\Toke Studios\sdl_opengl\SDL2-devel-2.0.5-VC\SDL2-2.0.5\include;C:\Users\Gary\Documents\Toke Studios\sdl_opengl\SDL2_image-devel-2.0.1-VC\SDL2_image-2.0.1\include;C:\Users\Gary\Documents\Toke Studios\sdl_opengl\glew-2.0.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Gary\Documents\Toke Studios\sdl_opengl\SDL2-devel-2.0.5-VC\SDL2-2.0.5\lib\x86;C:\Users\Gary\Documents\Toke Studios\sdl_opengl\SDL2_image-devel-2.0.1-VC\SDL2_image-2.0.1\lib\x86;C:\Users\Gary\Documents\Toke Studios\sdl_opengl\glew-2.0.0\lib\Release\Win32;C:\Users\Gary\Documents\Toke Studios\sdl_opengl\DevIL Windows SDK\lib\x86\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -79,6 +83,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ShowIncludes>true</ShowIncludes>
+      <AdditionalOptions>/Y- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;OpenGL32.lib;glu32.lib;DevIL.lib;ILU.lib;glew32.lib;glew32s.lib;ILUT.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -91,6 +96,9 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;OpenGL32.lib;glu32.lib;DevIL.lib;ILU.lib;glew32.lib;glew32s.lib;ILUT.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -134,9 +142,7 @@
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="SpriteSheet.cpp" />
     <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="TileManager.cpp" />
     <ClCompile Include="Weapon.cpp" />
-    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimatedGameObject.h" />
@@ -155,13 +161,10 @@
     <ClInclude Include="LVertexData2D.h" />
     <ClInclude Include="LVertexPos2D.h" />
     <ClInclude Include="MediaManager.h" />
-    <ClInclude Include="Platform.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="SpriteSheet.h" />
     <ClInclude Include="Texture.h" />
-    <ClInclude Include="TileManager.h" />
     <ClInclude Include="Weapon.h" />
-    <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="arrow.png" />

@@ -5,7 +5,7 @@
 #include "LevelManager.h"
 #include "MediaManager.h"
 
-LevelManager::LevelManager() 
+LevelManager::LevelManager()
 { 
 	transitionOffset = 40;
 }

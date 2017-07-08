@@ -1,4 +1,5 @@
 #include "Game.h"
+#include <SDL_image.h>
 #include "Command.h"
 
 Game::Game()
@@ -117,7 +118,7 @@ bool Game::init()
 			WINDOW_HEIGHT = current.h;
 			printf("%d %d\n", current.w, current.h);
 
-			gWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 2560, 1440, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+			gWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 
 			if (gWindow == NULL)
 			{
